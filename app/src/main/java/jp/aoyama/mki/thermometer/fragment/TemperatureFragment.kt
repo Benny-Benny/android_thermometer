@@ -73,7 +73,7 @@ class TemperatureFragment : Fragment() {
         viewModel.saveTemperature(requireContext(), mName, value)
 
         // 編集画面を閉じる
-        Toast.makeText(requireContext(),"体温を保存しました", Toast.LENGTH_LONG).show()
+        Toast.makeText(requireContext(), R.string.saved_body_temperature, Toast.LENGTH_LONG).show()
         findNavController().popBackStack()
     }
 

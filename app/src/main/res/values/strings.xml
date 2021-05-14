@@ -10,6 +10,7 @@
     <string name="edit_title">名簿編集</string>
     <string name="main_title">自分の名前を選択してください</string>
     <string name="chooser_title">体温を入力してください</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="body_temperature_input_alert">体温計の通りに入力してください</string>
+    <string name="saved_body_temperature">体温を保存しました</string>
+    <string name="share_file_description">体温のデータを出力</string>
 </resources>

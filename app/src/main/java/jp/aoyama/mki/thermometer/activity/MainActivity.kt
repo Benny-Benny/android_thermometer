@@ -37,8 +37,6 @@ class MainActivity : AppCompatActivity() {
             addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION)
             type = "text/plain"
         }
-        startActivity(Intent.createChooser(shareIntent, "体温のデータを出力"))
+        startActivity(Intent.createChooser(shareIntent, getString(R.string.share_file_description)))
     }
-
-
 }
