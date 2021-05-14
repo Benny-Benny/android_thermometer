@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Thermometer</string>
+    <string name="makelist_edit_name">名前</string>
+    <string name="makelist_button_save">追加</string>
+    <string name="delete_title">削除</string>
+    <string name="delete_confirm">選択した項目を削除してもよろしいですか？</string>
+    <string name="delete_msg">選択した項目を削除しました</string>
+    <string name="ok">OK</string>
+    <string name="cancel">キャンセル</string>
+    <string name="edit_title">名簿編集</string>
+    <string name="main_title">自分の名前を選択してください</string>
+    <string name="chooser_title">体温を入力してください</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

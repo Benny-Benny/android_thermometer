@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/selectNameFragment">
+
+    <fragment
+        android:id="@+id/selectNameFragment"
+        android:name="jp.aoyama.a5819009a5819044a5819104.thermometer.fragment.SelectNameFragment"
+        android:label="select_name_fragment"
+        tools:layout="@layout/select_name_fragment" >
+        <action
+            android:id="@+id/select_to_edit"
+            app:destination="@id/editNameFragment" />
+        <action
+            android:id="@+id/select_to_temperature"
+            app:destination="@id/temperatureFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/temperatureFragment"
+        android:name="jp.aoyama.a5819009a5819044a5819104.thermometer.fragment.TemperatureFragment"
+        android:label="temperature_fragment"
+        tools:layout="@layout/temperature_fragment" >
+
+        <argument
+            android:name="Name"
+            app:argType="string" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/editNameFragment"
+        android:name="jp.aoyama.a5819009a5819044a5819104.thermometer.fragment.EditNameFragment"
+        android:label="edit_name_fragment"
+        tools:layout="@layout/edit_name_fragment" />
+</navigation>
