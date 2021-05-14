@@ -19,7 +19,7 @@ class CSVFileManager {
         writer.close()
     }
 
-    fun getFile(context: Context): File {
+    private fun getFile(context: Context): File {
         return File(context.getExternalFilesDir(null), FILE_NAME)
     }
 
