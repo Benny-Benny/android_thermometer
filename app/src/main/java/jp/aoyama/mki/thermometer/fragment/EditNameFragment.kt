@@ -1,20 +1,18 @@
-package jp.aoyama.a5819009a5819044a5819104.thermometer.fragment
+package jp.aoyama.mki.thermometer.fragment
 
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.google.gson.Gson
-import jp.aoyama.a5819009a5819044a5819104.thermometer.R
-import jp.aoyama.a5819009a5819044a5819104.thermometer.databinding.EditNameFragmentBinding
-import jp.aoyama.a5819009a5819044a5819104.thermometer.viewmodels.TmpViewModel
+import jp.aoyama.mki.thermometer.R
+import jp.aoyama.mki.thermometer.databinding.EditNameFragmentBinding
+import jp.aoyama.mki.thermometer.viewmodels.TmpViewModel
 
 class EditNameFragment : Fragment() {
 

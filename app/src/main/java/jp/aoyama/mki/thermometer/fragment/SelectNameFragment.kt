@@ -1,19 +1,17 @@
-package jp.aoyama.a5819009a5819044a5819104.thermometer.fragment
+package jp.aoyama.mki.thermometer.fragment
 
 import android.os.Bundle
-import android.preference.PreferenceManager
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import com.google.gson.Gson
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import jp.aoyama.a5819009a5819044a5819104.thermometer.databinding.SelectNameFragmentBinding
-import jp.aoyama.a5819009a5819044a5819104.thermometer.util.CSVFileManager
-import jp.aoyama.a5819009a5819044a5819104.thermometer.viewmodels.TmpViewModel
+import jp.aoyama.mki.thermometer.databinding.SelectNameFragmentBinding
+import jp.aoyama.mki.thermometer.util.CSVFileManager
+import jp.aoyama.mki.thermometer.viewmodels.TmpViewModel
 
 class SelectNameFragment : Fragment() {
 

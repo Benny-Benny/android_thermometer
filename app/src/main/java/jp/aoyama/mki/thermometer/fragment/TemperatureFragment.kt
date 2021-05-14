@@ -1,20 +1,17 @@
-package jp.aoyama.a5819009a5819044a5819104.thermometer.fragment
+package jp.aoyama.mki.thermometer.fragment
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import jp.aoyama.a5819009a5819044a5819104.thermometer.databinding.TemperatureFragmentBinding
-import jp.aoyama.a5819009a5819044a5819104.thermometer.models.TemperatureData
-import jp.aoyama.a5819009a5819044a5819104.thermometer.util.CSVFileManager
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import jp.aoyama.a5819009a5819044a5819104.thermometer.viewmodels.TmpViewModel
+import jp.aoyama.mki.thermometer.databinding.TemperatureFragmentBinding
+import jp.aoyama.mki.thermometer.util.CSVFileManager
+import jp.aoyama.mki.thermometer.viewmodels.TmpViewModel
 
 
 class TemperatureFragment : Fragment() {
