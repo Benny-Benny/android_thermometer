@@ -11,14 +11,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import jp.aoyama.mki.thermometer.R
 import jp.aoyama.mki.thermometer.databinding.TemperatureFragmentBinding
-import jp.aoyama.mki.thermometer.viewmodels.TmpViewModel
+import jp.aoyama.mki.thermometer.viewmodels.TemperatureViewModel
 
 
 class TemperatureFragment : Fragment() {
 
     private lateinit var mBinding: TemperatureFragmentBinding
 
-    private val mViewModel: TmpViewModel by viewModels()
+    private val mViewModel: TemperatureViewModel by viewModels()
     private val mArgs by navArgs<TemperatureFragmentArgs>()
     private val mName: String get() = mArgs.name // 体温を計測する人の名前
 

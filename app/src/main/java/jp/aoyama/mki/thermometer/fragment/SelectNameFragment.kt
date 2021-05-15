@@ -9,10 +9,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import jp.aoyama.mki.thermometer.databinding.SelectNameFragmentBinding
-import jp.aoyama.mki.thermometer.viewmodels.TmpViewModel
+import jp.aoyama.mki.thermometer.viewmodels.TemperatureViewModel
 
 class SelectNameFragment : Fragment() {
-    private val mViewModel: TmpViewModel by viewModels()
+    private val mViewModel: TemperatureViewModel by viewModels()
     private lateinit var mBinding: SelectNameFragmentBinding
     private lateinit var mAdapter: ArrayAdapter<String>
 
@@ -23,8 +23,19 @@ class SelectNameFragment : Fragment() {
         mBinding = SelectNameFragmentBinding.inflate(inflater, container, false)
         mBinding.apply {
             lvList.setOnItemClickListener { _, _, position, _ -> onListItemClick(position) }
+            mAdapter = ArrayAdapter<String>(
+                requireContext(),
+                android.R.layout.simple_list_item_1,
+                mutableListOf()
+            )
+            lvList.adapter = mAdapter
         }
-        updateList()
+
+        mViewModel.getUsers(requireContext()).observe(viewLifecycleOwner) { names ->
+            mAdapter.clear()
+            mAdapter.addAll(names)
+        }
+
         return mBinding.root
     }
 
@@ -33,15 +44,6 @@ class SelectNameFragment : Fragment() {
             findNavController().navigate(SelectNameFragmentDirections.selectToEdit())
             super.onViewCreated(view, savedInstanceState)
         }
-    }
-
-    private fun updateList() {
-        mAdapter = ArrayAdapter<String>(
-            requireContext(),
-            android.R.layout.simple_list_item_1,
-            mViewModel.getUsers(requireContext())
-        )
-        mBinding.lvList.adapter = mAdapter
     }
 
     private fun onListItemClick(position: Int) {

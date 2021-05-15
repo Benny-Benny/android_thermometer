@@ -10,11 +10,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import jp.aoyama.mki.thermometer.R
 import jp.aoyama.mki.thermometer.databinding.EditNameFragmentBinding
-import jp.aoyama.mki.thermometer.viewmodels.TmpViewModel
+import jp.aoyama.mki.thermometer.viewmodels.TemperatureViewModel
 
 class EditNameFragment : Fragment() {
 
-    private val mViewModel: TmpViewModel by viewModels()
+    private val mViewModel: TemperatureViewModel by viewModels()
 
     private lateinit var mBinding: EditNameFragmentBinding
     private lateinit var mAdapter: ArrayAdapter<String>
@@ -26,9 +26,20 @@ class EditNameFragment : Fragment() {
         mBinding = EditNameFragmentBinding.inflate(inflater, container, false)
         mBinding.apply {
             lvList.setOnItemClickListener { _, _, position, _ -> onItemTouch(position) }
+            mAdapter = ArrayAdapter(
+                requireContext(),
+                android.R.layout.simple_list_item_1,
+                mutableListOf()
+            )
+            lvList.adapter = mAdapter
             buttonSave.setOnClickListener { onSaveButtonClick() }
         }
-        updateList()
+
+        mViewModel.getUsers(requireContext()).observe(viewLifecycleOwner) { names ->
+            mAdapter.clear()
+            mAdapter.addAll(names)
+        }
+
         return mBinding.root
     }
 
@@ -36,14 +47,6 @@ class EditNameFragment : Fragment() {
         val name = mBinding.editTextTextPersonName.text.toString()
         mViewModel.addUser(requireContext(), name)
         mBinding.editTextTextPersonName.setText("")
-        updateList()
-    }
-
-    private fun updateList() {
-        val names = mViewModel.getUsers(requireContext())
-        mAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, names)
-        mBinding.lvList.adapter = mAdapter
-
     }
 
     private fun onItemTouch(position: Int) {
@@ -54,7 +57,6 @@ class EditNameFragment : Fragment() {
             setPositiveButton(R.string.delete_title) { dialog, _ ->
                 dialog.dismiss()
                 mViewModel.deleteUser(requireContext(), name)
-                updateList()
             }
             setNegativeButton(R.string.cancel) { dialog, _ ->
                 dialog.dismiss()
