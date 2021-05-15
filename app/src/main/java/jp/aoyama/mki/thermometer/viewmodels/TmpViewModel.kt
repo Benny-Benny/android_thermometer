@@ -1,7 +1,6 @@
 package jp.aoyama.mki.thermometer.viewmodels
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
@@ -14,15 +13,24 @@ class TmpViewModel : ViewModel() {
 
     private val mCsvFileManager = CSVFileManager()
 
+    fun getUsers(context: Context): List<String> {
+        return try {
+            val nameJson = context.openFileInput(FILE_NAMES).bufferedReader().readLine() ?: "[]"
+            val names = Gson().fromJson<List<String>>(nameJson, List::class.java)
+            names
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
+
     fun addUser(context: Context, name: String) {
         val currentUsers = getUsers(context).toMutableList()
         currentUsers.add(name)
 
-        val gson = Gson()
-        var namesJson: String = gson.toJson(currentUsers)
+        val namesJson: String = Gson().toJson(currentUsers)
 
-        context.openFileOutput(FILE_NAMES,Context.MODE_PRIVATE).use{
-            it.write( namesJson.toByteArray())
+        context.openFileOutput(FILE_NAMES, Context.MODE_PRIVATE).use {
+            it.write(namesJson.toByteArray())
         }
     }
 
@@ -30,32 +38,29 @@ class TmpViewModel : ViewModel() {
         val currentUsers = getUsers(context).toMutableList()
         currentUsers.removeAll { nameCurrent -> nameCurrent == name }
 
-        val gson = Gson()
-        var namesJson: String = gson.toJson(currentUsers)
+        val namesJson: String = Gson().toJson(currentUsers)
 
-        context.openFileOutput(FILE_NAMES,Context.MODE_PRIVATE).use{
-            it.write( namesJson.toByteArray())
+        context.openFileOutput(FILE_NAMES, Context.MODE_PRIVATE).use {
+            it.write(namesJson.toByteArray())
         }
     }
 
-    fun saveTemperature(context: Context, name: String, temperature: Float){
+    /**
+     * 入力された体温をCSV形式で保存
+     * @param name 体温を記録する人の名前
+     * @param temperature 体温
+     * @return 入力値が適切であれば true を返す
+     */
+    fun saveTemperature(context: Context, name: String, temperature: String?): Boolean {
+        val inputValue = temperature?.toFloatOrNull() ?: return false
+        if (inputValue > 45f || inputValue < 35f) return false
+
         // 内部のＣＳＶファイルにデータを追加
         viewModelScope.launch(Dispatchers.IO) {
-            mCsvFileManager.append(context, TemperatureData(name = name, temperature = temperature))
+            mCsvFileManager.append(context, TemperatureData(name = name, temperature = inputValue))
         }
-    }
 
-    fun getUsers(context: Context): List<String> {
-        val gson = Gson()
-        try {
-            val nameJson = context.openFileInput(FILE_NAMES).bufferedReader().readLine() ?: "[]"
-            Log.d(TAG, "getUsers: $nameJson")
-            var names = gson.fromJson<List<String>>(nameJson, List::class.java)
-            return names
-        }catch (e: Exception){
-            Log.e(TAG, "getUsers: $e", )
-            return emptyList()
-        }
+        return true
     }
 
     companion object {
