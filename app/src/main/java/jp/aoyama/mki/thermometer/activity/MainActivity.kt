@@ -1,17 +1,12 @@
-package jp.aoyama.a5819009a5819044a5819104.thermometer.activity
+package jp.aoyama.mki.thermometer.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.net.toUri
-import com.google.gson.Gson
-import jp.aoyama.a5819009a5819044a5819104.thermometer.util.CSVFileManager
-import jp.aoyama.a5819009a5819044a5819104.thermometer.R
+import jp.aoyama.mki.thermometer.R
+import jp.aoyama.mki.thermometer.util.CSVFileManager
 
 
 class MainActivity : AppCompatActivity() {
@@ -42,8 +37,6 @@ class MainActivity : AppCompatActivity() {
             addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION)
             type = "text/plain"
         }
-        startActivity(Intent.createChooser(shareIntent, "体温のデータを出力"))
+        startActivity(Intent.createChooser(shareIntent, getString(R.string.share_file_description)))
     }
-
-
 }

@@ -1,4 +1,4 @@
-package jp.aoyama.a5819009a5819044a5819104.thermometer.models
+package jp.aoyama.mki.thermometer.models
 
 import java.text.SimpleDateFormat
 import java.util.*

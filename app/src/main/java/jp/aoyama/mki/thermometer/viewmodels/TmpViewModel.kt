@@ -1,15 +1,14 @@
-package jp.aoyama.a5819009a5819044a5819104.thermometer.viewmodels
+package jp.aoyama.mki.thermometer.viewmodels
 
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
-import jp.aoyama.a5819009a5819044a5819104.thermometer.models.TemperatureData
-import jp.aoyama.a5819009a5819044a5819104.thermometer.util.CSVFileManager
+import jp.aoyama.mki.thermometer.models.TemperatureData
+import jp.aoyama.mki.thermometer.util.CSVFileManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.lang.Exception
 
 class TmpViewModel : ViewModel() {
 
