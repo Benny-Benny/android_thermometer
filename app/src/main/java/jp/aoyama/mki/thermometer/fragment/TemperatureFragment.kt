@@ -9,30 +9,27 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import jp.aoyama.mki.thermometer.R
 import jp.aoyama.mki.thermometer.databinding.TemperatureFragmentBinding
-import jp.aoyama.mki.thermometer.util.CSVFileManager
-import jp.aoyama.mki.thermometer.viewmodels.TmpViewModel
+import jp.aoyama.mki.thermometer.viewmodels.TemperatureViewModel
 
 
 class TemperatureFragment : Fragment() {
 
-    private lateinit var mName: String
-    private val mCsvFileManager = CSVFileManager()
+    private lateinit var mBinding: TemperatureFragmentBinding
 
-    private lateinit var binding: TemperatureFragmentBinding
-    private val args by navArgs<TemperatureFragmentArgs>()
+    private val mViewModel: TemperatureViewModel by viewModels()
+    private val mArgs by navArgs<TemperatureFragmentArgs>()
+    private val mName: String get() = mArgs.name // 体温を計測する人の名前
 
-    private val viewModel: TmpViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
+        mBinding = TemperatureFragmentBinding.inflate(layoutInflater, container, false)
 
-        binding = TemperatureFragmentBinding.inflate(layoutInflater, container, false)
-        mName = args.name
-
-        binding.apply {
+        mBinding.apply {
             button.setOnClickListener { onNumberClick(1) }
             button2.setOnClickListener { onNumberClick(2) }
             button3.setOnClickListener { onNumberClick(3) }
@@ -43,34 +40,32 @@ class TemperatureFragment : Fragment() {
             button33.setOnClickListener { onNumberClick(8) }
             button35.setOnClickListener { onNumberClick(9) }
             button36.setOnClickListener { onNumberClick(0) }
-            button38.setOnClickListener {binding.textView.text = ("")}
-            button37.setOnClickListener {binding.textView.append(".")}
-            button40.setOnClickListener {onSaveClick()}
+            button38.setOnClickListener { mBinding.textView.text = ("") }
+            button37.setOnClickListener { mBinding.textView.append(".") }
+            button40.setOnClickListener { onSaveClick() }
         }
-        return binding.root
+        return mBinding.root
     }
 
 
-    fun onNumberClick(number: Int){
-        binding.textView.append(number.toString())
+    private fun onNumberClick(number: Int) {
+        mBinding.textView.append(number.toString())
     }
 
-    fun onSaveClick(){
-        val textView = binding.textView
+    private fun onSaveClick() {
+        val inputValueStr = mBinding.textView.text.toString()
 
-        val value = textView.text.toString().toFloatOrNull()
-
-        // 入力値の検証
-        if(value == null){
-            Toast.makeText(requireContext(), "体温計の通りに入力してください", Toast.LENGTH_LONG).show()
-            return
-        }else if(value > 45f || value < 35f) {
-            Toast.makeText(requireContext(), "体温計の通りに入力してください", Toast.LENGTH_LONG).show()
-            textView.text = ""
+        // 入力値の検証と保存
+        val valid = mViewModel.saveTemperature(requireContext(), mName, inputValueStr)
+        if (!valid) {
+            Toast.makeText(
+                requireContext(),
+                R.string.body_temperature_input_alert,
+                Toast.LENGTH_LONG
+            ).show()
+            mBinding.textView.text = ""
             return
         }
-
-        viewModel.saveTemperature(requireContext(), mName, value)
 
         // 編集画面を閉じる
         Toast.makeText(requireContext(), R.string.saved_body_temperature, Toast.LENGTH_LONG).show()

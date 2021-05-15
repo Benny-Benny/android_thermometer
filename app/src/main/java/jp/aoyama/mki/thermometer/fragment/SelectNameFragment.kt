@@ -4,62 +4,50 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import jp.aoyama.mki.thermometer.databinding.SelectNameFragmentBinding
-import jp.aoyama.mki.thermometer.util.CSVFileManager
-import jp.aoyama.mki.thermometer.viewmodels.TmpViewModel
+import jp.aoyama.mki.thermometer.viewmodels.TemperatureViewModel
 
 class SelectNameFragment : Fragment() {
-
-
-    private var mNameList: List<String> = mutableListOf()
-    private lateinit var mAdapter: ArrayAdapter<Any>
-    private val mCsvFileManager = CSVFileManager()
-
-    companion object {
-        fun newInstance() = SelectNameFragment()
-        private const val REQUEST_EDIT = 0x0050
-    }
-
-    private val viewModel: TmpViewModel by viewModels()
-    private lateinit var binding: SelectNameFragmentBinding
+    private val mViewModel: TemperatureViewModel by viewModels()
+    private lateinit var mBinding: SelectNameFragmentBinding
+    private lateinit var mAdapter: ArrayAdapter<String>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = SelectNameFragmentBinding.inflate(inflater, container, false)
-        mNameList = viewModel.getUsers(requireContext())
-        updateList()
-        return binding.root
+    ): View {
+        mBinding = SelectNameFragmentBinding.inflate(inflater, container, false)
+        mBinding.apply {
+            lvList.setOnItemClickListener { _, _, position, _ -> onListItemClick(position) }
+            mAdapter = ArrayAdapter<String>(
+                requireContext(),
+                android.R.layout.simple_list_item_1,
+                mutableListOf()
+            )
+            lvList.adapter = mAdapter
+        }
+
+        mViewModel.getUsers(requireContext()).observe(viewLifecycleOwner) { names ->
+            mAdapter.clear()
+            mAdapter.addAll(names)
+        }
+
+        return mBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
-        binding.floatingActionButton.setOnClickListener {
+        mBinding.floatingActionButton.setOnClickListener {
             findNavController().navigate(SelectNameFragmentDirections.selectToEdit())
             super.onViewCreated(view, savedInstanceState)
         }
     }
 
-
-    fun updateList() {
-        mAdapter =
-            ArrayAdapter<Any>(requireContext(), android.R.layout.simple_list_item_1, mNameList)
-        val lvList = binding.lvList
-        lvList.adapter = mAdapter
-        lvList.onItemClickListener = ListItemClickListener()
-    }
-
-
-    private inner class ListItemClickListener : AdapterView.OnItemClickListener {
-        override fun onItemClick(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-            val name = parent.getItemAtPosition(position).toString()
-            findNavController().navigate(SelectNameFragmentDirections.selectToTemperature(name))
-        }
+    private fun onListItemClick(position: Int) {
+        val name = mAdapter.getItem(position).toString()
+        findNavController().navigate(SelectNameFragmentDirections.selectToTemperature(name))
     }
 }
