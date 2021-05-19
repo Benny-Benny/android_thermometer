@@ -1,4 +1,4 @@
-package jp.aoyama.a5819009a5819044a5819104.thermometer.models
+package jp.aoyama.mki.thermometer.models
 
 import java.text.SimpleDateFormat
 import java.util.*
@@ -9,8 +9,8 @@ data class TemperatureData(
     val createdAt: Calendar = Calendar.getInstance()
 ){
     fun toCSV(): String {
-        val dateFormat = SimpleDateFormat("MM/dd")
-        return "${dateFormat.format(createdAt.time)}, ${name}, ${temperature}"
+        val dateFormat = SimpleDateFormat("MM/dd", Locale.JAPAN)
+        return "${dateFormat.format(createdAt.time)}, $name, $temperature"
     }
 
 }

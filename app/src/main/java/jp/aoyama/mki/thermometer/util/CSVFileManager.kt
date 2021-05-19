@@ -1,17 +1,17 @@
-package jp.aoyama.a5819009a5819044a5819104.thermometer.util
+package jp.aoyama.mki.thermometer.util
 
 import android.content.Context
 import android.net.Uri
-import android.os.Environment
-import android.util.Log
 import androidx.core.content.FileProvider
-import jp.aoyama.a5819009a5819044a5819104.thermometer.models.TemperatureData
+import jp.aoyama.mki.thermometer.models.TemperatureData
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStreamWriter
 
 class CSVFileManager {
-    suspend fun append(context: Context, data: TemperatureData) {
+    suspend fun append(context: Context, data: TemperatureData) = withContext(Dispatchers.IO) {
         val file = getFile(context)
         val outputStream = FileOutputStream(file, true)
         val writer = OutputStreamWriter(outputStream)
