@@ -47,7 +47,6 @@ class TemperatureFragment : Fragment() {
         return mBinding.root
     }
 
-
     private fun onNumberClick(number: Int) {
         mBinding.textView.append(number.toString())
     }

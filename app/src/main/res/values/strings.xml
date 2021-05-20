@@ -28,4 +28,6 @@
     <string name="bluetooth_device">Bluetoothデバイス</string>
     <string name="save_user">この内容で保存する</string>
     <string name="modify">修正する</string>
+    <string name="near_user">近くにいるユーザー</string>
+    <string name="out_user">外出中のユーザー</string>
 </resources>
