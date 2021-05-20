@@ -1,4 +1,4 @@
-package jp.aoyama.mki.thermometer.fragment.user
+package jp.aoyama.mki.thermometer.fragment.user.create
 
 import android.os.Bundle
 import android.view.KeyEvent
