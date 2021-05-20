@@ -33,7 +33,7 @@ class SelectNameFragment : Fragment() {
 
         mViewModel.getUsers(requireContext()).observe(viewLifecycleOwner) { names ->
             mAdapter.clear()
-            mAdapter.addAll(names)
+            mAdapter.addAll(names.map { it.name })
         }
 
         return mBinding.root

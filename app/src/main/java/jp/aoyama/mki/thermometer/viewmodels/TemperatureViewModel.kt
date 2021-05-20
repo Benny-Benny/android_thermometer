@@ -5,56 +5,42 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.gson.Gson
 import jp.aoyama.mki.thermometer.models.TemperatureData
+import jp.aoyama.mki.thermometer.models.User
+import jp.aoyama.mki.thermometer.repository.LocalFileUserRepository
 import jp.aoyama.mki.thermometer.util.CSVFileManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class TemperatureViewModel : ViewModel() {
 
     private val mCsvFileManager = CSVFileManager()
-    private val _names: MutableLiveData<List<String>> = MutableLiveData(mutableListOf())
+    private val _users: MutableLiveData<List<User>> = MutableLiveData(mutableListOf())
 
-    fun getUsers(context: Context): LiveData<List<String>> {
-        _names.value = getUsersFromFile(context)
-        return _names
-    }
 
-    private fun getUsersFromFile(context: Context): List<String> {
-        return try {
-            val nameJson = context.openFileInput(FILE_NAMES).bufferedReader().readLine() ?: "[]"
-            val names = Gson().fromJson<List<String>>(nameJson, List::class.java)
-            names
-        } catch (e: Exception) {
-            emptyList()
-        }
-    }
+    fun getUsers(context: Context): LiveData<List<User>> {
+        val userRepository = LocalFileUserRepository(context)
 
-    fun addUser(context: Context, name: String) {
-        val currentUsers = getUsersFromFile(context).toMutableList()
-        currentUsers.add(name)
+        viewModelScope.launch(Dispatchers.IO) {
+            val users = userRepository.findAll()
 
-        val namesJson: String = Gson().toJson(currentUsers)
-
-        context.openFileOutput(FILE_NAMES, Context.MODE_PRIVATE).use {
-            it.write(namesJson.toByteArray())
+            withContext(Dispatchers.Main) {
+                _users.value = users
+            }
         }
 
-        _names.value = getUsersFromFile(context)
+        return _users
     }
 
-    fun deleteUser(context: Context, name: String) {
-        val currentUsers = getUsersFromFile(context).toMutableList()
-        currentUsers.removeAll { nameCurrent -> nameCurrent == name }
+    suspend fun deleteUser(context: Context, userId: String) {
+        val userRepository = LocalFileUserRepository(context)
 
-        val namesJson: String = Gson().toJson(currentUsers)
-
-        context.openFileOutput(FILE_NAMES, Context.MODE_PRIVATE).use {
-            it.write(namesJson.toByteArray())
+        withContext(Dispatchers.IO) {
+            userRepository.delete(userId)
         }
 
-        _names.value = getUsersFromFile(context)
+        _users.value = userRepository.findAll()
     }
 
     /**
@@ -73,9 +59,5 @@ class TemperatureViewModel : ViewModel() {
         }
 
         return true
-    }
-
-    companion object {
-        private const val FILE_NAMES = "Name List.txt"
     }
 }
