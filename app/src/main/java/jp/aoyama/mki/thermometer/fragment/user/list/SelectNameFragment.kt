@@ -1,10 +1,6 @@
 package jp.aoyama.mki.thermometer.fragment.user.list
 
 import android.Manifest
-import android.bluetooth.BluetoothAdapter
-import android.bluetooth.le.ScanCallback
-import android.bluetooth.le.ScanResult
-import android.bluetooth.le.ScanSettings
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -19,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import jp.aoyama.mki.thermometer.databinding.SelectNameFragmentBinding
 import jp.aoyama.mki.thermometer.models.UserEntity
+import jp.aoyama.mki.thermometer.util.BluetoothScanController
 import jp.aoyama.mki.thermometer.viewmodels.UserViewModel
 
 class SelectNameFragment : Fragment(), UserViewHolder.CallbackListener {
@@ -26,20 +23,13 @@ class SelectNameFragment : Fragment(), UserViewHolder.CallbackListener {
     private lateinit var mBinding: SelectNameFragmentBinding
     private val mAdapterNearUser: UserListAdapter = UserListAdapter(this)
     private val mAdapterOutUser: UserListAdapter = UserListAdapter(this)
-
-    private val mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-    private val mBluetoothScanCallback: ScanCallback by lazy {
-        object : ScanCallback() {
-            override fun onScanResult(callbackType: Int, result: ScanResult?) {
-                super.onScanResult(callbackType, result)
-                result?.let { mViewModel.onReceiveBluetoothResult(it) }
-            }
-        }
+    private val mBluetoothScanController: BluetoothScanController by lazy {
+        BluetoothScanController(requireContext(), timeoutInMillis = 30 * 1000)
     }
 
     private val mRequestPermission =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
-            scanBluetoothDevices()
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { result ->
+            if (result) scanBluetoothDevices()
         }
 
     override fun onCreateView(
@@ -65,28 +55,31 @@ class SelectNameFragment : Fragment(), UserViewHolder.CallbackListener {
             mAdapterOutUser.submitList(data.outs)
         }
 
+        // 付近のBluetooth端末を取得
+        mBluetoothScanController.devicesLiveData.observe(viewLifecycleOwner) { devices ->
+            devices.forEach {
+                mViewModel.onReceiveBluetoothResult(it.device, it.rssi)
+            }
+        }
+
+        // Bluetooth端末の検索に必要なパーミッションの取得
         val accessFileLocation = ContextCompat.checkSelfPermission(
             requireContext(),
             Manifest.permission.ACCESS_FINE_LOCATION
         )
-        if (accessFileLocation != PackageManager.PERMISSION_GRANTED) scanBluetoothDevices()
-        else mRequestPermission.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION))
+        if (accessFileLocation == PackageManager.PERMISSION_GRANTED) scanBluetoothDevices()
+        else mRequestPermission.launch(Manifest.permission.ACCESS_FINE_LOCATION)
 
         return mBinding.root
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        if (mBluetoothAdapter.isDiscovering) mBluetoothAdapter.cancelDiscovery()
-        mBluetoothAdapter.bluetoothLeScanner.stopScan(mBluetoothScanCallback)
+        mBluetoothScanController.cancelDiscovery()
     }
 
     private fun scanBluetoothDevices() {
-        if (mBluetoothAdapter.isDiscovering) mBluetoothAdapter.cancelDiscovery()
-        val scanSettings = ScanSettings.Builder()
-            .setScanMode(ScanSettings.SCAN_MODE_BALANCED)
-            .build()
-        mBluetoothAdapter.bluetoothLeScanner.startScan(null, scanSettings, mBluetoothScanCallback)
+        mBluetoothScanController.startDiscovery()
     }
 
     // ============================

@@ -1,6 +1,6 @@
 package jp.aoyama.mki.thermometer.viewmodels
 
-import android.bluetooth.le.ScanResult
+import android.bluetooth.BluetoothDevice
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -17,17 +17,15 @@ import java.util.*
 class UserViewModel : ViewModel() {
     private val _mUserData: MutableLiveData<UserData> = MutableLiveData()
 
-    fun onReceiveBluetoothResult(result: ScanResult) {
+    fun onReceiveBluetoothResult(device: BluetoothDevice, rssi: Int) {
         val data = _mUserData.value ?: return
-
-        val address = result.device?.address
-        val user = data.users.find { it.bluetoothData?.address == address }
+        val user = data.users.find { it.bluetoothData?.address == device.address }
         if (user == null) {
             val validate = data.checkExpired()
             if (!validate) _mUserData.value = data
             return
         }
-        data.addNearUser(user.copy(rssi = result.rssi, lastFoundAt = Calendar.getInstance()))
+        data.addNearUser(user.copy(rssi = rssi, lastFoundAt = Calendar.getInstance()))
         _mUserData.value = data
     }
 
@@ -48,9 +46,5 @@ class UserViewModel : ViewModel() {
         withContext(Dispatchers.IO) {
             userRepository.delete(userId)
         }
-    }
-
-    companion object {
-        private const val TAG = "UserViewModel"
     }
 }
