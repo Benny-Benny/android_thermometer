@@ -42,18 +42,7 @@
         android:name="jp.aoyama.mki.thermometer.fragment.user.create.BluetoothPairingFragment"
         android:label="BluetoothPairingFragment">
         <action
-            android:id="@+id/pairing_to_select"
-            app:destination="@id/selectBluetoothDeviceFragment" />
-        <action
             android:id="@+id/pairing_to_confirm"
-            app:destination="@id/confirmUserInformationFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/selectBluetoothDeviceFragment"
-        android:name="jp.aoyama.mki.thermometer.fragment.user.create.SelectBluetoothDeviceFragment"
-        android:label="SelectBluetoothDeviceFragment">
-        <action
-            android:id="@+id/select_bluetooth_to_confirm"
             app:destination="@id/confirmUserInformationFragment" />
     </fragment>
     <fragment

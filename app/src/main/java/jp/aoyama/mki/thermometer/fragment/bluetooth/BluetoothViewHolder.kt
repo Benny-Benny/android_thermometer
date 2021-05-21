@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothDevice
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import jp.aoyama.mki.thermometer.R
 import jp.aoyama.mki.thermometer.databinding.ItemBluetoothDeviceBinding
 
 class BluetoothViewHolder(
@@ -17,8 +18,10 @@ class BluetoothViewHolder(
     }
 
     fun bind(device: BluetoothDevice) {
-        mBinding.textDeviceName.text = device.name ?: "HELLO"
-        mBinding.textDeviceAddress.text = device.address ?: "HELLO"
+        val address = device.address ?: return
+        mBinding.textDeviceAddress.text = address
+        mBinding.textDeviceName.text =
+            device.name ?: mBinding.root.context.getString(R.string.unnamed_device)
         mBinding.root.isClickable = true
         mBinding.root.setOnClickListener { callbackListener.onClick(device) }
     }
