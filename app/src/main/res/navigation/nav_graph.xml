@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/selectNameFragment"
-        android:name="jp.aoyama.mki.thermometer.fragment.SelectNameFragment"
+        android:name="jp.aoyama.mki.thermometer.fragment.user.list.SelectNameFragment"
         android:label="select_name_fragment"
         tools:layout="@layout/select_name_fragment" >
         <action
@@ -30,7 +30,23 @@
     </fragment>
     <fragment
         android:id="@+id/editNameFragment"
-        android:name="jp.aoyama.mki.thermometer.fragment.EditNameFragment"
+        android:name="jp.aoyama.mki.thermometer.fragment.user.create.EditNameFragment"
         android:label="edit_name_fragment"
-        tools:layout="@layout/edit_name_fragment" />
+        tools:layout="@layout/edit_name_fragment">
+        <action
+            android:id="@+id/edit_name_to_pairing"
+            app:destination="@id/bluetoothPairingFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/bluetoothPairingFragment"
+        android:name="jp.aoyama.mki.thermometer.fragment.user.create.BluetoothPairingFragment"
+        android:label="BluetoothPairingFragment">
+        <action
+            android:id="@+id/pairing_to_confirm"
+            app:destination="@id/confirmUserInformationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/confirmUserInformationFragment"
+        android:name="jp.aoyama.mki.thermometer.fragment.user.create.ConfirmUserInformationFragment"
+        android:label="ConfirmUserInformationFragment" />
 </navigation>

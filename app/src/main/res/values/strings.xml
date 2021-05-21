@@ -13,4 +13,19 @@
     <string name="body_temperature_input_alert">体温計の通りに入力してください</string>
     <string name="saved_body_temperature">体温を保存しました</string>
     <string name="share_file_description">体温のデータを出力</string>
+    <string name="tell_your_name">あなたの名前を教えて下さい。</string>
+    <string name="name">名前</string>
+    <string name="name_error">名前を入力してください</string>
+    <string name="next">次へ</string>
+    <string name="back">戻る</string>
+    <string name="skip">今はしない</string>
+    <string name="select_your_bluetooth_device">Bluetooth端末を選択</string>
+    <string name="select_bluetooth_device_hint">Bluetooth端末を登録することで、あなたを自動的に識別することができます。</string>
+    <string name="user_saved">情報が登録されました</string>
+    <string name="bluetooth_device">Bluetoothデバイス</string>
+    <string name="save_user">この内容で保存する</string>
+    <string name="modify">修正する</string>
+    <string name="near_user">近くにいるユーザー</string>
+    <string name="out_user">外出中のユーザー</string>
+    <string name="unnamed_device">無名のデバイス</string>
 </resources>

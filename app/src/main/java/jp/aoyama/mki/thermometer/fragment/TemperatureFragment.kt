@@ -117,7 +117,7 @@ class TemperatureFragment : Fragment() {
                 .also {
                     // OCRの結果
                     it.setAnalyzer(cameraExecutor, ImageAnalyze { txtArr ->
-                        if(isPopped) return@ImageAnalyze
+                        if (isPopped) return@ImageAnalyze
 
                         var showTxt = ""
                         frameLayout.removeAllViews()
@@ -134,24 +134,28 @@ class TemperatureFragment : Fragment() {
                             if (num in 350..420) {
                                 mBinding.bottomSheetText.text = (num.toFloat() / 10F).toString()
                                 frequency.add(num.toFloat() / 10F)
-                            }else if(num == 31){
+                            } else if (num == 31) {
                                 mBinding.bottomSheetText.text = "37.1"
                                 frequency.add(37.1F)
-                            }else if(num == 36){
+                            } else if (num == 36) {
                                 mBinding.bottomSheetText.text = "36.1"
                                 frequency.add(36.1F)
                             }
                         }
 
-                        if(validate() != 0F){
+                        if (validate() != 0F) {
                             Log.d(TAG, "startCamera: ${validate()}")
                             lifecycleScope.launch {
-                                val valid = mViewModel.saveTemperature(context, mName, validate().toString())
+                                val valid = mViewModel.saveTemperature(
+                                    context,
+                                    mName,
+                                    validate().toString()
+                                )
                                 if (valid) {
                                     Toast.makeText(context, "保存しました。", Toast.LENGTH_LONG).show()
                                     navController.popBackStack()
                                     isPopped = true
-                                }else{
+                                } else {
                                     Toast.makeText(
                                         context,
                                         R.string.body_temperature_input_alert,
@@ -184,10 +188,10 @@ class TemperatureFragment : Fragment() {
         }, ContextCompat.getMainExecutor(requireContext()))
     }
 
-    private fun validate() :Float{
+    private fun validate(): Float {
         val frequencyMap = frequency.groupingBy { it }.eachCount()
         val max = frequencyMap.maxByOrNull { it.value }
-        if( max?.value!! > 5F ){
+        if (max?.value!! > 5F) {
             return max.key
         }
         return 0F
