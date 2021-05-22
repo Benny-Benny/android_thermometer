@@ -19,8 +19,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import jp.aoyama.mki.thermometer.R
 import jp.aoyama.mki.thermometer.databinding.TemperatureFragmentBinding
-import jp.aoyama.mki.thermometer.image.TextRecognizer
-import jp.aoyama.mki.thermometer.viewmodels.TemperatureViewModel
+import jp.aoyama.mki.thermometer.view.temperature.image.TextRecognizer
+import jp.aoyama.mki.thermometer.view.temperature.viewmodels.TemperatureViewModel
 import kotlinx.coroutines.launch
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
