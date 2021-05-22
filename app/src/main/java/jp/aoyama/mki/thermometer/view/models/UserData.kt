@@ -2,7 +2,7 @@ package jp.aoyama.mki.thermometer.view.models
 
 import java.util.*
 
-data class UserData private constructor(
+data class UserData constructor(
     private var _near: MutableList<UserEntity>,
     private var _outs: MutableList<UserEntity>
 ) {
@@ -18,18 +18,18 @@ data class UserData private constructor(
     }
 
     /**
-     * 最後に検出されたのが、一分以上前のユーザーを削除
+     * 最後に検出されたのが、5秒前のユーザーを削除
      * @return もし、変更がない場合 true を返す
      */
     fun checkExpired(): Boolean {
-        val leavedUsers = near.filter {
+        val leftUsers = near.filter {
             val lastFound = it.lastFoundAt ?: return@filter true
             lastFound.timeInMillis < Calendar.getInstance().timeInMillis - 5 * 1000
         }
-        _near.removeAll(leavedUsers)
-        _outs.addAll(leavedUsers)
+        _near.removeAll(leftUsers)
+        _outs.addAll(leftUsers)
 
-        return leavedUsers.isEmpty()
+        return leftUsers.isEmpty()
     }
 
     companion object {

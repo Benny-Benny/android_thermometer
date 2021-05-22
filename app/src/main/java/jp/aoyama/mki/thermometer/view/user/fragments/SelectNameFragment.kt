@@ -14,7 +14,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import jp.aoyama.mki.thermometer.databinding.SelectNameFragmentBinding
-import jp.aoyama.mki.thermometer.view.bluetooth.BluetoothScanController
+import jp.aoyama.mki.thermometer.view.bluetooth.scanner.BluetoothScanner
+import jp.aoyama.mki.thermometer.view.bluetooth.scanner.BluetoothScannerImpl
 import jp.aoyama.mki.thermometer.view.models.UserEntity
 import jp.aoyama.mki.thermometer.view.user.list.UserListAdapter
 import jp.aoyama.mki.thermometer.view.user.list.UserViewHolder
@@ -51,16 +52,13 @@ class SelectNameFragment : Fragment(), UserViewHolder.CallbackListener {
             }
         }
 
-        mViewModel.getUsers(requireContext()).observe(viewLifecycleOwner) { data ->
+        mViewModel.observeUsers(requireContext()).observe(viewLifecycleOwner) { data ->
             mAdapterNearUser.submitList(data.near)
             mAdapterOutUser.submitList(data.outs)
         }
 
-        // 付近のBluetooth端末を取得
-        mBluetoothScanController.devicesLiveData.observe(viewLifecycleOwner) { devices ->
-            devices.forEach {
-                mViewModel.onReceiveBluetoothResult(it.device, it.rssi)
-            }
+        mBluetoothScanner.devicesLiveData.observe(viewLifecycleOwner) { devices ->
+            mViewModel.onReceiveBluetoothResult(devices)
         }
 
         // Bluetooth端末の検索に必要なパーミッションの取得
