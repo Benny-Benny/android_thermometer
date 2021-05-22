@@ -16,7 +16,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "jp.aoyama.a5819009a5819044a5819104.thermometer"
+        applicationId "jp.aoyama.mki.thermometer"
         minSdkVersion 23
         targetSdkVersion 30
         versionCode 1
