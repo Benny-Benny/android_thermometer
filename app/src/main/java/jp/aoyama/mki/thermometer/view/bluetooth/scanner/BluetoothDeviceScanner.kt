@@ -3,9 +3,9 @@ package jp.aoyama.mki.thermometer.view.bluetooth.scanner
 import androidx.lifecycle.LiveData
 
 /**
- * 付近のBluetooth端末を検索し、[BluetoothScanner.devicesLiveData]により配信する。
+ * 付近のBluetooth端末を検索し、[BluetoothDeviceScanner.devicesLiveData]により配信する。
  */
-interface BluetoothScanner {
+interface BluetoothDeviceScanner {
     val devicesLiveData: LiveData<List<BluetoothDeviceData>>
 
     /**

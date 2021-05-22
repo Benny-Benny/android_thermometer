@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.distinctUntilChanged
@@ -13,12 +14,13 @@ import kotlinx.coroutines.*
 import java.util.*
 
 /**
- * Bluetooth Classic、BLEのどちらでも探索可能で、ペアリングの有無を問わない。
+ * Bluetooth Classic、BLEのどちらでも探索可能。
+ * ペアリングしていると検知されやすい。
  */
-class BluetoothScannerImpl(
+class BluetoothDiscoveryDeviceScanner(
     private val context: Context,
     private val timeoutInMillis: Int? = null,
-) : BluetoothScanner {
+) : BluetoothDeviceScanner {
     private val scannerScope = CoroutineScope(Dispatchers.IO)
 
     private var devices: MutableMap<String, BluetoothDeviceData> = mutableMapOf()
@@ -45,6 +47,8 @@ class BluetoothScannerImpl(
                     )
 
                     scannerScope.launch { publishDevices() }
+
+                    Log.d(TAG, "onReadRemoteRssi: ${device.name} ${device.address} RSSI=$rssi")
                 }
             }
         }
@@ -96,6 +100,8 @@ class BluetoothScannerImpl(
     }
 
     companion object {
+        private const val TAG = "BluetoothDiscoveryScann"
+
         // Bluetooth端末の検索インターバル
         // startDiscoveryによる探索期間が12秒であるため
         private const val SCAN_INTERVAL_IN_MILLI_SEC = 12 * 1000

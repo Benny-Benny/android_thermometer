@@ -16,14 +16,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import jp.aoyama.mki.thermometer.databinding.BluetoothPairingFragmentBinding
 import jp.aoyama.mki.thermometer.view.bluetooth.list.BluetoothListAdapter
 import jp.aoyama.mki.thermometer.view.bluetooth.list.BluetoothViewHolder
-import jp.aoyama.mki.thermometer.view.bluetooth.scanner.BluetoothScanner
-import jp.aoyama.mki.thermometer.view.bluetooth.scanner.BluetoothScannerImpl
+import jp.aoyama.mki.thermometer.view.bluetooth.scanner.BluetoothDeviceScanner
+import jp.aoyama.mki.thermometer.view.bluetooth.scanner.BluetoothDiscoveryDeviceScanner
 import jp.aoyama.mki.thermometer.view.user.viewmodels.CreateUserSharedViewModel
 
 class BluetoothPairingFragment : Fragment(), BluetoothViewHolder.CallbackListener {
 
     private lateinit var mBinding: BluetoothPairingFragmentBinding
-    private lateinit var mBluetoothScanController: BluetoothScanner
+    private lateinit var mBluetoothDeviceScanner: BluetoothDeviceScanner
     private val mAdapter: BluetoothListAdapter = BluetoothListAdapter(this)
     private val mViewModel: CreateUserSharedViewModel by viewModels({ requireActivity() })
 
@@ -37,7 +37,7 @@ class BluetoothPairingFragment : Fragment(), BluetoothViewHolder.CallbackListene
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        mBluetoothScanController = BluetoothScannerImpl(requireContext())
+        mBluetoothDeviceScanner = BluetoothDiscoveryDeviceScanner(requireContext())
         mBinding = BluetoothPairingFragmentBinding.inflate(inflater, container, false)
 
         mBinding.apply {
@@ -52,7 +52,7 @@ class BluetoothPairingFragment : Fragment(), BluetoothViewHolder.CallbackListene
             listBluetoothDevices.layoutManager = LinearLayoutManager(requireContext())
         }
 
-        mBluetoothScanController.devicesLiveData.observe(viewLifecycleOwner) { devices ->
+        mBluetoothDeviceScanner.devicesLiveData.observe(viewLifecycleOwner) { devices ->
             mBinding.progressCircular.visibility =
                 if (devices.isEmpty()) View.VISIBLE
                 else View.GONE
@@ -72,11 +72,11 @@ class BluetoothPairingFragment : Fragment(), BluetoothViewHolder.CallbackListene
 
     override fun onDestroy() {
         super.onDestroy()
-        mBluetoothScanController.cancelDiscovery()
+        mBluetoothDeviceScanner.cancelDiscovery()
     }
 
     private fun findBluetoothDevices() {
-        mBluetoothScanController.startDiscovery()
+        mBluetoothDeviceScanner.startDiscovery()
     }
 
     // =====================================
