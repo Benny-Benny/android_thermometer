@@ -10,7 +10,7 @@ import jp.aoyama.mki.thermometer.infrastructure.temperature.TemperatureCSVReposi
 
 
 class MainActivity : AppCompatActivity() {
-    private val mCsvFileManager = TemperatureCSVRepository()
+    private val mTemperatureRepository by lazy { TemperatureCSVRepository(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun shareFile() {
-        val file = mCsvFileManager.getFileUrl(this)
+        val file = mTemperatureRepository.getFileUrl(this)
         val shareIntent = Intent().apply {
             action = Intent.ACTION_SEND
             putExtra(Intent.EXTRA_STREAM, file)

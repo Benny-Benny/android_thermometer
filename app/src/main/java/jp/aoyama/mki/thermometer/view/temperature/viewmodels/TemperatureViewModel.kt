@@ -3,12 +3,10 @@ package jp.aoyama.mki.thermometer.view.temperature.viewmodels
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import jp.aoyama.mki.thermometer.domain.models.TemperatureData
+import jp.aoyama.mki.thermometer.domain.repository.TemperatureRepository
 import jp.aoyama.mki.thermometer.infrastructure.temperature.TemperatureCSVRepository
 
 class TemperatureViewModel : ViewModel() {
-
-    private val mCsvFileManager = TemperatureCSVRepository()
-
     /**
      * 入力された体温をCSV形式で保存
      * @param name 体温を記録する人の名前
@@ -20,7 +18,9 @@ class TemperatureViewModel : ViewModel() {
         if (inputValue > 45f || inputValue < 35f) return false
 
         // 内部のＣＳＶファイルにデータを追加
-        mCsvFileManager.append(context, TemperatureData(name = name, temperature = inputValue))
+        val data = TemperatureData(name = name, temperature = inputValue)
+        val repository: TemperatureRepository = TemperatureCSVRepository(context)
+        repository.add(data)
 
         return true
     }
