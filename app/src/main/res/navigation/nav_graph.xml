@@ -19,7 +19,7 @@
     </fragment>
     <fragment
         android:id="@+id/temperatureFragment"
-        android:name="jp.aoyama.mki.thermometer.fragment.TemperatureFragment"
+        android:name="jp.aoyama.mki.thermometer.view.temperature.fragments.TemperatureFragment"
         android:label="temperature_fragment"
         tools:layout="@layout/temperature_fragment" >
 
