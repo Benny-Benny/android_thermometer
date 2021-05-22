@@ -36,7 +36,7 @@ class EditNameFragment : Fragment() {
                     getSystemService(requireContext(), InputMethodManager::class.java)
                         ?: return@setOnEditorActionListener false
 
-                if (event.keyCode == KeyEvent.KEYCODE_ENTER) {
+                if (event?.keyCode == KeyEvent.KEYCODE_ENTER) {
                     inputManager.hideSoftInputFromWindow(v.windowToken, 0)
                     return@setOnEditorActionListener true
                 }
