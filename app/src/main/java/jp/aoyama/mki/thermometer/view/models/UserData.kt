@@ -3,48 +3,25 @@ package jp.aoyama.mki.thermometer.view.models
 import java.util.*
 
 data class UserData constructor(
-    private var _near: MutableList<UserEntity>,
-    private var _outs: MutableList<UserEntity>
+    val users: List<UserEntity>
 ) {
-    val near: List<UserEntity> get() = _near.sortedBy { it.name }
-    val outs: List<UserEntity> get() = _outs.sortedBy { it.name }
-    val users: List<UserEntity> get() = near + outs
+    val near: List<UserEntity> get() = users.filter { !it.isExpired() }
+    val outs: List<UserEntity> get() = users.filter { it.isExpired() }
 
-    fun addNearUser(user: UserEntity) {
-        _near.removeAll { it.id == user.id }
-        _outs.removeAll { it.id == user.id }
-        _near.add(user)
-        checkExpired()
+    fun addNearUser(user: UserEntity): UserData {
+        val users = this.users.toMutableList()
+        users.removeAll { it.id == user.id }
+        users.add(user)
+        return copy(users = users)
     }
 
-    /**
-     * 最後に検出されたのが、5秒前のユーザーを削除
-     * @return もし、変更がない場合 true を返す
-     */
-    fun checkExpired(): Boolean {
-        val leftUsers = near.filter {
-            val lastFound = it.lastFoundAt ?: return@filter true
-            lastFound.timeInMillis < Calendar.getInstance().timeInMillis - 5 * 1000
-        }
-        _near.removeAll(leftUsers)
-        _outs.addAll(leftUsers)
-
-        return leftUsers.isEmpty()
+    private fun UserEntity.isExpired(): Boolean {
+        val lastFound = this.lastFoundAt ?: return true
+        val now = Calendar.getInstance()
+        return lastFound.timeInMillis < now.timeInMillis - TIMEOUT_IN_MILLIS
     }
 
     companion object {
-        fun create(near: List<UserEntity>, outs: List<UserEntity>): UserData {
-            return UserData(
-                _near = near.toMutableList(),
-                _outs = outs.toMutableList()
-            )
-        }
-
-        fun create(users: List<UserEntity>): UserData {
-            return UserData(
-                _near = users.filter { it.rssi != null }.toMutableList(),
-                _outs = users.filter { it.rssi == null }.toMutableList()
-            )
-        }
+        private const val TIMEOUT_IN_MILLIS = 5 * 1000
     }
 }

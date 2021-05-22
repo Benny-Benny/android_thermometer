@@ -18,7 +18,7 @@ class UserViewModel : ViewModel() {
     private val _mUserData: MutableLiveData<UserData> = MutableLiveData()
 
     fun onReceiveBluetoothResult(devices: List<BluetoothDeviceData>) {
-        val data = _mUserData.value ?: return
+        var data = _mUserData.value ?: return
 
         devices.map { bluetoothData ->
             val device = bluetoothData.device
@@ -27,18 +27,17 @@ class UserViewModel : ViewModel() {
                 rssi = bluetoothData.rssi,
                 lastFoundAt = Calendar.getInstance()
             )
-            data.addNearUser(updated)
+            data = data.addNearUser(updated)
         }
 
-        data.checkExpired()
         _mUserData.value = data
     }
 
-    private suspend fun getUsers(context: Context): UserData {
+    suspend fun getUsers(context: Context): UserData {
         val userRepository = LocalFileUserRepository(context)
         val users = withContext(Dispatchers.IO) { userRepository.findAll() }
         val entities = users.map { UserEntity(it, null, null) }
-        val data = UserData.create(near = mutableListOf(), outs = entities)
+        val data = UserData(users = entities)
         _mUserData.value = data
         return data
     }
