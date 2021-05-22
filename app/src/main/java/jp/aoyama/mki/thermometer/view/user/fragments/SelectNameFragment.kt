@@ -25,9 +25,7 @@ class SelectNameFragment : Fragment(), UserViewHolder.CallbackListener {
     private lateinit var mBinding: SelectNameFragmentBinding
     private val mAdapterNearUser: UserListAdapter = UserListAdapter(this)
     private val mAdapterOutUser: UserListAdapter = UserListAdapter(this)
-    private val mBluetoothScanController: BluetoothScanController by lazy {
-        BluetoothScanController(requireContext(), timeoutInMillis = 30 * 1000)
-    }
+    private lateinit var mBluetoothScanner: BluetoothScanner
 
     private val mRequestPermission =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { result ->
@@ -38,6 +36,7 @@ class SelectNameFragment : Fragment(), UserViewHolder.CallbackListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        mBluetoothScanner = BluetoothScannerImpl(requireContext(), timeoutInMillis = 5 * 1000)
         mBinding = SelectNameFragmentBinding.inflate(inflater, container, false)
         mBinding.apply {
             listNearUser.layoutManager = LinearLayoutManager(requireContext())
@@ -77,11 +76,11 @@ class SelectNameFragment : Fragment(), UserViewHolder.CallbackListener {
 
     override fun onDestroy() {
         super.onDestroy()
-        mBluetoothScanController.cancelDiscovery()
+        mBluetoothScanner.cancelDiscovery()
     }
 
     private fun scanBluetoothDevices() {
-        mBluetoothScanController.startDiscovery()
+        mBluetoothScanner.startDiscovery()
     }
 
     // ============================

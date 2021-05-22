@@ -1,4 +1,4 @@
-package jp.aoyama.mki.thermometer.view.bluetooth
+package jp.aoyama.mki.thermometer.view.bluetooth.scanner
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
@@ -8,40 +8,23 @@ import android.content.Intent
 import android.content.IntentFilter
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.distinctUntilChanged
 import kotlinx.coroutines.*
 import java.util.*
 
 /**
- * 付近のBluetooth端末を検索し、[BluetoothScanController.devicesLiveData]により配信する。
  * Bluetooth Classic、BLEのどちらでも探索可能で、ペアリングの有無を問わない。
  */
-class BluetoothScanController(
+class BluetoothScannerImpl(
     private val context: Context,
     private val timeoutInMillis: Int? = null,
-) {
+) : BluetoothScanner {
     private val scannerScope = CoroutineScope(Dispatchers.IO)
 
+    private var devices: MutableMap<String, BluetoothDeviceData> = mutableMapOf()
     private val _devicesLiveData: MutableLiveData<List<BluetoothDeviceData>> =
         MutableLiveData(emptyList())
-    val devicesLiveData: LiveData<List<BluetoothDeviceData>> get() = _devicesLiveData
-
-    private var devices: Map<String, BluetoothDeviceData> = emptyMap()
-        set(value) {
-            // MACアドレス順に並び替え
-            val sortedByAddress = value.entries.sortedBy { it.key }.map { it.value }.toMutableList()
-
-            // タイムアウトしたデバイスを削除
-            if (timeoutInMillis != null) {
-                val now = Calendar.getInstance()
-                val timeout =
-                    if (timeoutInMillis > SCAN_INTERVAL_IN_MILLI_SEC) timeoutInMillis
-                    else SCAN_INTERVAL_IN_MILLI_SEC
-                sortedByAddress.removeAll { it.foundAt.timeInMillis < now.timeInMillis - timeout }
-            }
-
-            _devicesLiveData.value = sortedByAddress
-            field = value
-        }
+    override val devicesLiveData: LiveData<List<BluetoothDeviceData>> get() = _devicesLiveData.distinctUntilChanged()
 
     private val mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
     private val mBluetoothScanReceiver = object : BroadcastReceiver() {
@@ -55,20 +38,19 @@ class BluetoothScanController(
                     val rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, Short.MIN_VALUE)
                     if (rssi == Short.MIN_VALUE) return
 
-                    val devices = devices.toMutableMap()
-                    devices[device.address] =
-                        BluetoothDeviceData(device, rssi.toInt(), Calendar.getInstance())
-                    this@BluetoothScanController.devices = devices
+                    devices[device.address] = BluetoothDeviceData(
+                        device = device,
+                        rssi = rssi.toInt(),
+                        foundAt = Calendar.getInstance()
+                    )
+
+                    scannerScope.launch { publishDevices() }
                 }
             }
         }
     }
 
-    /**
-     * Bluetooth端末の検索を開始
-     * 検索された端末は、[devicesLiveData]に通知されます。
-     */
-    fun startDiscovery() {
+    override fun startDiscovery() {
         // Bluetooth端末の検索のスキャン結果を受け取る
         context.registerReceiver(
             mBluetoothScanReceiver,
@@ -81,28 +63,41 @@ class BluetoothScanController(
                 if (mBluetoothAdapter.isDiscovering) mBluetoothAdapter.cancelDiscovery()
                 mBluetoothAdapter.startDiscovery()
                 delay(SCAN_INTERVAL_IN_MILLI_SEC.toLong())
+                publishDevices()
             }
         }
     }
 
-    /**
-     * Bluetooth端末の検索を終了します
-     */
-    fun cancelDiscovery() {
+    override fun cancelDiscovery() {
         if (mBluetoothAdapter.isDiscovering) mBluetoothAdapter.cancelDiscovery()
         context.unregisterReceiver(mBluetoothScanReceiver)
         scannerScope.cancel()
     }
 
-    data class BluetoothDeviceData(
-        val device: BluetoothDevice,
-        val rssi: Int,
-        val foundAt: Calendar,
-    )
+    /**
+     * 検索された端末を[devicesLiveData]に配信
+     */
+    private suspend fun publishDevices() {
+        // MACアドレス順に並び替え
+        val sortedByAddress = devices.values.sortedBy { it.device.address }.toMutableList()
+
+        // タイムアウトしたデバイスを削除
+        if (timeoutInMillis != null) {
+            val now = Calendar.getInstance()
+            val timeout =
+                if (timeoutInMillis > SCAN_INTERVAL_IN_MILLI_SEC) timeoutInMillis
+                else SCAN_INTERVAL_IN_MILLI_SEC
+            sortedByAddress.removeAll { it.foundAt.timeInMillis < now.timeInMillis - timeout }
+        }
+
+        withContext(Dispatchers.Main) {
+            _devicesLiveData.value = sortedByAddress
+        }
+    }
 
     companion object {
         // Bluetooth端末の検索インターバル
         // startDiscoveryによる探索期間が12秒であるため
-        private const val SCAN_INTERVAL_IN_MILLI_SEC = 12000
+        private const val SCAN_INTERVAL_IN_MILLI_SEC = 12 * 1000
     }
 }

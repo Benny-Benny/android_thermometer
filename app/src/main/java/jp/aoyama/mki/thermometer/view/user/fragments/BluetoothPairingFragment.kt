@@ -14,19 +14,18 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import jp.aoyama.mki.thermometer.databinding.BluetoothPairingFragmentBinding
-import jp.aoyama.mki.thermometer.view.bluetooth.BluetoothScanController
 import jp.aoyama.mki.thermometer.view.bluetooth.list.BluetoothListAdapter
 import jp.aoyama.mki.thermometer.view.bluetooth.list.BluetoothViewHolder
+import jp.aoyama.mki.thermometer.view.bluetooth.scanner.BluetoothScanner
+import jp.aoyama.mki.thermometer.view.bluetooth.scanner.BluetoothScannerImpl
 import jp.aoyama.mki.thermometer.view.user.viewmodels.CreateUserSharedViewModel
 
 class BluetoothPairingFragment : Fragment(), BluetoothViewHolder.CallbackListener {
 
     private lateinit var mBinding: BluetoothPairingFragmentBinding
+    private lateinit var mBluetoothScanController: BluetoothScanner
     private val mAdapter: BluetoothListAdapter = BluetoothListAdapter(this)
     private val mViewModel: CreateUserSharedViewModel by viewModels({ requireActivity() })
-    private val mBluetoothScanController: BluetoothScanController by lazy {
-        BluetoothScanController(requireContext())
-    }
 
     private val mRequestPermission =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { result ->
@@ -38,6 +37,7 @@ class BluetoothPairingFragment : Fragment(), BluetoothViewHolder.CallbackListene
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        mBluetoothScanController = BluetoothScannerImpl(requireContext())
         mBinding = BluetoothPairingFragmentBinding.inflate(inflater, container, false)
 
         mBinding.apply {
