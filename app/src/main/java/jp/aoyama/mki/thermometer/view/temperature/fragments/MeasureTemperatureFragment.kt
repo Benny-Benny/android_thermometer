@@ -8,9 +8,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -37,6 +37,11 @@ class MeasureTemperatureFragment : Fragment(), TextRecognizer.CallbackListener {
     private var isPopped = false // trueの場合、スキャン結果を無視する
     private var frequency = mutableListOf(0f)
 
+    private val mRequestPermission =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { result ->
+            if (result) startCamera()
+        }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -45,14 +50,12 @@ class MeasureTemperatureFragment : Fragment(), TextRecognizer.CallbackListener {
         cameraExecutor = Executors.newSingleThreadExecutor()
 
         // Request camera permissions
-        if (allPermissionsGranted()) startCamera()
-        else {
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                REQUIRED_PERMISSIONS,
-                REQUEST_CODE_PERMISSIONS
-            )
-        }
+        val cameraPermission = ContextCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.CAMERA
+        ) == PackageManager.PERMISSION_GRANTED
+        if (cameraPermission) startCamera()
+        else mRequestPermission.launch(Manifest.permission.CAMERA)
 
         return mBinding.root
     }
@@ -60,17 +63,6 @@ class MeasureTemperatureFragment : Fragment(), TextRecognizer.CallbackListener {
     override fun onDestroy() {
         super.onDestroy()
         isPopped = true
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<String>, grantResults:
-        IntArray
-    ) {
-        when (requestCode) {
-            REQUEST_CODE_PERMISSIONS -> {
-                if (allPermissionsGranted()) startCamera()
-            }
-        }
     }
 
     private fun startCamera() {
@@ -150,13 +142,6 @@ class MeasureTemperatureFragment : Fragment(), TextRecognizer.CallbackListener {
         return max.key
     }
 
-    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all { permission ->
-        ContextCompat.checkSelfPermission(
-            requireContext(),
-            permission
-        ) == PackageManager.PERMISSION_GRANTED
-    }
-
     override fun onScan(texts: List<String>) {
         if (isPopped) return
 
@@ -185,6 +170,5 @@ class MeasureTemperatureFragment : Fragment(), TextRecognizer.CallbackListener {
     companion object {
         private const val TAG = "MeasureTemperatureFragm"
         private const val REQUEST_CODE_PERMISSIONS = 10
-        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
     }
 }
