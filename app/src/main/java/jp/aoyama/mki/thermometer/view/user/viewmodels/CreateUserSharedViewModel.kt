@@ -39,7 +39,7 @@ class CreateUserSharedViewModel : ViewModel() {
         val repository = LocalFileUserRepository(context)
         if (name != null) {
             val bluetooth = BluetoothData.create(bluetoothDeviceName, bluetoothMacAddress)
-            val user = User(name = name!!, bluetoothData = bluetooth)
+            val user = User(name = name!!, bluetoothDevices = listOfNotNull(bluetooth))
             repository.save(user)
             state = CreateUserState()
         }

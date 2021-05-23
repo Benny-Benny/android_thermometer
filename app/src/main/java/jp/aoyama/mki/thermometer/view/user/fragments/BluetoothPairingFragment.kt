@@ -1,7 +1,6 @@
 package jp.aoyama.mki.thermometer.view.user.fragments
 
 import android.Manifest
-import android.bluetooth.BluetoothDevice
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,6 +13,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import jp.aoyama.mki.thermometer.databinding.BluetoothPairingFragmentBinding
+import jp.aoyama.mki.thermometer.domain.models.BluetoothData
 import jp.aoyama.mki.thermometer.view.bluetooth.list.BluetoothListAdapter
 import jp.aoyama.mki.thermometer.view.bluetooth.list.BluetoothViewHolder
 import jp.aoyama.mki.thermometer.view.bluetooth.scanner.BluetoothDeviceScanner
@@ -57,7 +57,12 @@ class BluetoothPairingFragment : Fragment(), BluetoothViewHolder.CallbackListene
                 if (devices.isEmpty()) View.VISIBLE
                 else View.GONE
 
-            mAdapter.submitList(devices.map { it.device })
+            mAdapter.submitList(devices.map {
+                BluetoothData(
+                    name = it.device.name,
+                    address = it.device.address
+                )
+            })
         }
 
         val accessFineLocation = ContextCompat.checkSelfPermission(
@@ -82,7 +87,7 @@ class BluetoothPairingFragment : Fragment(), BluetoothViewHolder.CallbackListene
     // =====================================
     // BluetoothViewHolder.CallbackListener
     // =====================================
-    override fun onClick(device: BluetoothDevice) {
+    override fun onClick(device: BluetoothData) {
         mViewModel.bluetoothDeviceName = device.name
         mViewModel.bluetoothMacAddress = device.address
         findNavController().navigate(BluetoothPairingFragmentDirections.pairingToConfirm())

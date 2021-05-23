@@ -9,19 +9,22 @@
         android:id="@+id/selectNameFragment"
         android:name="jp.aoyama.mki.thermometer.view.user.fragments.SelectNameFragment"
         android:label="select_name_fragment"
-        tools:layout="@layout/select_name_fragment" >
+        tools:layout="@layout/select_name_fragment">
         <action
-            android:id="@+id/select_to_edit"
+            android:id="@+id/select_to_create"
             app:destination="@id/editNameFragment" />
         <action
             android:id="@+id/select_to_temperature"
             app:destination="@id/temperatureFragment" />
+        <action
+            android:id="@+id/select_to_edit"
+            app:destination="@id/editUserFragment" />
     </fragment>
     <fragment
         android:id="@+id/temperatureFragment"
         android:name="jp.aoyama.mki.thermometer.view.temperature.fragments.TemperatureFragment"
         android:label="temperature_fragment"
-        tools:layout="@layout/temperature_fragment" >
+        tools:layout="@layout/temperature_fragment">
 
         <argument
             android:name="Name"
@@ -49,4 +52,23 @@
         android:id="@+id/confirmUserInformationFragment"
         android:name="jp.aoyama.mki.thermometer.view.user.fragments.ConfirmUserInformationFragment"
         android:label="ConfirmUserInformationFragment" />
+    <fragment
+        android:id="@+id/editUserFragment"
+        android:name="jp.aoyama.mki.thermometer.view.user.fragments.EditUserFragment"
+        android:label="EditUserFragment">
+        <argument
+            android:name="userId"
+            app:argType="string" />
+        <action
+            android:id="@+id/edit_user_to_add_bluetooth"
+            app:destination="@id/addBluetoothDeviceFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addBluetoothDeviceFragment"
+        android:name="jp.aoyama.mki.thermometer.view.user.fragments.AddBluetoothDeviceFragment"
+        android:label="AddBluetoothDeviceFragment">
+        <argument
+            android:name="userId"
+            app:argType="string" />
+    </fragment>
 </navigation>

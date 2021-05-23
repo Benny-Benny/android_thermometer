@@ -14,11 +14,16 @@ class UserViewHolder(
 
     interface CallbackListener {
         fun onClick(data: UserEntity)
+
+        fun onEdit(data: UserEntity)
     }
 
     fun bind(data: UserEntity) {
-        mBinding.root.setOnClickListener { mCallbackListener.onClick(data) }
-        mBinding.textName.text = data.name
+        mBinding.apply {
+            root.setOnClickListener { mCallbackListener.onClick(data) }
+            buttonEdit.setOnClickListener { mCallbackListener.onEdit(data) }
+            textName.text = data.name
+        }
     }
 
     companion object {
