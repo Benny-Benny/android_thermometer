@@ -49,7 +49,7 @@ class SelectNameFragment : Fragment(), UserViewHolder.CallbackListener {
             listOutUser.adapter = mAdapterOutUser
 
             floatingActionButton.setOnClickListener {
-                findNavController().navigate(SelectNameFragmentDirections.selectToEdit())
+                findNavController().navigate(SelectNameFragmentDirections.selectToCreate())
             }
         }
 
@@ -60,7 +60,9 @@ class SelectNameFragment : Fragment(), UserViewHolder.CallbackListener {
 
         lifecycleScope.launch {
             val users = mViewModel.getUsers(requireContext())
-            val addresses = users.users.mapNotNull { it.bluetoothData?.address }
+            val addresses = users.users.flatMap { user ->
+                user.bluetoothDevices.map { it.address }
+            }
             mBluetoothDeviceScanner = BluetoothDeviceScannerImpl(
                 requireContext(),
                 addresses,
@@ -97,6 +99,12 @@ class SelectNameFragment : Fragment(), UserViewHolder.CallbackListener {
     override fun onClick(data: UserEntity) {
         findNavController().navigate(
             SelectNameFragmentDirections.selectToTemperature(data.name)
+        )
+    }
+
+    override fun onEdit(data: UserEntity) {
+        findNavController().navigate(
+            SelectNameFragmentDirections.selectToEdit(data.id)
         )
     }
 }

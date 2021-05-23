@@ -5,6 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import jp.aoyama.mki.thermometer.domain.models.BluetoothData
+import jp.aoyama.mki.thermometer.domain.models.User
+import jp.aoyama.mki.thermometer.domain.repository.UserRepository
 import jp.aoyama.mki.thermometer.infrastructure.user.LocalFileUserRepository
 import jp.aoyama.mki.thermometer.view.bluetooth.scanner.BluetoothDeviceData
 import jp.aoyama.mki.thermometer.view.models.UserData
@@ -22,7 +25,10 @@ class UserViewModel : ViewModel() {
 
         devices.map { bluetoothData ->
             val device = bluetoothData.device
-            val user = data.users.find { it.bluetoothData?.address == device.address } ?: return@map
+            val user = data.users.find { user ->
+                user.bluetoothDevices.any { it.address == device.address }
+            } ?: return@map
+
             val updated = user.copy(
                 rssi = bluetoothData.rssi,
                 lastFoundAt = Calendar.getInstance()
@@ -40,6 +46,34 @@ class UserViewModel : ViewModel() {
         val data = UserData(users = entities)
         _mUserData.value = data
         return data
+    }
+
+    suspend fun getUser(context: Context, userId: String): User? {
+        val userRepository: UserRepository = LocalFileUserRepository(context)
+        return withContext(Dispatchers.IO) {
+            userRepository.find(userId)
+        }
+    }
+
+    suspend fun updateName(context: Context, userId: String, name: String) {
+        val userRepository: UserRepository = LocalFileUserRepository(context)
+        withContext(Dispatchers.IO) {
+            userRepository.updateName(userId, name)
+        }
+    }
+
+    suspend fun addBluetoothDevice(context: Context, userId: String, device: BluetoothData) {
+        val userRepository: UserRepository = LocalFileUserRepository(context)
+        withContext(Dispatchers.IO) {
+            userRepository.addBluetoothDevice(userId, device)
+        }
+    }
+
+    suspend fun removeBluetoothDevice(context: Context, userId: String, address: String) {
+        val userRepository: UserRepository = LocalFileUserRepository(context)
+        withContext(Dispatchers.IO) {
+            userRepository.deleteBluetoothDevice(userId, address)
+        }
     }
 
     fun observeUsers(context: Context): LiveData<UserData> {
