@@ -44,7 +44,7 @@ class ConfirmUserInformationFragment : Fragment() {
                     withContext(Dispatchers.IO) {
                         mViewModel.createUser(requireContext())
                     }
-                    findNavController().popBackStack(R.id.selectNameFragment, false)
+                    findNavController().popBackStack(R.id.homeFragment, false)
                 }
             }
             buttonBack.setOnClickListener { findNavController().popBackStack() }
