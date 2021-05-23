@@ -18,20 +18,20 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import jp.aoyama.mki.thermometer.R
-import jp.aoyama.mki.thermometer.databinding.TemperatureFragmentBinding
+import jp.aoyama.mki.thermometer.databinding.FragmentMeasureBodyTemperatureBinding
 import jp.aoyama.mki.thermometer.view.temperature.image.TextRecognizer
 import jp.aoyama.mki.thermometer.view.temperature.viewmodels.TemperatureViewModel
 import kotlinx.coroutines.launch
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-class MeasureTemperatureFragment : Fragment(), TextRecognizer.CallbackListener {
+class MeasureBodyTemperatureFragment : Fragment(), TextRecognizer.CallbackListener {
 
-    private lateinit var mBinding: TemperatureFragmentBinding
+    private lateinit var mBinding: FragmentMeasureBodyTemperatureBinding
     private lateinit var cameraExecutor: ExecutorService
 
     private val mViewModel: TemperatureViewModel by viewModels()
-    private val mArgs by navArgs<MeasureTemperatureFragmentArgs>()
+    private val mArgs by navArgs<MeasureBodyTemperatureFragmentArgs>()
     private val mName: String get() = mArgs.name // 体温を計測する人の名前
 
     private var isPopped = false // trueの場合、スキャン結果を無視する
@@ -46,7 +46,7 @@ class MeasureTemperatureFragment : Fragment(), TextRecognizer.CallbackListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        mBinding = TemperatureFragmentBinding.inflate(inflater, container, false)
+        mBinding = FragmentMeasureBodyTemperatureBinding.inflate(inflater, container, false)
         cameraExecutor = Executors.newSingleThreadExecutor()
 
         // Request camera permissions
@@ -88,7 +88,7 @@ class MeasureTemperatureFragment : Fragment(), TextRecognizer.CallbackListener {
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build()
                 .apply {
-                    val analyzer = TextRecognizer(this@MeasureTemperatureFragment)
+                    val analyzer = TextRecognizer(this@MeasureBodyTemperatureFragment)
                     setAnalyzer(cameraExecutor, analyzer)
                 }
 

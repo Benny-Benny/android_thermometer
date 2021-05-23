@@ -9,12 +9,12 @@
         android:id="@+id/selectNameFragment"
         android:name="jp.aoyama.mki.thermometer.view.user.fragments.SelectNameFragment"
         android:label="ユーザを選択"
-        tools:layout="@layout/select_name_fragment" />
+        tools:layout="@layout/fragment_select_name" />
     <fragment
         android:id="@+id/temperatureFragment"
-        android:name="jp.aoyama.mki.thermometer.view.temperature.fragments.MeasureTemperatureFragment"
+        android:name="jp.aoyama.mki.thermometer.view.temperature.fragments.MeasureBodyTemperatureFragment"
         android:label="体温を記録"
-        tools:layout="@layout/temperature_fragment">
+        tools:layout="@layout/fragment_measure_body_temperature">
 
         <argument
             android:name="Name"
@@ -25,7 +25,7 @@
         android:id="@+id/editNameFragment"
         android:name="jp.aoyama.mki.thermometer.view.user.fragments.EditNameFragment"
         android:label="新しいユーザーを追加"
-        tools:layout="@layout/edit_name_fragment">
+        tools:layout="@layout/fragment_edit_name">
         <action
             android:id="@+id/edit_name_to_pairing"
             app:destination="@id/bluetoothPairingFragment" />

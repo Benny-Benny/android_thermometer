@@ -9,7 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import jp.aoyama.mki.thermometer.R
-import jp.aoyama.mki.thermometer.databinding.ConfirmUserInformationFragmentBinding
+import jp.aoyama.mki.thermometer.databinding.FragmentConfirmUserInformationBinding
 import jp.aoyama.mki.thermometer.view.user.viewmodels.CreateUserSharedViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -18,7 +18,7 @@ import kotlinx.coroutines.withContext
 class ConfirmUserInformationFragment : Fragment() {
 
     private val mViewModel: CreateUserSharedViewModel by viewModels({ requireActivity() })
-    private lateinit var mBinding: ConfirmUserInformationFragmentBinding
+    private lateinit var mBinding: FragmentConfirmUserInformationBinding
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     }
@@ -28,7 +28,7 @@ class ConfirmUserInformationFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        mBinding = ConfirmUserInformationFragmentBinding.inflate(inflater, container, false)
+        mBinding = FragmentConfirmUserInformationBinding.inflate(inflater, container, false)
 
         mBinding.apply {
             textName.text = mViewModel.name

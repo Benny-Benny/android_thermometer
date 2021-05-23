@@ -14,7 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
-import jp.aoyama.mki.thermometer.databinding.SelectNameFragmentBinding
+import jp.aoyama.mki.thermometer.databinding.FragmentSelectNameBinding
 import jp.aoyama.mki.thermometer.view.bluetooth.scanner.BluetoothDeviceScanner
 import jp.aoyama.mki.thermometer.view.bluetooth.scanner.BluetoothDeviceScannerImpl
 import jp.aoyama.mki.thermometer.view.home.HomeFragmentDirections
@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 
 class SelectNameFragment : Fragment(), UserViewHolder.CallbackListener {
     private val mViewModel: UserViewModel by viewModels()
-    private lateinit var mBinding: SelectNameFragmentBinding
+    private lateinit var mBinding: FragmentSelectNameBinding
     private val mAdapterNearUser: UserListAdapter = UserListAdapter(this)
     private val mAdapterOutUser: UserListAdapter = UserListAdapter(this)
     private lateinit var mBluetoothDeviceScanner: BluetoothDeviceScanner
@@ -40,7 +40,7 @@ class SelectNameFragment : Fragment(), UserViewHolder.CallbackListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        mBinding = SelectNameFragmentBinding.inflate(inflater, container, false)
+        mBinding = FragmentSelectNameBinding.inflate(inflater, container, false)
         mBinding.apply {
             listNearUser.layoutManager = LinearLayoutManager(requireContext())
             listNearUser.adapter = mAdapterNearUser
