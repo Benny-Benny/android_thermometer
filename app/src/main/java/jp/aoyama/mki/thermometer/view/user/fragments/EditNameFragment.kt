@@ -11,19 +11,19 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import jp.aoyama.mki.thermometer.R
-import jp.aoyama.mki.thermometer.databinding.EditNameFragmentBinding
+import jp.aoyama.mki.thermometer.databinding.FragmentEditNameBinding
 import jp.aoyama.mki.thermometer.view.user.viewmodels.CreateUserSharedViewModel
 
 class EditNameFragment : Fragment() {
 
     private val mViewModel: CreateUserSharedViewModel by viewModels({ requireActivity() })
-    private lateinit var mBinding: EditNameFragmentBinding
+    private lateinit var mBinding: FragmentEditNameBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        mBinding = EditNameFragmentBinding.inflate(inflater, container, false)
+        mBinding = FragmentEditNameBinding.inflate(inflater, container, false)
 
         mBinding.apply {
             buttonNext.setOnClickListener { saveName() }

@@ -15,3 +15,12 @@
 
 ## 設計
 ![設計](./docs/architecture.png)
+
+## CSVからユーザーを追加
+以下の形式に従う`CSV`ファイルからユーザーを追加できます。
+```csv
+ユーザー名, BluetoothのMACアドレス, 学位
+```
+```csv
+学位=B4|M1|M2|Prof|Grad
+```
