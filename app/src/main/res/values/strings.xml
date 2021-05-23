@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Thermometer</string>
+    <string name="app_name">体温管理アプリ</string>
     <!--  アクション  -->
     <string name="ok">OK</string>
     <string name="cancel">キャンセル</string>
@@ -21,7 +21,9 @@
     <!--  警告  -->
     <string name="delete_confirm">選択した項目を削除してもよろしいですか？</string>
     <string name="delete_msg">選択した項目を削除しました</string>
-
+    <!--  フォーマット  -->
+    <string name="format_ymdhm">%1$d/%2$02d/%3$02d %4$02d:%5$02d</string>
+    <string name="format_body_temperature">%1$.1f</string>
     <!--  ユーザー  -->
     <string name="edit_title">名簿編集</string>
     <string name="tell_your_name">あなたの名前を教えて下さい。</string>
@@ -38,6 +40,7 @@
     <string name="saved_body_temperature">体温を保存しました</string>
     <string name="share_file_description">体温のデータを出力</string>
     <string name="body_temperature_input_alert">体温計の通りに入力してください</string>
+    <string name="export_csv">CSVファイルでエキスポート</string>
 
     <!--  Bluetooth  -->
     <string name="select_your_bluetooth_device">Bluetooth端末を選択</string>

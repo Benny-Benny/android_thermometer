@@ -7,6 +7,14 @@ import jp.aoyama.mki.thermometer.domain.repository.TemperatureRepository
 import jp.aoyama.mki.thermometer.infrastructure.temperature.TemperatureCSVRepository
 
 class TemperatureViewModel : ViewModel() {
+
+    suspend fun getTemperatureData(context: Context): List<TemperatureData> {
+        val repository: TemperatureRepository = LocalFileTemperatureRepository(context)
+        return withContext(Dispatchers.IO) {
+            repository.findAll().sortedBy { it.createdAt.timeInMillis }.reversed()
+        }
+    }
+
     /**
      * 入力された体温をCSV形式で保存
      * @param name 体温を記録する人の名前
