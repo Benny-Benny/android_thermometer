@@ -31,6 +31,7 @@
     <string name="out_user">外出中のユーザー</string>
     <string name="update_name">名前を更新</string>
     <string name="name_error">名前を入力してください</string>
+    <string name="grade">学位</string>
 
     <!--  体温  -->
     <string name="chooser_title">体温を入力してください</string>

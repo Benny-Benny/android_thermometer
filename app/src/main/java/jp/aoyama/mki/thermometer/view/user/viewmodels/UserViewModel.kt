@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import jp.aoyama.mki.thermometer.domain.models.BluetoothData
+import jp.aoyama.mki.thermometer.domain.models.Grade
 import jp.aoyama.mki.thermometer.domain.models.User
 import jp.aoyama.mki.thermometer.domain.repository.UserRepository
 import jp.aoyama.mki.thermometer.infrastructure.user.LocalFileUserRepository
@@ -42,7 +43,7 @@ class UserViewModel : ViewModel() {
     suspend fun getUsers(context: Context): UserData {
         val userRepository = LocalFileUserRepository(context)
         val users = withContext(Dispatchers.IO) { userRepository.findAll() }
-        val entities = users.map { UserEntity(it, null, null) }
+        val entities = users.map { UserEntity(it.user, null, null) }
         val data = UserData(users = entities)
         _mUserData.value = data
         return data
@@ -51,7 +52,7 @@ class UserViewModel : ViewModel() {
     suspend fun getUser(context: Context, userId: String): User? {
         val userRepository: UserRepository = LocalFileUserRepository(context)
         return withContext(Dispatchers.IO) {
-            userRepository.find(userId)
+            userRepository.find(userId)?.user
         }
     }
 
@@ -59,6 +60,13 @@ class UserViewModel : ViewModel() {
         val userRepository: UserRepository = LocalFileUserRepository(context)
         withContext(Dispatchers.IO) {
             userRepository.updateName(userId, name)
+        }
+    }
+
+    suspend fun updateGrade(context: Context, userId: String, grade: Grade?) {
+        val userRepository: UserRepository = LocalFileUserRepository(context)
+        withContext(Dispatchers.IO) {
+            userRepository.updateGrade(userId, grade)
         }
     }
 
