@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/selectNameFragment">
+    app:startDestination="@id/homeFragment">
 
     <fragment
         android:id="@+id/selectNameFragment"
@@ -22,7 +22,7 @@
     </fragment>
     <fragment
         android:id="@+id/temperatureFragment"
-        android:name="jp.aoyama.mki.thermometer.view.temperature.fragments.TemperatureFragment"
+        android:name="jp.aoyama.mki.thermometer.view.temperature.fragments.MeasureTemperatureFragment"
         android:label="体温を記録"
         tools:layout="@layout/temperature_fragment">
 
@@ -70,5 +70,19 @@
         <argument
             android:name="userId"
             app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="jp.aoyama.mki.thermometer.view.home.HomeFragment"
+        android:label="HomeFragment">
+        <action
+            android:id="@+id/home_to_measure"
+            app:destination="@id/temperatureFragment" />
+        <action
+            android:id="@+id/home_to_edit_user"
+            app:destination="@id/editUserFragment" />
+        <action
+            android:id="@+id/home_to_create_user"
+            app:destination="@id/editNameFragment" />
     </fragment>
 </navigation>

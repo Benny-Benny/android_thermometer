@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import jp.aoyama.mki.thermometer.databinding.SelectNameFragmentBinding
 import jp.aoyama.mki.thermometer.view.bluetooth.scanner.BluetoothDeviceScanner
 import jp.aoyama.mki.thermometer.view.bluetooth.scanner.BluetoothDeviceScannerImpl
+import jp.aoyama.mki.thermometer.view.home.HomeFragmentDirections
 import jp.aoyama.mki.thermometer.view.models.UserEntity
 import jp.aoyama.mki.thermometer.view.user.list.UserListAdapter
 import jp.aoyama.mki.thermometer.view.user.list.UserViewHolder
@@ -49,7 +50,9 @@ class SelectNameFragment : Fragment(), UserViewHolder.CallbackListener {
             listOutUser.adapter = mAdapterOutUser
 
             floatingActionButton.setOnClickListener {
-                findNavController().navigate(SelectNameFragmentDirections.selectToCreate())
+                findNavController().navigate(
+                    HomeFragmentDirections.homeToCreateUser()
+                )
             }
         }
 
@@ -98,13 +101,19 @@ class SelectNameFragment : Fragment(), UserViewHolder.CallbackListener {
     // ============================
     override fun onClick(data: UserEntity) {
         findNavController().navigate(
-            SelectNameFragmentDirections.selectToTemperature(data.name)
+            HomeFragmentDirections.homeToMeasure(data.name)
         )
     }
 
     override fun onEdit(data: UserEntity) {
         findNavController().navigate(
-            SelectNameFragmentDirections.selectToEdit(data.id)
+            HomeFragmentDirections.homeToEditUser(data.id)
         )
+    }
+
+    companion object {
+        fun newInstance(): SelectNameFragment {
+            return SelectNameFragment()
+        }
     }
 }

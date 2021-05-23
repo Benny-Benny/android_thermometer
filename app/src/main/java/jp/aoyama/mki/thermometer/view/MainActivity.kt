@@ -36,8 +36,6 @@ class MainActivity : AppCompatActivity() {
             R.id.share -> shareFile()
         }
         return super.onOptionsItemSelected(item)
-
-
     }
 
     private fun shareFile() {
