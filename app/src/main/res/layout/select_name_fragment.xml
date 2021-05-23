@@ -22,11 +22,8 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list_near_user"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_weight="1" />
+            android:layout_height="0dp"
+            android:layout_weight="0.5" />
 
         <TextView
             android:layout_width="match_parent"
@@ -38,12 +35,9 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list_out_user"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/list_out_user"
-            app:layout_constraintVertical_weight="1" />
+            android:layout_height="0dp"
+            android:layout_marginBottom="64dp"
+            android:layout_weight="0.5" />
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
