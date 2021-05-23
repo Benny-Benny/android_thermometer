@@ -78,7 +78,6 @@ class MeasureTemperatureFragment : Fragment(), TextRecognizer.CallbackListener {
 
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
         cameraProviderFuture.addListener({
-            // Used to bind the lifecycle of cameras to the lifecycle owner
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
 
             val preview = Preview.Builder()
@@ -86,7 +85,7 @@ class MeasureTemperatureFragment : Fragment(), TextRecognizer.CallbackListener {
 
             // Select back camera
             val cameraSelector = CameraSelector.Builder()
-                .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+                .requireLensFacing(CameraSelector.LENS_FACING_FRONT)
                 .build()
 
             val imageCapture = ImageCapture.Builder()
@@ -106,7 +105,7 @@ class MeasureTemperatureFragment : Fragment(), TextRecognizer.CallbackListener {
                 cameraProvider.unbindAll()
 
                 // Bind use cases to camera
-                val camera = cameraProvider.bindToLifecycle(
+                cameraProvider.bindToLifecycle(
                     this,
                     cameraSelector,
                     preview,
@@ -114,7 +113,8 @@ class MeasureTemperatureFragment : Fragment(), TextRecognizer.CallbackListener {
                     imageAnalyzer
                 )
 
-                preview.setSurfaceProvider(mBinding.viewFinder.createSurfaceProvider(camera.cameraInfo))
+                preview.setSurfaceProvider(mBinding.viewFinder.surfaceProvider)
+                mBinding.viewFinder.scaleX = -1.0f // 左右反転
                 mBinding.progressCircular.visibility = View.GONE
             }.onFailure { e ->
                 Log.e(TAG, "Use case binding failed", e)
@@ -157,7 +157,7 @@ class MeasureTemperatureFragment : Fragment(), TextRecognizer.CallbackListener {
         ) == PackageManager.PERMISSION_GRANTED
     }
 
-    override fun onScan(texts: Array<String?>) {
+    override fun onScan(texts: List<String>) {
         if (isPopped) return
 
         val showTxt = texts.joinToString(" ")
@@ -183,7 +183,7 @@ class MeasureTemperatureFragment : Fragment(), TextRecognizer.CallbackListener {
     }
 
     companion object {
-        private const val TAG = "TemperatureFragment"
+        private const val TAG = "MeasureTemperatureFragm"
         private const val REQUEST_CODE_PERMISSIONS = 10
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
     }

@@ -1,14 +1,11 @@
 package jp.aoyama.mki.thermometer.view.temperature.image
 
-import android.annotation.SuppressLint
 import android.util.Log
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
-import com.google.firebase.ml.vision.FirebaseVision
-import com.google.firebase.ml.vision.common.FirebaseVisionImage
-import com.google.firebase.ml.vision.common.FirebaseVisionImageMetadata
-import com.google.firebase.ml.vision.label.FirebaseVisionOnDeviceImageLabelerOptions
-import com.google.firebase.ml.vision.text.FirebaseVisionText
+import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.text.Text
+import com.google.mlkit.vision.text.TextRecognition
 import jp.aoyama.mki.thermometer.view.temperature.image.TextRecognizer.CallbackListener
 
 /**
@@ -18,55 +15,35 @@ import jp.aoyama.mki.thermometer.view.temperature.image.TextRecognizer.CallbackL
 class TextRecognizer(private val mCallbackListener: CallbackListener) : ImageAnalysis.Analyzer {
 
     interface CallbackListener {
-        fun onScan(texts: Array<String?>)
+        fun onScan(texts: List<String>)
     }
 
-    private val mFirebaseVision by lazy { FirebaseVision.getInstance() }
+    private val mTextRecognizer by lazy { TextRecognition.getClient() }
 
-    @SuppressLint("UnsafeExperimentalUsageError")
-    override fun analyze(proxy: ImageProxy) {
-        val mediaImage = proxy.image ?: return
-        val imageRotation = degreesToFirebaseRotation(proxy.imageInfo.rotationDegrees)
-        val image = FirebaseVisionImage.fromMediaImage(mediaImage, imageRotation)
+    override fun analyze(imageProxy: ImageProxy) {
+        val mediaImage = imageProxy.image ?: return
+        val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
 
-        val options = FirebaseVisionOnDeviceImageLabelerOptions.Builder()
-            .setConfidenceThreshold(0.7f)
-            .build()
-        val labeler = mFirebaseVision.getOnDeviceImageLabeler(options)
-        labeler.processImage(image)
-            .addOnSuccessListener { labels ->
-                doTextRecognition(image)
-                proxy.close()
+//        val image = FirebaseVisionImage.fromMediaImage(mediaImage, imageRotation)
+//
+//        val options = FirebaseVisionOnDeviceImageLabelerOptions.Builder()
+//            .setConfidenceThreshold(0.7f)
+//            .build()
+//        val labeler = mFirebaseVision.getOnDeviceImageLabeler(options)
+
+        mTextRecognizer.process(image)
+            .addOnSuccessListener { visionText ->
+                val texts = visionText.textBlocks
+                    .flatMap<Text.TextBlock, String> { block ->
+                        block.lines.map { line -> line.text }
+                    }
+                mCallbackListener.onScan(texts)
+                imageProxy.close()
             }
             .addOnFailureListener { e ->
-                Log.e(TAG, "objectClassification: failed", e)
-                proxy.close()
+                Log.e(TAG, "analyze: error while analyzing image", e)
+                imageProxy.close()
             }
-    }
-
-    private fun degreesToFirebaseRotation(degrees: Int): Int = when (degrees) {
-        0 -> FirebaseVisionImageMetadata.ROTATION_0
-        90 -> FirebaseVisionImageMetadata.ROTATION_90
-        180 -> FirebaseVisionImageMetadata.ROTATION_180
-        270 -> FirebaseVisionImageMetadata.ROTATION_270
-        else -> throw Exception("Rotation must be 0, 90, 180, or 270.")
-    }
-
-    //文字認識 - 書類に書かれた文字のみ認識する　
-    private fun doTextRecognition(image: FirebaseVisionImage) {
-        val detector = mFirebaseVision.onDeviceTextRecognizer
-        detector.processImage(image)
-            .addOnSuccessListener { firebaseVisionText ->
-                parseResultText(firebaseVisionText)
-            }
-            .addOnFailureListener { e ->
-                Log.d(TAG, "OCR Failed...", e)
-            }
-    }
-
-    private fun parseResultText(result: FirebaseVisionText) {
-        val resultTextList = result.textBlocks.map { it.text }
-        mCallbackListener.onScan(resultTextList.toTypedArray())
     }
 
     companion object {
