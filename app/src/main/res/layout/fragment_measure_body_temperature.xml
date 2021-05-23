@@ -11,7 +11,17 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/layout_temperature"
         app:layout_constraintTop_toTopOf="parent"
-        tools:background="@color/black" />
+        tools:background="@color/black_60" />
+
+    <ImageButton
+        android:id="@+id/button_flip_camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:padding="16dp"
+        android:src="@drawable/flip_camera_android_24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/layout_temperature"

@@ -28,7 +28,7 @@ import java.util.concurrent.Executors
 class MeasureBodyTemperatureFragment : Fragment(), TextRecognizer.CallbackListener {
 
     private lateinit var mBinding: FragmentMeasureBodyTemperatureBinding
-    private lateinit var cameraExecutor: ExecutorService
+    private val cameraExecutor: ExecutorService by lazy { Executors.newSingleThreadExecutor() }
 
     private val mViewModel: TemperatureViewModel by viewModels()
     private val mArgs by navArgs<MeasureBodyTemperatureFragmentArgs>()
@@ -36,6 +36,8 @@ class MeasureBodyTemperatureFragment : Fragment(), TextRecognizer.CallbackListen
 
     private var isPopped = false // trueの場合、スキャン結果を無視する
     private var frequency = mutableListOf(0f)
+
+    private var mCameraDirection = CameraSelector.LENS_FACING_FRONT
 
     private val mRequestPermission =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { result ->
@@ -47,7 +49,10 @@ class MeasureBodyTemperatureFragment : Fragment(), TextRecognizer.CallbackListen
         savedInstanceState: Bundle?
     ): View {
         mBinding = FragmentMeasureBodyTemperatureBinding.inflate(inflater, container, false)
-        cameraExecutor = Executors.newSingleThreadExecutor()
+
+        mBinding.apply {
+            buttonFlipCamera.setOnClickListener { flipCamera() }
+        }
 
         // Request camera permissions
         val cameraPermission = ContextCompat.checkSelfPermission(
@@ -65,33 +70,33 @@ class MeasureBodyTemperatureFragment : Fragment(), TextRecognizer.CallbackListen
         isPopped = true
     }
 
-    private fun startCamera() {
+    private fun startCamera(cameraSelector: CameraSelector? = null) {
         mBinding.progressCircular.visibility = View.VISIBLE
 
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
+        val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
+
+        val preview = Preview.Builder()
+            .build()
+
+        // Select back camera
+        val selector = cameraSelector ?: CameraSelector.Builder()
+            .requireLensFacing(CameraSelector.LENS_FACING_FRONT)
+            .build()
+
+        val imageCapture = ImageCapture.Builder()
+            .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
+            .build()
+
+        val imageAnalyzer = ImageAnalysis.Builder()
+            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+            .build()
+            .apply {
+                val analyzer = TextRecognizer(this@MeasureBodyTemperatureFragment)
+                setAnalyzer(cameraExecutor, analyzer)
+            }
+
         cameraProviderFuture.addListener({
-            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
-
-            val preview = Preview.Builder()
-                .build()
-
-            // Select back camera
-            val cameraSelector = CameraSelector.Builder()
-                .requireLensFacing(CameraSelector.LENS_FACING_FRONT)
-                .build()
-
-            val imageCapture = ImageCapture.Builder()
-                .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
-                .build()
-
-            val imageAnalyzer = ImageAnalysis.Builder()
-                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                .build()
-                .apply {
-                    val analyzer = TextRecognizer(this@MeasureBodyTemperatureFragment)
-                    setAnalyzer(cameraExecutor, analyzer)
-                }
-
             kotlin.runCatching {
                 // Unbind use cases before rebinding
                 cameraProvider.unbindAll()
@@ -99,19 +104,33 @@ class MeasureBodyTemperatureFragment : Fragment(), TextRecognizer.CallbackListen
                 // Bind use cases to camera
                 cameraProvider.bindToLifecycle(
                     this,
-                    cameraSelector,
+                    selector,
                     preview,
                     imageCapture,
                     imageAnalyzer
                 )
 
                 preview.setSurfaceProvider(mBinding.viewFinder.surfaceProvider)
-                mBinding.viewFinder.scaleX = -1.0f // 左右反転
+                if (mCameraDirection == CameraSelector.LENS_FACING_FRONT) {
+                    mBinding.viewFinder.scaleX = -1.0f // 正面カメラのとき左右反転
+                } else {
+                    mBinding.viewFinder.scaleX = 1.0f
+                }
                 mBinding.progressCircular.visibility = View.GONE
             }.onFailure { e ->
                 Log.e(TAG, "Use case binding failed", e)
             }
         }, ContextCompat.getMainExecutor(requireContext()))
+    }
+
+    private fun flipCamera() {
+        mCameraDirection =
+            if (mCameraDirection == CameraSelector.LENS_FACING_FRONT) CameraSelector.LENS_FACING_BACK
+            else CameraSelector.LENS_FACING_FRONT
+        val selector = CameraSelector.Builder()
+            .requireLensFacing(mCameraDirection)
+            .build()
+        startCamera(selector)
     }
 
     private fun saveTemperature() {
