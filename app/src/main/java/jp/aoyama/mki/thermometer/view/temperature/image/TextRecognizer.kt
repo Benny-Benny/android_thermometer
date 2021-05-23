@@ -1,5 +1,6 @@
 package jp.aoyama.mki.thermometer.view.temperature.image
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
@@ -20,16 +21,10 @@ class TextRecognizer(private val mCallbackListener: CallbackListener) : ImageAna
 
     private val mTextRecognizer by lazy { TextRecognition.getClient() }
 
+    @SuppressLint("UnsafeOptInUsageError")
     override fun analyze(imageProxy: ImageProxy) {
         val mediaImage = imageProxy.image ?: return
         val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
-
-//        val image = FirebaseVisionImage.fromMediaImage(mediaImage, imageRotation)
-//
-//        val options = FirebaseVisionOnDeviceImageLabelerOptions.Builder()
-//            .setConfidenceThreshold(0.7f)
-//            .build()
-//        val labeler = mFirebaseVision.getOnDeviceImageLabeler(options)
 
         mTextRecognizer.process(image)
             .addOnSuccessListener { visionText ->
