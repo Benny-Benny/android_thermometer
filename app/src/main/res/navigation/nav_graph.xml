@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/selectNameFragment"
         android:name="jp.aoyama.mki.thermometer.view.user.fragments.SelectNameFragment"
-        android:label="select_name_fragment"
+        android:label="ユーザを選択"
         tools:layout="@layout/select_name_fragment">
         <action
             android:id="@+id/select_to_create"
@@ -23,7 +23,7 @@
     <fragment
         android:id="@+id/temperatureFragment"
         android:name="jp.aoyama.mki.thermometer.view.temperature.fragments.TemperatureFragment"
-        android:label="temperature_fragment"
+        android:label="体温を記録"
         tools:layout="@layout/temperature_fragment">
 
         <argument
@@ -34,7 +34,7 @@
     <fragment
         android:id="@+id/editNameFragment"
         android:name="jp.aoyama.mki.thermometer.view.user.fragments.EditNameFragment"
-        android:label="edit_name_fragment"
+        android:label="新しいユーザーを追加"
         tools:layout="@layout/edit_name_fragment">
         <action
             android:id="@+id/edit_name_to_pairing"
@@ -43,7 +43,7 @@
     <fragment
         android:id="@+id/bluetoothPairingFragment"
         android:name="jp.aoyama.mki.thermometer.view.user.fragments.BluetoothPairingFragment"
-        android:label="BluetoothPairingFragment">
+        android:label="新しいユーザーを追加">
         <action
             android:id="@+id/pairing_to_confirm"
             app:destination="@id/confirmUserInformationFragment" />
@@ -51,11 +51,11 @@
     <fragment
         android:id="@+id/confirmUserInformationFragment"
         android:name="jp.aoyama.mki.thermometer.view.user.fragments.ConfirmUserInformationFragment"
-        android:label="ConfirmUserInformationFragment" />
+        android:label="新しいユーザーを追加" />
     <fragment
         android:id="@+id/editUserFragment"
         android:name="jp.aoyama.mki.thermometer.view.user.fragments.EditUserFragment"
-        android:label="EditUserFragment">
+        android:label="ユーザー情報を編集">
         <argument
             android:name="userId"
             app:argType="string" />
@@ -66,7 +66,7 @@
     <fragment
         android:id="@+id/addBluetoothDeviceFragment"
         android:name="jp.aoyama.mki.thermometer.view.user.fragments.AddBluetoothDeviceFragment"
-        android:label="AddBluetoothDeviceFragment">
+        android:label="Bluetooth端末を追加">
         <argument
             android:name="userId"
             app:argType="string" />
