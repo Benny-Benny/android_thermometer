@@ -9,10 +9,12 @@ import jp.aoyama.mki.thermometer.domain.repository.UserRepository
 class LocalFileUserRepository(private val context: Context) : UserRepository {
 
     private val mGson: Gson = Gson()
+    private val mFileInputStream get() = context.openFileInput(FILE_NAME)
+    private val mFileOutputStream get() = context.openFileOutput(FILE_NAME, Context.MODE_PRIVATE)
 
     override suspend fun findAll(): List<User> {
         return try {
-            val nameJson = context.openFileInput(FILE_NAMES).bufferedReader().readLine() ?: "[]"
+            val nameJson = mFileInputStream.bufferedReader().readLine() ?: "[]"
             mGson.fromJson(nameJson, Array<User>::class.java).toList()
         } catch (e: Exception) {
             emptyList()
@@ -27,8 +29,8 @@ class LocalFileUserRepository(private val context: Context) : UserRepository {
         val users = findAll().toMutableList()
         users.add(user)
 
-        val json = Gson().toJson(users)
-        context.openFileOutput(FILE_NAMES, Context.MODE_PRIVATE).use {
+        val json = mGson.toJson(users)
+        mFileOutputStream.use {
             it.write(json.toByteArray())
         }
     }
@@ -39,8 +41,8 @@ class LocalFileUserRepository(private val context: Context) : UserRepository {
         users.removeAll { it.id == userId }
         users.add(user.copy(name = name))
 
-        val json = Gson().toJson(users)
-        context.openFileOutput(FILE_NAMES, Context.MODE_PRIVATE).use {
+        val json = mGson.toJson(users)
+        mFileOutputStream.use {
             it.write(json.toByteArray())
         }
     }
@@ -54,8 +56,8 @@ class LocalFileUserRepository(private val context: Context) : UserRepository {
         devices.add(bluetooth)
         users.add(user.copy(bluetoothDevices = devices))
 
-        val json = Gson().toJson(users)
-        context.openFileOutput(FILE_NAMES, Context.MODE_PRIVATE).use {
+        val json = mGson.toJson(users)
+        mFileOutputStream.use {
             it.write(json.toByteArray())
         }
     }
@@ -69,8 +71,8 @@ class LocalFileUserRepository(private val context: Context) : UserRepository {
         devices.removeAll { it.address == address }
         users.add(user.copy(bluetoothDevices = devices))
 
-        val json = Gson().toJson(users)
-        context.openFileOutput(FILE_NAMES, Context.MODE_PRIVATE).use {
+        val json = mGson.toJson(users)
+        mFileOutputStream.use {
             it.write(json.toByteArray())
         }
     }
@@ -79,13 +81,13 @@ class LocalFileUserRepository(private val context: Context) : UserRepository {
         val users = findAll().toMutableList()
         users.removeAll { it.id == userId }
 
-        val json = Gson().toJson(users)
-        context.openFileOutput(FILE_NAMES, Context.MODE_PRIVATE).use {
+        val json = mGson.toJson(users)
+        mFileOutputStream.use {
             it.write(json.toByteArray())
         }
     }
 
     companion object {
-        private const val FILE_NAMES = "Name List.txt"
+        private const val FILE_NAME = "Name List.txt"
     }
 }
