@@ -1,6 +1,7 @@
 package jp.aoyama.mki.thermometer.view.user.viewmodels
 
 import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,6 +11,7 @@ import jp.aoyama.mki.thermometer.domain.models.Grade
 import jp.aoyama.mki.thermometer.domain.models.User
 import jp.aoyama.mki.thermometer.domain.repository.UserRepository
 import jp.aoyama.mki.thermometer.infrastructure.user.LocalFileUserRepository
+import jp.aoyama.mki.thermometer.infrastructure.user.UserCSVUtil
 import jp.aoyama.mki.thermometer.view.bluetooth.scanner.BluetoothDeviceData
 import jp.aoyama.mki.thermometer.view.models.UserData
 import jp.aoyama.mki.thermometer.view.models.UserEntity
@@ -38,6 +40,11 @@ class UserViewModel : ViewModel() {
         }
 
         _mUserData.value = data
+    }
+
+    fun observeUsers(context: Context): LiveData<UserData> {
+        viewModelScope.launch { getUsers(context) }
+        return _mUserData
     }
 
     suspend fun getUsers(context: Context): UserData {
@@ -84,9 +91,20 @@ class UserViewModel : ViewModel() {
         }
     }
 
-    fun observeUsers(context: Context): LiveData<UserData> {
-        viewModelScope.launch { getUsers(context) }
-        return _mUserData
+    /**
+     * CSVファイルからユーザを追加
+     */
+    suspend fun importFromCSV(context: Context, uri: Uri) {
+        val users = withContext(Dispatchers.IO) {
+            UserCSVUtil().importFromCsv(context, uri)
+        }
+
+        val userRepository: UserRepository = LocalFileUserRepository(context)
+        withContext(Dispatchers.IO) {
+            users.map { user ->
+                userRepository.save(user)
+            }
+        }
     }
 
     suspend fun deleteUser(context: Context, userId: String) {
