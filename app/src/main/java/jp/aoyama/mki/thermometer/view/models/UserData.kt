@@ -5,8 +5,8 @@ import java.util.*
 data class UserData constructor(
     val users: List<UserEntity>
 ) {
-    val near: List<UserEntity> get() = users.filter { !it.isExpired() }
-    val outs: List<UserEntity> get() = users.filter { it.isExpired() }
+    val near: List<UserEntity> get() = users.filter { !it.isExpired() }.sortedBy { it.id }
+    val outs: List<UserEntity> get() = users.filter { it.isExpired() }.sortedBy { it.id }
 
     fun addNearUser(user: UserEntity): UserData {
         val users = this.users.toMutableList()
