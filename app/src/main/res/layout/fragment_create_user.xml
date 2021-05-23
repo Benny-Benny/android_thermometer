@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="36dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:text="@string/how_to_add_user"
+        android:textSize="24sp" />
+
+    <Button
+        android:id="@+id/button_create_new"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/add_24dp"
+        android:padding="16dp"
+        android:text="@string/create_new_user" />
+
+    <Button
+        android:id="@+id/button_import"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/download_24dp"
+        android:drawableTint="@color/white"
+        android:padding="16dp"
+        android:text="@string/import_from_csv" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:indeterminate="true"
+        android:visibility="gone" />
+</androidx.appcompat.widget.LinearLayoutCompat>
