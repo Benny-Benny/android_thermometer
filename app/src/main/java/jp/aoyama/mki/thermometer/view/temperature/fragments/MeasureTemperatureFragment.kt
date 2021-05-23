@@ -25,13 +25,13 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-class TemperatureFragment : Fragment(), TextRecognizer.CallbackListener {
+class MeasureTemperatureFragment : Fragment(), TextRecognizer.CallbackListener {
 
     private lateinit var mBinding: TemperatureFragmentBinding
     private lateinit var cameraExecutor: ExecutorService
 
     private val mViewModel: TemperatureViewModel by viewModels()
-    private val mArgs by navArgs<TemperatureFragmentArgs>()
+    private val mArgs by navArgs<MeasureTemperatureFragmentArgs>()
     private val mName: String get() = mArgs.name // 体温を計測する人の名前
 
     private var isPopped = false // trueの場合、スキャン結果を無視する
@@ -97,7 +97,7 @@ class TemperatureFragment : Fragment(), TextRecognizer.CallbackListener {
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build()
                 .apply {
-                    val analyzer = TextRecognizer(this@TemperatureFragment)
+                    val analyzer = TextRecognizer(this@MeasureTemperatureFragment)
                     setAnalyzer(cameraExecutor, analyzer)
                 }
 
