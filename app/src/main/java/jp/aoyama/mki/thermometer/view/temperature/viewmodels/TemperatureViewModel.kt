@@ -25,11 +25,11 @@ class TemperatureViewModel : ViewModel() {
      * @param temperature 体温
      * @return 入力値が適切であれば true を返す
      */
-    suspend fun saveTemperature(context: Context, name: String, temperature: String?): Boolean {
-        val inputValue = temperature?.toFloatOrNull() ?: return false
-        if (inputValue > 45f || inputValue < 35f) return false
+    suspend fun saveTemperature(context: Context, name: String, temperature: Float?): Boolean {
+        if (temperature == null) return false
+        if (temperature > 45f || temperature < 35f) return false
 
-        val data = TemperatureData(name = name, temperature = inputValue)
+        val data = TemperatureData(name = name, temperature = temperature)
         val repository: TemperatureRepository = LocalFileTemperatureRepository(context)
         repository.add(data)
 

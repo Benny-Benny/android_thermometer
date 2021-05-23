@@ -9,6 +9,7 @@
     <string name="modify">修正する</string>
     <string name="edit">編集</string>
     <string name="delete">削除</string>
+    <string name="save">保存</string>
 
     <!--  名詞  -->
     <string name="makelist_edit_name">名前</string>

@@ -20,6 +20,7 @@ import androidx.navigation.fragment.navArgs
 import jp.aoyama.mki.thermometer.R
 import jp.aoyama.mki.thermometer.databinding.FragmentMeasureBodyTemperatureBinding
 import jp.aoyama.mki.thermometer.view.temperature.image.TextRecognizer
+import jp.aoyama.mki.thermometer.view.temperature.viewmodels.MeasureBodyTemperatureViewModel
 import jp.aoyama.mki.thermometer.view.temperature.viewmodels.TemperatureViewModel
 import kotlinx.coroutines.launch
 import java.util.concurrent.ExecutorService
@@ -30,12 +31,10 @@ class MeasureBodyTemperatureFragment : Fragment(), TextRecognizer.CallbackListen
     private lateinit var mBinding: FragmentMeasureBodyTemperatureBinding
     private val cameraExecutor: ExecutorService by lazy { Executors.newSingleThreadExecutor() }
 
+    private val mPageViewModel: MeasureBodyTemperatureViewModel by viewModels()
     private val mViewModel: TemperatureViewModel by viewModels()
     private val mArgs by navArgs<MeasureBodyTemperatureFragmentArgs>()
     private val mName: String get() = mArgs.name // 体温を計測する人の名前
-
-    private var isPopped = false // trueの場合、スキャン結果を無視する
-    private var frequency = mutableListOf(0f)
 
     private var mCameraDirection = CameraSelector.LENS_FACING_FRONT
 
@@ -52,6 +51,7 @@ class MeasureBodyTemperatureFragment : Fragment(), TextRecognizer.CallbackListen
 
         mBinding.apply {
             buttonFlipCamera.setOnClickListener { flipCamera() }
+            buttonSave.setOnClickListener { saveTemperature() }
         }
 
         // Request camera permissions
@@ -63,11 +63,6 @@ class MeasureBodyTemperatureFragment : Fragment(), TextRecognizer.CallbackListen
         else mRequestPermission.launch(Manifest.permission.CAMERA)
 
         return mBinding.root
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        isPopped = true
     }
 
     private fun startCamera(cameraSelector: CameraSelector? = null) {
@@ -138,12 +133,11 @@ class MeasureBodyTemperatureFragment : Fragment(), TextRecognizer.CallbackListen
             val valid = mViewModel.saveTemperature(
                 requireContext(),
                 mName,
-                validate().toString()
+                mPageViewModel.getData()
             )
             if (valid) {
                 Toast.makeText(context, "保存しました。", Toast.LENGTH_LONG).show()
                 findNavController().popBackStack()
-                isPopped = true
             } else {
                 Toast.makeText(
                     context,
@@ -154,40 +148,15 @@ class MeasureBodyTemperatureFragment : Fragment(), TextRecognizer.CallbackListen
         }
     }
 
-    private fun validate(): Float {
-        val frequencyMap = frequency.groupingBy { it }.eachCount()
-        val max = frequencyMap.maxByOrNull { it.value } ?: return 0f
-        if (max.value < 5F) return 0f
-        return max.key
-    }
-
     override fun onScan(texts: List<String>) {
-        if (isPopped) return
-
         val showTxt = texts.joinToString(" ")
-        val numStr = showTxt.replace("[^0-9]".toRegex(), "")
-        if (numStr.isBlank() || numStr.length > 6) return
-
-        mBinding.textTemperature.text = when (val num = numStr.toInt()) {
-            in 350..420 -> {
-                frequency.add(num.toFloat() / 10F)
-                (num.toFloat() / 10F).toString()
-            }
-            31 -> {
-                frequency.add(37.1F)
-                "37.1"
-            }
-            36 -> {
-                frequency.add(36.1F)
-                "36.1"
-            }
-            else -> ""
-        }
-        if (validate() != 0F) saveTemperature()
+        mPageViewModel.addData(showTxt)
+        val result = mPageViewModel.getData()
+        mBinding.textTemperature.text = result?.toString()
+        mBinding.buttonSave.isEnabled = result != null
     }
 
     companion object {
-        private const val TAG = "MeasureTemperatureFragm"
-        private const val REQUEST_CODE_PERMISSIONS = 10
+        private const val TAG = "MeasureBodyTemperatureF"
     }
 }

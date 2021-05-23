@@ -29,6 +29,7 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:orientation="vertical"
+        android:paddingHorizontal="32dp"
         android:paddingVertical="24dp"
         app:layout_constraintBottom_toBottomOf="parent">
 
@@ -40,6 +41,13 @@
             android:textAlignment="center"
             android:textSize="100sp"
             tools:text="36.5" />
+
+        <Button
+            android:id="@+id/button_save"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:enabled="false"
+            android:text="@string/save" />
     </LinearLayout>
 
 
