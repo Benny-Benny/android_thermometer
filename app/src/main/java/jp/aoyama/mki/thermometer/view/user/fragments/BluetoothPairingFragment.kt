@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import jp.aoyama.mki.thermometer.databinding.BluetoothPairingFragmentBinding
+import jp.aoyama.mki.thermometer.databinding.FragmentBluetoothPairingBinding
 import jp.aoyama.mki.thermometer.domain.models.BluetoothData
 import jp.aoyama.mki.thermometer.view.bluetooth.list.BluetoothListAdapter
 import jp.aoyama.mki.thermometer.view.bluetooth.list.BluetoothViewHolder
@@ -22,7 +22,7 @@ import jp.aoyama.mki.thermometer.view.user.viewmodels.CreateUserSharedViewModel
 
 class BluetoothPairingFragment : Fragment(), BluetoothViewHolder.CallbackListener {
 
-    private lateinit var mBinding: BluetoothPairingFragmentBinding
+    private lateinit var mBinding: FragmentBluetoothPairingBinding
     private lateinit var mBluetoothDeviceScanner: BluetoothDeviceScanner
     private val mAdapter: BluetoothListAdapter = BluetoothListAdapter(this)
     private val mViewModel: CreateUserSharedViewModel by viewModels({ requireActivity() })
@@ -38,7 +38,7 @@ class BluetoothPairingFragment : Fragment(), BluetoothViewHolder.CallbackListene
         savedInstanceState: Bundle?
     ): View {
         mBluetoothDeviceScanner = BluetoothDiscoveryDeviceScanner(requireContext())
-        mBinding = BluetoothPairingFragmentBinding.inflate(inflater, container, false)
+        mBinding = FragmentBluetoothPairingBinding.inflate(inflater, container, false)
 
         mBinding.apply {
             buttonSkip.setOnClickListener {
