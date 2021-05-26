@@ -106,11 +106,7 @@ class MeasureBodyTemperatureFragment : Fragment(), TextRecognizer.CallbackListen
                 )
 
                 preview.setSurfaceProvider(mBinding.viewFinder.surfaceProvider)
-                if (mCameraDirection == CameraSelector.LENS_FACING_FRONT) {
-                    mBinding.viewFinder.scaleX = -1.0f // 正面カメラのとき左右反転
-                } else {
-                    mBinding.viewFinder.scaleX = 1.0f
-                }
+
                 mBinding.progressCircular.visibility = View.GONE
             }.onFailure { e ->
                 Log.e(TAG, "Use case binding failed", e)
