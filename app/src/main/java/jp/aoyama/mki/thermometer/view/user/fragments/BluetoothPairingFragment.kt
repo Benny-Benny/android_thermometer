@@ -14,10 +14,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import jp.aoyama.mki.thermometer.databinding.FragmentBluetoothPairingBinding
 import jp.aoyama.mki.thermometer.domain.models.BluetoothData
+import jp.aoyama.mki.thermometer.infrastructure.bluetooth.BluetoothDeviceScanner
+import jp.aoyama.mki.thermometer.infrastructure.bluetooth.android.BluetoothDiscoveryDeviceScanner
 import jp.aoyama.mki.thermometer.view.bluetooth.list.BluetoothListAdapter
 import jp.aoyama.mki.thermometer.view.bluetooth.list.BluetoothViewHolder
-import jp.aoyama.mki.thermometer.view.bluetooth.scanner.BluetoothDeviceScanner
-import jp.aoyama.mki.thermometer.view.bluetooth.scanner.BluetoothDiscoveryDeviceScanner
 import jp.aoyama.mki.thermometer.view.user.viewmodels.CreateUserSharedViewModel
 
 class BluetoothPairingFragment : Fragment(), BluetoothViewHolder.CallbackListener {

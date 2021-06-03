@@ -10,9 +10,9 @@ import jp.aoyama.mki.thermometer.domain.models.BluetoothData
 import jp.aoyama.mki.thermometer.domain.models.Grade
 import jp.aoyama.mki.thermometer.domain.models.User
 import jp.aoyama.mki.thermometer.domain.repository.UserRepository
+import jp.aoyama.mki.thermometer.infrastructure.bluetooth.BluetoothDeviceData
 import jp.aoyama.mki.thermometer.infrastructure.user.LocalFileUserRepository
 import jp.aoyama.mki.thermometer.infrastructure.user.UserCSVUtil
-import jp.aoyama.mki.thermometer.view.bluetooth.scanner.BluetoothDeviceData
 import jp.aoyama.mki.thermometer.view.models.UserData
 import jp.aoyama.mki.thermometer.view.models.UserEntity
 import kotlinx.coroutines.Dispatchers
@@ -32,10 +32,7 @@ class UserViewModel : ViewModel() {
                 user.bluetoothDevices.any { it.address == device.address }
             } ?: return@map
 
-            val updated = user.copy(
-                rssi = bluetoothData.rssi,
-                lastFoundAt = Calendar.getInstance()
-            )
+            val updated = user.copy(lastFoundAt = Calendar.getInstance())
             data = data.addNearUser(updated)
         }
 

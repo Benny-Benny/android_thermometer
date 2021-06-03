@@ -1,4 +1,4 @@
-package jp.aoyama.mki.thermometer.view.bluetooth.scanner
+package jp.aoyama.mki.thermometer.infrastructure.bluetooth
 
 import androidx.lifecycle.LiveData
 

@@ -13,10 +13,10 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import jp.aoyama.mki.thermometer.databinding.FeagmentAddBluetoothDeviceBinding
 import jp.aoyama.mki.thermometer.domain.models.BluetoothData
+import jp.aoyama.mki.thermometer.infrastructure.bluetooth.BluetoothDeviceScanner
+import jp.aoyama.mki.thermometer.infrastructure.bluetooth.android.BluetoothDiscoveryDeviceScanner
 import jp.aoyama.mki.thermometer.view.bluetooth.list.BluetoothListAdapter
 import jp.aoyama.mki.thermometer.view.bluetooth.list.BluetoothViewHolder
-import jp.aoyama.mki.thermometer.view.bluetooth.scanner.BluetoothDeviceScanner
-import jp.aoyama.mki.thermometer.view.bluetooth.scanner.BluetoothDiscoveryDeviceScanner
 import jp.aoyama.mki.thermometer.view.user.viewmodels.UserViewModel
 import kotlinx.coroutines.launch
 

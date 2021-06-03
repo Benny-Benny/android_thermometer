@@ -1,4 +1,4 @@
-package jp.aoyama.mki.thermometer.view.bluetooth.scanner
+package jp.aoyama.mki.thermometer.infrastructure.bluetooth.android
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothGatt
@@ -8,6 +8,9 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.distinctUntilChanged
+import jp.aoyama.mki.thermometer.domain.models.BluetoothData
+import jp.aoyama.mki.thermometer.infrastructure.bluetooth.BluetoothDeviceData
+import jp.aoyama.mki.thermometer.infrastructure.bluetooth.BluetoothDeviceScanner
 import kotlinx.coroutines.*
 import java.util.*
 
@@ -35,8 +38,7 @@ class BluetoothGattDeviceScanner(
             if (gatt == null) return
             val address = gatt.device.address ?: return
             devices[address] = BluetoothDeviceData(
-                device = gatt.device,
-                rssi = rssi,
+                device = BluetoothData(name = gatt.device.name, address = address),
                 foundAt = Calendar.getInstance()
             )
 

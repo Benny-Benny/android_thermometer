@@ -1,4 +1,4 @@
-package jp.aoyama.mki.thermometer.view.bluetooth.scanner
+package jp.aoyama.mki.thermometer.infrastructure.bluetooth.android
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
@@ -10,6 +10,9 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.distinctUntilChanged
+import jp.aoyama.mki.thermometer.domain.models.BluetoothData
+import jp.aoyama.mki.thermometer.infrastructure.bluetooth.BluetoothDeviceData
+import jp.aoyama.mki.thermometer.infrastructure.bluetooth.BluetoothDeviceScanner
 import kotlinx.coroutines.*
 import java.util.*
 
@@ -41,8 +44,7 @@ class BluetoothDiscoveryDeviceScanner(
                     if (rssi == Short.MIN_VALUE) return
 
                     devices[device.address] = BluetoothDeviceData(
-                        device = device,
-                        rssi = rssi.toInt(),
+                        device = BluetoothData(name = device.name, address = device.address),
                         foundAt = Calendar.getInstance()
                     )
 
