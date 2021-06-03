@@ -5,5 +5,5 @@ import java.util.*
 
 data class BluetoothDeviceData(
     val device: BluetoothData,
-    val foundAt: Calendar,
+    val foundAt: Calendar = Calendar.getInstance(),
 )

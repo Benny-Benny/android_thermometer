@@ -57,6 +57,8 @@ class BluetoothDiscoveryDeviceScanner(
     }
 
     override fun startDiscovery() {
+        if (mBluetoothAdapter == null) return
+
         // Bluetooth端末の検索のスキャン結果を受け取る
         context.registerReceiver(
             mBluetoothScanReceiver,
