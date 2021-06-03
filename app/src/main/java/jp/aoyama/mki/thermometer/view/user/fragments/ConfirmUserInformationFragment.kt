@@ -42,7 +42,7 @@ class ConfirmUserInformationFragment : Fragment() {
             buttonSave.setOnClickListener {
                 lifecycleScope.launch {
                     withContext(Dispatchers.IO) {
-                        mViewModel.createUser(requireContext())
+                        mViewModel.createUser()
                     }
                     findNavController().popBackStack(R.id.homeFragment, false)
                 }

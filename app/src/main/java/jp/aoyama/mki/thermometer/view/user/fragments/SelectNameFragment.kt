@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import jp.aoyama.mki.thermometer.databinding.FragmentSelectNameBinding
 import jp.aoyama.mki.thermometer.infrastructure.bluetooth.BluetoothDeviceScanner
-import jp.aoyama.mki.thermometer.infrastructure.bluetooth.android.BluetoothDeviceScannerImpl
+import jp.aoyama.mki.thermometer.infrastructure.bluetooth.api.BluetoothApiScanner
 import jp.aoyama.mki.thermometer.view.home.HomeFragmentDirections
 import jp.aoyama.mki.thermometer.view.models.UserEntity
 import jp.aoyama.mki.thermometer.view.user.list.UserListAdapter
@@ -29,7 +29,7 @@ class SelectNameFragment : Fragment(), UserViewHolder.CallbackListener {
     private lateinit var mBinding: FragmentSelectNameBinding
     private val mAdapterNearUser: UserListAdapter = UserListAdapter(this)
     private val mAdapterOutUser: UserListAdapter = UserListAdapter(this)
-    private var mBluetoothDeviceScanner: BluetoothDeviceScanner? = null
+    private var mBluetoothDeviceScanner: BluetoothDeviceScanner = BluetoothApiScanner()
 
     private val mRequestPermission =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { result ->
@@ -62,16 +62,8 @@ class SelectNameFragment : Fragment(), UserViewHolder.CallbackListener {
         }
 
         lifecycleScope.launch {
-            val users = mViewModel.getUsers(requireContext())
-            val addresses = users.users.flatMap { user ->
-                user.bluetoothDevices.map { it.address }
-            }
-            mBluetoothDeviceScanner = BluetoothDeviceScannerImpl(
-                requireContext(),
-                addresses,
-                timeoutInMillis = 30 * 1000,
-            )
-            mBluetoothDeviceScanner!!.devicesLiveData.observe(viewLifecycleOwner) { devices ->
+            mBluetoothDeviceScanner = BluetoothApiScanner()
+            mBluetoothDeviceScanner.devicesLiveData.observe(viewLifecycleOwner) { devices ->
                 mViewModel.onReceiveBluetoothResult(devices)
             }
 
@@ -89,11 +81,11 @@ class SelectNameFragment : Fragment(), UserViewHolder.CallbackListener {
 
     override fun onDestroy() {
         super.onDestroy()
-        mBluetoothDeviceScanner?.cancelDiscovery()
+        mBluetoothDeviceScanner.cancelDiscovery()
     }
 
     private fun scanBluetoothDevices() {
-        mBluetoothDeviceScanner?.startDiscovery()
+        mBluetoothDeviceScanner.startDiscovery()
     }
 
     // ============================

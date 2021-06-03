@@ -5,6 +5,7 @@ import jp.aoyama.mki.thermometer.domain.models.BluetoothData
 import jp.aoyama.mki.thermometer.domain.models.Grade
 import jp.aoyama.mki.thermometer.domain.models.UserEntity
 import jp.aoyama.mki.thermometer.domain.repository.UserRepository
+import jp.aoyama.mki.thermometer.infrastructure.api.ApiRepositoryUtil
 import jp.aoyama.mki.thermometer.infrastructure.user.api.models.CreateUserRequest
 import jp.aoyama.mki.thermometer.infrastructure.user.api.models.EditDeviceRequest
 import jp.aoyama.mki.thermometer.infrastructure.user.api.models.EditGradeRequest
@@ -90,6 +91,6 @@ class UserApiRepository : UserRepository {
 
     companion object {
         private const val TAG = "UserApiRepository"
-        private const val BASE_URL = "http://192.168.0.13:5000/users"
+        private const val BASE_URL = "${ApiRepositoryUtil.BASE_URL}"
     }
 }

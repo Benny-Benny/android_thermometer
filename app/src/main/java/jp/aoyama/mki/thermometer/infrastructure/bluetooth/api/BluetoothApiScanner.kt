@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import jp.aoyama.mki.thermometer.domain.models.BluetoothData
+import jp.aoyama.mki.thermometer.infrastructure.api.ApiRepositoryUtil
 import jp.aoyama.mki.thermometer.infrastructure.bluetooth.BluetoothDeviceData
 import jp.aoyama.mki.thermometer.infrastructure.bluetooth.BluetoothDeviceScanner
 import kotlinx.coroutines.*
@@ -51,10 +52,12 @@ class BluetoothApiScanner : BluetoothDeviceScanner {
             null
         } ?: return emptyList()
 
-        return response.results.map {
-            val device = BluetoothData(name = null, address = it.address)
-            return@map BluetoothDeviceData(device)
-        }
+        return response.results
+            .filter { it.found }
+            .map {
+                val device = BluetoothData(name = null, address = it.address)
+                return@map BluetoothDeviceData(device)
+            }
     }
 
     override fun cancelDiscovery() {
@@ -64,6 +67,6 @@ class BluetoothApiScanner : BluetoothDeviceScanner {
     companion object {
         private const val TAG = "BluetoothApiScanner"
         private const val INTERVAL_IN_MILLIS = 5000
-        private const val BASE_URL = "http://192.168.0.13:5000"
+        private const val BASE_URL = ApiRepositoryUtil.BASE_URL
     }
 }
