@@ -11,8 +11,8 @@ import jp.aoyama.mki.thermometer.domain.models.Grade
 import jp.aoyama.mki.thermometer.domain.models.User
 import jp.aoyama.mki.thermometer.domain.repository.UserRepository
 import jp.aoyama.mki.thermometer.infrastructure.bluetooth.BluetoothDeviceData
-import jp.aoyama.mki.thermometer.infrastructure.user.LocalFileUserRepository
 import jp.aoyama.mki.thermometer.infrastructure.user.UserCSVUtil
+import jp.aoyama.mki.thermometer.infrastructure.user.file.UserLocalFileRepository
 import jp.aoyama.mki.thermometer.view.models.UserData
 import jp.aoyama.mki.thermometer.view.models.UserEntity
 import kotlinx.coroutines.Dispatchers
@@ -45,7 +45,7 @@ class UserViewModel : ViewModel() {
     }
 
     suspend fun getUsers(context: Context): UserData {
-        val userRepository = LocalFileUserRepository(context)
+        val userRepository = UserLocalFileRepository(context)
         val users = withContext(Dispatchers.IO) { userRepository.findAll() }
         val entities = users.map { UserEntity(it.user, null, null) }
         val data = UserData(users = entities)
@@ -54,35 +54,35 @@ class UserViewModel : ViewModel() {
     }
 
     suspend fun getUser(context: Context, userId: String): User? {
-        val userRepository: UserRepository = LocalFileUserRepository(context)
+        val userRepository: UserRepository = UserLocalFileRepository(context)
         return withContext(Dispatchers.IO) {
             userRepository.find(userId)?.user
         }
     }
 
     suspend fun updateName(context: Context, userId: String, name: String) {
-        val userRepository: UserRepository = LocalFileUserRepository(context)
+        val userRepository: UserRepository = UserLocalFileRepository(context)
         withContext(Dispatchers.IO) {
             userRepository.updateName(userId, name)
         }
     }
 
     suspend fun updateGrade(context: Context, userId: String, grade: Grade?) {
-        val userRepository: UserRepository = LocalFileUserRepository(context)
+        val userRepository: UserRepository = UserLocalFileRepository(context)
         withContext(Dispatchers.IO) {
             userRepository.updateGrade(userId, grade)
         }
     }
 
     suspend fun addBluetoothDevice(context: Context, userId: String, device: BluetoothData) {
-        val userRepository: UserRepository = LocalFileUserRepository(context)
+        val userRepository: UserRepository = UserLocalFileRepository(context)
         withContext(Dispatchers.IO) {
             userRepository.addBluetoothDevice(userId, device)
         }
     }
 
     suspend fun removeBluetoothDevice(context: Context, userId: String, address: String) {
-        val userRepository: UserRepository = LocalFileUserRepository(context)
+        val userRepository: UserRepository = UserLocalFileRepository(context)
         withContext(Dispatchers.IO) {
             userRepository.deleteBluetoothDevice(userId, address)
         }
@@ -96,7 +96,7 @@ class UserViewModel : ViewModel() {
             UserCSVUtil().importFromCsv(context, uri)
         }
 
-        val userRepository: UserRepository = LocalFileUserRepository(context)
+        val userRepository: UserRepository = UserLocalFileRepository(context)
         withContext(Dispatchers.IO) {
             users.map { user ->
                 userRepository.save(user)
@@ -105,7 +105,7 @@ class UserViewModel : ViewModel() {
     }
 
     suspend fun deleteUser(context: Context, userId: String) {
-        val userRepository = LocalFileUserRepository(context)
+        val userRepository = UserLocalFileRepository(context)
 
         withContext(Dispatchers.IO) {
             userRepository.delete(userId)

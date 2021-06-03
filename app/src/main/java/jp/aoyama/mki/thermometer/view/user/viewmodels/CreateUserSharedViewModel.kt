@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import jp.aoyama.mki.thermometer.domain.models.BluetoothData
 import jp.aoyama.mki.thermometer.domain.models.User
 import jp.aoyama.mki.thermometer.domain.models.UserEntity
-import jp.aoyama.mki.thermometer.infrastructure.user.LocalFileUserRepository
+import jp.aoyama.mki.thermometer.infrastructure.user.file.UserLocalFileRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -37,7 +37,7 @@ class CreateUserSharedViewModel : ViewModel() {
         }
 
     suspend fun createUser(context: Context) = withContext(Dispatchers.IO) {
-        val repository = LocalFileUserRepository(context)
+        val repository = UserLocalFileRepository(context)
         if (name != null) {
             val bluetooth = BluetoothData.create(bluetoothDeviceName, bluetoothMacAddress)
             val user = User(name = name!!, bluetoothDevices = listOfNotNull(bluetooth))
