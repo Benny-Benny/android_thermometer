@@ -5,15 +5,12 @@ import jp.aoyama.mki.thermometer.domain.models.Grade
 import jp.aoyama.mki.thermometer.domain.models.User
 import jp.aoyama.mki.thermometer.domain.models.UserEntity
 import jp.aoyama.mki.thermometer.domain.repository.UserRepository
-import jp.aoyama.mki.thermometer.infrastructure.api.user.UserApiRepository
 import jp.aoyama.mki.thermometer.view.models.UserData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import jp.aoyama.mki.thermometer.view.models.UserEntity as UserViewEntity
 
-class UserService(
-    private val userRepository: UserRepository = UserApiRepository()
-) {
+class UserService(private val userRepository: UserRepository) {
     suspend fun addUser(user: UserEntity) =
         withContext(Dispatchers.IO) {
             userRepository.save(user)

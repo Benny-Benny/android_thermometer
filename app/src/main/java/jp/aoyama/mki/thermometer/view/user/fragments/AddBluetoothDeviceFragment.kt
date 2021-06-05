@@ -45,7 +45,7 @@ class AddBluetoothDeviceFragment : Fragment(), BluetoothViewHolder.CallbackListe
         }
 
         lifecycleScope.launch {
-            val user = mViewModel.getUser(userId) ?: return@launch
+            val user = mViewModel.getUser(requireContext(), userId) ?: return@launch
             val addresses = user.bluetoothDevices.map { it.address }
             mUserDevices.addAll(addresses)
         }
@@ -74,7 +74,7 @@ class AddBluetoothDeviceFragment : Fragment(), BluetoothViewHolder.CallbackListe
 
     override fun onClick(device: BluetoothData) {
         lifecycleScope.launch {
-            mViewModel.addBluetoothDevice(userId, device)
+            mViewModel.addBluetoothDevice(requireContext(), userId, device)
             findNavController().popBackStack()
             Toast.makeText(requireContext(), "端末を追加しました", Toast.LENGTH_LONG).show()
         }

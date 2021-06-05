@@ -89,7 +89,7 @@ class EditUserFragment : Fragment(), BluetoothViewHolder.CallbackListener,
         }
 
         lifecycleScope.launch {
-            mViewModel.updateName(userId, input)
+            mViewModel.updateName(requireContext(), userId, input)
             Toast.makeText(requireContext(), "更新しました", Toast.LENGTH_LONG).show()
         }
     }
@@ -114,7 +114,7 @@ class EditUserFragment : Fragment(), BluetoothViewHolder.CallbackListener,
 
     private fun removeBluetoothDevice(device: BluetoothData) {
         lifecycleScope.launch {
-            mViewModel.removeBluetoothDevice(userId, device.address)
+            mViewModel.removeBluetoothDevice(requireContext(), userId, device.address)
             reloadData()
         }
     }
@@ -125,13 +125,13 @@ class EditUserFragment : Fragment(), BluetoothViewHolder.CallbackListener,
             else -> null
         }
         lifecycleScope.launch {
-            mViewModel.updateGrade(userId, grade)
+            mViewModel.updateGrade(requireContext(), userId, grade)
         }
     }
 
     private fun reloadData() {
         lifecycleScope.launch {
-            val user = mViewModel.getUser(userId) ?: return@launch
+            val user = mViewModel.getUser(requireContext(), userId) ?: return@launch
             mBinding.apply {
                 editTextName.setText(user.name)
                 spinnerGrade.setSelection(

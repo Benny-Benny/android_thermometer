@@ -131,6 +131,7 @@ class MeasureBodyTemperatureFragment : Fragment(), TextRecognizer.CallbackListen
     private fun saveTemperature() {
         lifecycleScope.launch {
             val valid = mViewModel.saveTemperature(
+                requireContext(),
                 mUserId,
                 mPageViewModel.getData()
             )

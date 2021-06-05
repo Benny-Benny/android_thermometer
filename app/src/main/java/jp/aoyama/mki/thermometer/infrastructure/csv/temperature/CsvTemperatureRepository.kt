@@ -6,7 +6,7 @@ import com.google.gson.Gson
 import jp.aoyama.mki.thermometer.domain.models.BodyTemperatureEntity
 import jp.aoyama.mki.thermometer.domain.repository.TemperatureRepository
 
-class LocalFileTemperatureRepository(
+class CsvTemperatureRepository(
     private val mContext: Context
 ) : TemperatureRepository {
 

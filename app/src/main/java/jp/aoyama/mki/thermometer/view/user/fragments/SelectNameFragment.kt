@@ -56,7 +56,7 @@ class SelectNameFragment : Fragment(), UserViewHolder.CallbackListener {
             }
         }
 
-        mViewModel.observeUsers().observe(viewLifecycleOwner) { data ->
+        mViewModel.observeUsers(requireContext()).observe(viewLifecycleOwner) { data ->
             mAdapterNearUser.submitList(data.near)
             mAdapterOutUser.submitList(data.outs)
         }

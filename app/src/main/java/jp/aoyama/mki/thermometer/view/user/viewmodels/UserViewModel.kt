@@ -11,6 +11,7 @@ import jp.aoyama.mki.thermometer.domain.models.BluetoothDeviceData
 import jp.aoyama.mki.thermometer.domain.models.Grade
 import jp.aoyama.mki.thermometer.domain.models.User
 import jp.aoyama.mki.thermometer.domain.service.UserService
+import jp.aoyama.mki.thermometer.infrastructure.csv.user.CsvUserRepository
 import jp.aoyama.mki.thermometer.infrastructure.csv.user.UserCSVUtil
 import jp.aoyama.mki.thermometer.view.models.UserData
 import kotlinx.coroutines.Dispatchers
@@ -20,7 +21,6 @@ import java.util.*
 
 class UserViewModel : ViewModel() {
     private val _mUserData: MutableLiveData<UserData> = MutableLiveData()
-    private val service = UserService()
 
     fun onReceiveBluetoothResult(devices: List<BluetoothDeviceData>) {
         var data = _mUserData.value ?: return
@@ -38,35 +38,41 @@ class UserViewModel : ViewModel() {
         _mUserData.value = data
     }
 
-    fun observeUsers(): LiveData<UserData> {
-        viewModelScope.launch { getUsers() }
+    fun observeUsers(context: Context): LiveData<UserData> {
+        viewModelScope.launch { getUsers(context) }
         return _mUserData
     }
 
-    private suspend fun getUsers(): UserData {
+    private suspend fun getUsers(context: Context): UserData {
+        val service = UserService(CsvUserRepository(context))
         val users = service.getUsers()
         _mUserData.value = users
         return users
     }
 
-    suspend fun getUser(userId: String): User? {
+    suspend fun getUser(context: Context, userId: String): User? {
+        val service = UserService(CsvUserRepository(context))
         return service.getUser(userId)
 
     }
 
-    suspend fun updateName(userId: String, name: String) {
+    suspend fun updateName(context: Context, userId: String, name: String) {
+        val service = UserService(CsvUserRepository(context))
         service.updateName(userId, name)
     }
 
-    suspend fun updateGrade(userId: String, grade: Grade?) {
+    suspend fun updateGrade(context: Context, userId: String, grade: Grade?) {
+        val service = UserService(CsvUserRepository(context))
         service.updateGrade(userId, grade)
     }
 
-    suspend fun addBluetoothDevice(userId: String, device: BluetoothData) {
+    suspend fun addBluetoothDevice(context: Context, userId: String, device: BluetoothData) {
+        val service = UserService(CsvUserRepository(context))
         service.addBluetoothDevice(userId, device)
     }
 
-    suspend fun removeBluetoothDevice(userId: String, address: String) {
+    suspend fun removeBluetoothDevice(context: Context, userId: String, address: String) {
+        val service = UserService(CsvUserRepository(context))
         service.removeBluetoothDevice(userId, address)
     }
 
@@ -77,11 +83,12 @@ class UserViewModel : ViewModel() {
         val users = withContext(Dispatchers.IO) {
             UserCSVUtil().importFromCsv(context, uri)
         }
-
+        val service = UserService(CsvUserRepository(context))
         users.map { user -> service.addUser(user) }
     }
 
-    suspend fun deleteUser(userId: String) {
+    suspend fun deleteUser(context: Context, userId: String) {
+        val service = UserService(CsvUserRepository(context))
         service.deleteUser(userId)
     }
 }

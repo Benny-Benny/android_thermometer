@@ -40,7 +40,7 @@ class BodyTemperatureHistoryFragment : Fragment() {
 
     private fun reloadData() {
         lifecycleScope.launch {
-            val data = mViewModel.getTemperatureData()
+            val data = mViewModel.getTemperatureData(requireContext())
             mAdapter.submitList(data)
 
             mBinding.swipeRefresh.isRefreshing = false

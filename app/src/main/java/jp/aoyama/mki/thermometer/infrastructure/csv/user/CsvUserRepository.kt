@@ -7,7 +7,7 @@ import jp.aoyama.mki.thermometer.domain.models.Grade
 import jp.aoyama.mki.thermometer.domain.models.UserEntity
 import jp.aoyama.mki.thermometer.domain.repository.UserRepository
 
-class UserLocalFileRepository(private val context: Context) : UserRepository {
+class CsvUserRepository(private val context: Context) : UserRepository {
 
     private val mGson: Gson = Gson()
     private val mFileInputStream get() = context.openFileInput(FILE_NAME)
