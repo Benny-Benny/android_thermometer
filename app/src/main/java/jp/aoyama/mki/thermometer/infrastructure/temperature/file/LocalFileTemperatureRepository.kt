@@ -1,9 +1,9 @@
-package jp.aoyama.mki.thermometer.infrastructure.temperature
+package jp.aoyama.mki.thermometer.infrastructure.temperature.file
 
 import android.content.Context
 import android.util.Log
 import com.google.gson.Gson
-import jp.aoyama.mki.thermometer.domain.models.TemperatureData
+import jp.aoyama.mki.thermometer.domain.models.BodyTemperatureEntity
 import jp.aoyama.mki.thermometer.domain.repository.TemperatureRepository
 
 class LocalFileTemperatureRepository(
@@ -14,10 +14,10 @@ class LocalFileTemperatureRepository(
     private val mFileInputStream get() = mContext.openFileInput(FILE_NAME)
     private val mFileOutputStream get() = mContext.openFileOutput(FILE_NAME, Context.MODE_PRIVATE)
 
-    override suspend fun findAll(): List<TemperatureData> {
+    override suspend fun findAll(): List<BodyTemperatureEntity> {
         return kotlin.runCatching {
             val temperaturesJson = mFileInputStream.bufferedReader().readLine() ?: "[]"
-            mGson.fromJson(temperaturesJson, Array<TemperatureData>::class.java).toList()
+            mGson.fromJson(temperaturesJson, Array<BodyTemperatureEntity>::class.java).toList()
         }.fold(
             onSuccess = { it },
             onFailure = { e ->
@@ -27,7 +27,7 @@ class LocalFileTemperatureRepository(
         )
     }
 
-    override suspend fun add(data: TemperatureData) {
+    override suspend fun save(data: BodyTemperatureEntity) {
         val savedTemperatures = findAll().toMutableList()
         savedTemperatures.add(data)
 

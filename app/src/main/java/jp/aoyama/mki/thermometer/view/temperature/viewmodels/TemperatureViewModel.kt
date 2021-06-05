@@ -3,41 +3,58 @@ package jp.aoyama.mki.thermometer.view.temperature.viewmodels
 import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.ViewModel
+import jp.aoyama.mki.thermometer.domain.models.BodyTemperatureEntity
 import jp.aoyama.mki.thermometer.domain.models.TemperatureData
 import jp.aoyama.mki.thermometer.domain.repository.TemperatureRepository
-import jp.aoyama.mki.thermometer.infrastructure.temperature.LocalFileTemperatureRepository
+import jp.aoyama.mki.thermometer.domain.repository.UserRepository
 import jp.aoyama.mki.thermometer.infrastructure.temperature.TemperatureCSVUtil
+import jp.aoyama.mki.thermometer.infrastructure.temperature.api.ApiTemperatureRepository
+import jp.aoyama.mki.thermometer.infrastructure.user.api.UserApiRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.*
 
 class TemperatureViewModel : ViewModel() {
+    private val temperatureRepository: TemperatureRepository = ApiTemperatureRepository()
+    private val userRepository: UserRepository = UserApiRepository()
 
-    suspend fun getTemperatureData(context: Context): List<TemperatureData> {
-        val repository: TemperatureRepository = LocalFileTemperatureRepository(context)
+    suspend fun getTemperatureData(): List<TemperatureData> {
         return withContext(Dispatchers.IO) {
-            repository.findAll().sortedBy { it.createdAt.timeInMillis }.reversed()
+            val users = userRepository.findAll()
+            temperatureRepository.findAll()
+                .mapNotNull { entity ->
+                    val user = users.find { it.id == entity.userId } ?: return@mapNotNull null
+                    entity.toTemperatureData(user.name)
+                }
+                .sortedBy { it.createdAt.timeInMillis }
+                .reversed()
         }
     }
 
     /**
      * 入力された体温を保存
-     * @param name 体温を記録する人の名前
+     * @param userId 体温を記録する人のID
      * @param temperature 体温
      * @return 入力値が適切であれば true を返す
      */
-    suspend fun saveTemperature(context: Context, name: String, temperature: Float?): Boolean {
+    suspend fun saveTemperature(userId: String, temperature: Float?): Boolean {
         if (temperature == null) return false
         if (temperature > 45f || temperature < 35f) return false
 
-        val data = TemperatureData(name = name, temperature = temperature)
-        val repository: TemperatureRepository = LocalFileTemperatureRepository(context)
-        repository.add(data)
+        val data = BodyTemperatureEntity(
+            userId = userId,
+            temperature = temperature,
+            createdAt = Calendar.getInstance()
+        )
+        withContext(Dispatchers.IO) {
+            temperatureRepository.save(data)
+        }
 
         return true
     }
 
     suspend fun exportCSV(context: Context): Uri {
-        val data = getTemperatureData(context)
+        val data = getTemperatureData()
         return withContext(Dispatchers.IO) {
             TemperatureCSVUtil(context).exportCSV(data)
         }

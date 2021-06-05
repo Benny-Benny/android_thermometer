@@ -1,9 +1,9 @@
 package jp.aoyama.mki.thermometer.domain.repository
 
-import jp.aoyama.mki.thermometer.domain.models.TemperatureData
+import jp.aoyama.mki.thermometer.domain.models.BodyTemperatureEntity
 
 interface TemperatureRepository {
-    suspend fun findAll(): List<TemperatureData>
+    suspend fun findAll(): List<BodyTemperatureEntity>
 
-    suspend fun add(data: TemperatureData)
+    suspend fun save(data: BodyTemperatureEntity)
 }

@@ -34,7 +34,7 @@ class MeasureBodyTemperatureFragment : Fragment(), TextRecognizer.CallbackListen
     private val mPageViewModel: MeasureBodyTemperatureViewModel by viewModels()
     private val mViewModel: TemperatureViewModel by viewModels()
     private val mArgs by navArgs<MeasureBodyTemperatureFragmentArgs>()
-    private val mName: String get() = mArgs.name // 体温を計測する人の名前
+    private val mUserId: String get() = mArgs.userId // 体温を計測する人のユーザーID
 
     private var mCameraDirection = CameraSelector.LENS_FACING_FRONT
 
@@ -131,8 +131,7 @@ class MeasureBodyTemperatureFragment : Fragment(), TextRecognizer.CallbackListen
     private fun saveTemperature() {
         lifecycleScope.launch {
             val valid = mViewModel.saveTemperature(
-                requireContext(),
-                mName,
+                mUserId,
                 mPageViewModel.getData()
             )
             if (valid) {

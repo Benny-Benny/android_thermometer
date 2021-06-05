@@ -56,7 +56,7 @@ class SelectNameFragment : Fragment(), UserViewHolder.CallbackListener {
             }
         }
 
-        mViewModel.observeUsers(requireContext()).observe(viewLifecycleOwner) { data ->
+        mViewModel.observeUsers().observe(viewLifecycleOwner) { data ->
             mAdapterNearUser.submitList(data.near)
             mAdapterOutUser.submitList(data.outs)
         }
@@ -66,8 +66,6 @@ class SelectNameFragment : Fragment(), UserViewHolder.CallbackListener {
             mBluetoothDeviceScanner.devicesLiveData.observe(viewLifecycleOwner) { devices ->
                 mViewModel.onReceiveBluetoothResult(devices)
             }
-
-
         }
 
         return mBinding.root
@@ -98,7 +96,7 @@ class SelectNameFragment : Fragment(), UserViewHolder.CallbackListener {
     // ============================
     override fun onClick(data: UserEntity) {
         findNavController().navigate(
-            HomeFragmentDirections.homeToMeasure(data.name)
+            HomeFragmentDirections.homeToMeasure(data.id)
         )
     }
 

@@ -17,7 +17,7 @@
         tools:layout="@layout/fragment_measure_body_temperature">
 
         <argument
-            android:name="Name"
+            android:name="userId"
             app:argType="string" />
 
     </fragment>

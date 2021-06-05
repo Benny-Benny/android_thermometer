@@ -38,12 +38,12 @@ class UserViewModel : ViewModel() {
         _mUserData.value = data
     }
 
-    fun observeUsers(context: Context): LiveData<UserData> {
+    fun observeUsers(): LiveData<UserData> {
         viewModelScope.launch { getUsers() }
         return _mUserData
     }
 
-    suspend fun getUsers(): UserData {
+    private suspend fun getUsers(): UserData {
         val users = service.getUsers()
         _mUserData.value = users
         return users
