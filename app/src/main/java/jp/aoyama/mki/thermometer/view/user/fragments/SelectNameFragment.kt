@@ -67,20 +67,25 @@ class SelectNameFragment : Fragment(), UserViewHolder.CallbackListener {
                 mViewModel.onReceiveBluetoothResult(devices)
             }
 
-            // Bluetooth端末の検索に必要なパーミッションの取得
-            val accessFileLocation = ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            )
-            if (accessFileLocation == PackageManager.PERMISSION_GRANTED) scanBluetoothDevices()
-            else mRequestPermission.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+
         }
 
         return mBinding.root
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onResume() {
+        super.onResume()
+        // Bluetooth端末の検索に必要なパーミッションの取得
+        val accessFileLocation = ContextCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
+        if (accessFileLocation == PackageManager.PERMISSION_GRANTED) scanBluetoothDevices()
+        else mRequestPermission.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+    }
+
+    override fun onPause() {
+        super.onPause()
         mBluetoothDeviceScanner.cancelDiscovery()
     }
 
