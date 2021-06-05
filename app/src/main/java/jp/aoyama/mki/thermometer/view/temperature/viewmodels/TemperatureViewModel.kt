@@ -7,9 +7,9 @@ import jp.aoyama.mki.thermometer.domain.models.BodyTemperatureEntity
 import jp.aoyama.mki.thermometer.domain.models.TemperatureData
 import jp.aoyama.mki.thermometer.domain.repository.TemperatureRepository
 import jp.aoyama.mki.thermometer.domain.repository.UserRepository
-import jp.aoyama.mki.thermometer.infrastructure.temperature.TemperatureCSVUtil
-import jp.aoyama.mki.thermometer.infrastructure.temperature.api.ApiTemperatureRepository
-import jp.aoyama.mki.thermometer.infrastructure.user.api.UserApiRepository
+import jp.aoyama.mki.thermometer.infrastructure.api.temperature.ApiTemperatureRepository
+import jp.aoyama.mki.thermometer.infrastructure.api.user.UserApiRepository
+import jp.aoyama.mki.thermometer.infrastructure.csv.user.TemperatureCSVUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*

@@ -1,12 +1,12 @@
-package jp.aoyama.mki.thermometer.infrastructure.bluetooth.api
+package jp.aoyama.mki.thermometer.infrastructure.api.bluetooth
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import jp.aoyama.mki.thermometer.domain.models.BluetoothData
+import jp.aoyama.mki.thermometer.domain.models.BluetoothDeviceData
+import jp.aoyama.mki.thermometer.domain.repository.BluetoothDeviceScanner
 import jp.aoyama.mki.thermometer.infrastructure.api.ApiRepositoryUtil
-import jp.aoyama.mki.thermometer.infrastructure.bluetooth.BluetoothDeviceData
-import jp.aoyama.mki.thermometer.infrastructure.bluetooth.BluetoothDeviceScanner
 import kotlinx.coroutines.*
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit

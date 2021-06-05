@@ -7,11 +7,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import jp.aoyama.mki.thermometer.domain.models.BluetoothData
+import jp.aoyama.mki.thermometer.domain.models.BluetoothDeviceData
 import jp.aoyama.mki.thermometer.domain.models.Grade
 import jp.aoyama.mki.thermometer.domain.models.User
 import jp.aoyama.mki.thermometer.domain.service.UserService
-import jp.aoyama.mki.thermometer.infrastructure.bluetooth.BluetoothDeviceData
-import jp.aoyama.mki.thermometer.infrastructure.user.UserCSVUtil
+import jp.aoyama.mki.thermometer.infrastructure.csv.user.UserCSVUtil
 import jp.aoyama.mki.thermometer.view.models.UserData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

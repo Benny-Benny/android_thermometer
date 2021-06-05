@@ -15,8 +15,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import jp.aoyama.mki.thermometer.databinding.FragmentSelectNameBinding
-import jp.aoyama.mki.thermometer.infrastructure.bluetooth.BluetoothDeviceScanner
-import jp.aoyama.mki.thermometer.infrastructure.bluetooth.api.BluetoothApiScanner
+import jp.aoyama.mki.thermometer.domain.repository.BluetoothDeviceScanner
+import jp.aoyama.mki.thermometer.infrastructure.api.bluetooth.BluetoothApiScanner
 import jp.aoyama.mki.thermometer.view.home.HomeFragmentDirections
 import jp.aoyama.mki.thermometer.view.models.UserEntity
 import jp.aoyama.mki.thermometer.view.user.list.UserListAdapter

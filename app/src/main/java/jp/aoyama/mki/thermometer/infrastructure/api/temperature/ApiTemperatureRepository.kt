@@ -1,4 +1,4 @@
-package jp.aoyama.mki.thermometer.infrastructure.temperature.api
+package jp.aoyama.mki.thermometer.infrastructure.api.temperature
 
 import jp.aoyama.mki.thermometer.domain.models.BodyTemperatureEntity
 import jp.aoyama.mki.thermometer.domain.repository.TemperatureRepository

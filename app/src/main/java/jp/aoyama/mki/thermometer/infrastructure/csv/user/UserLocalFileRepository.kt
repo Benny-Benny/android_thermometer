@@ -1,4 +1,4 @@
-package jp.aoyama.mki.thermometer.infrastructure.user.file
+package jp.aoyama.mki.thermometer.infrastructure.csv.user
 
 import android.content.Context
 import com.google.gson.Gson

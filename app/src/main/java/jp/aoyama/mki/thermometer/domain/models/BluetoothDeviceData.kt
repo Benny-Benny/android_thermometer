@@ -1,6 +1,5 @@
-package jp.aoyama.mki.thermometer.infrastructure.bluetooth
+package jp.aoyama.mki.thermometer.domain.models
 
-import jp.aoyama.mki.thermometer.domain.models.BluetoothData
 import java.util.*
 
 data class BluetoothDeviceData(

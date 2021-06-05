@@ -1,6 +1,6 @@
-package jp.aoyama.mki.thermometer.infrastructure.user.api
+package jp.aoyama.mki.thermometer.infrastructure.api.user
 
-import jp.aoyama.mki.thermometer.infrastructure.user.api.models.*
+import jp.aoyama.mki.thermometer.infrastructure.api.user.models.*
 import retrofit2.Call
 import retrofit2.http.*
 

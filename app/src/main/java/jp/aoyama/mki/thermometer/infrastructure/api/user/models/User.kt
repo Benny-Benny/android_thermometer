@@ -1,4 +1,4 @@
-package jp.aoyama.mki.thermometer.infrastructure.user.api.models
+package jp.aoyama.mki.thermometer.infrastructure.api.user.models
 
 import jp.aoyama.mki.thermometer.domain.models.BluetoothData
 import jp.aoyama.mki.thermometer.domain.models.UserEntity

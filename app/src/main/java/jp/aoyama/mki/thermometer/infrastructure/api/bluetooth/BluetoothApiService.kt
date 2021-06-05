@@ -1,4 +1,4 @@
-package jp.aoyama.mki.thermometer.infrastructure.bluetooth.api
+package jp.aoyama.mki.thermometer.infrastructure.api.bluetooth
 
 import retrofit2.Call
 import retrofit2.http.GET

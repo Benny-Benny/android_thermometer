@@ -1,11 +1,11 @@
-package jp.aoyama.mki.thermometer.infrastructure.bluetooth.android
+package jp.aoyama.mki.thermometer.infrastructure.android.bluetooth
 
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.map
-import jp.aoyama.mki.thermometer.infrastructure.bluetooth.BluetoothDeviceData
-import jp.aoyama.mki.thermometer.infrastructure.bluetooth.BluetoothDeviceScanner
+import jp.aoyama.mki.thermometer.domain.models.BluetoothDeviceData
+import jp.aoyama.mki.thermometer.domain.repository.BluetoothDeviceScanner
 
 /**
  *  [BluetoothDiscoveryDeviceScanner], [BluetoothGattDeviceScanner]のどちらの実装も兼ね備えた[BluetoothDeviceScanner].

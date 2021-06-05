@@ -1,4 +1,4 @@
-package jp.aoyama.mki.thermometer.infrastructure.temperature.api
+package jp.aoyama.mki.thermometer.infrastructure.api.temperature
 
 import com.google.gson.annotations.SerializedName
 import retrofit2.Call

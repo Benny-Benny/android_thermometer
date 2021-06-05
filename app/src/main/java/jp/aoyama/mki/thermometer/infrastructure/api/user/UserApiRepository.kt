@@ -1,4 +1,4 @@
-package jp.aoyama.mki.thermometer.infrastructure.user.api
+package jp.aoyama.mki.thermometer.infrastructure.api.user
 
 import android.util.Log
 import jp.aoyama.mki.thermometer.domain.models.BluetoothData
@@ -6,10 +6,10 @@ import jp.aoyama.mki.thermometer.domain.models.Grade
 import jp.aoyama.mki.thermometer.domain.models.UserEntity
 import jp.aoyama.mki.thermometer.domain.repository.UserRepository
 import jp.aoyama.mki.thermometer.infrastructure.api.ApiRepositoryUtil
-import jp.aoyama.mki.thermometer.infrastructure.user.api.models.CreateUserRequest
-import jp.aoyama.mki.thermometer.infrastructure.user.api.models.EditDeviceRequest
-import jp.aoyama.mki.thermometer.infrastructure.user.api.models.EditGradeRequest
-import jp.aoyama.mki.thermometer.infrastructure.user.api.models.EditNameRequest
+import jp.aoyama.mki.thermometer.infrastructure.api.user.models.CreateUserRequest
+import jp.aoyama.mki.thermometer.infrastructure.api.user.models.EditDeviceRequest
+import jp.aoyama.mki.thermometer.infrastructure.api.user.models.EditGradeRequest
+import jp.aoyama.mki.thermometer.infrastructure.api.user.models.EditNameRequest
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

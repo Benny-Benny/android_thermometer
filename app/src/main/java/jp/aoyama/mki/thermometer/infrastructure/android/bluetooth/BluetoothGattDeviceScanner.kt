@@ -1,4 +1,4 @@
-package jp.aoyama.mki.thermometer.infrastructure.bluetooth.android
+package jp.aoyama.mki.thermometer.infrastructure.android.bluetooth
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothGatt
@@ -9,8 +9,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.distinctUntilChanged
 import jp.aoyama.mki.thermometer.domain.models.BluetoothData
-import jp.aoyama.mki.thermometer.infrastructure.bluetooth.BluetoothDeviceData
-import jp.aoyama.mki.thermometer.infrastructure.bluetooth.BluetoothDeviceScanner
+import jp.aoyama.mki.thermometer.domain.models.BluetoothDeviceData
+import jp.aoyama.mki.thermometer.domain.repository.BluetoothDeviceScanner
 import kotlinx.coroutines.*
 import java.util.*
 
