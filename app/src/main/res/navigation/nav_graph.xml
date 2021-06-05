@@ -24,16 +24,16 @@
     <fragment
         android:id="@+id/editNameFragment"
         android:name="jp.aoyama.mki.thermometer.view.user.fragments.EditNameFragment"
-        android:label="新しいユーザーを追加"
+        android:label="@string/create_new_user"
         tools:layout="@layout/fragment_edit_name">
         <action
-            android:id="@+id/edit_name_to_pairing"
-            app:destination="@id/bluetoothPairingFragment" />
+            android:id="@+id/edit_name_to_edit_grade"
+            app:destination="@id/editGradeFragment" />
     </fragment>
     <fragment
         android:id="@+id/bluetoothPairingFragment"
         android:name="jp.aoyama.mki.thermometer.view.user.fragments.SelectBluetoothDeviceFragment"
-        android:label="新しいユーザーを追加">
+        android:label="@string/create_new_user">
         <action
             android:id="@+id/pairing_to_confirm"
             app:destination="@id/confirmUserInformationFragment" />
@@ -41,7 +41,7 @@
     <fragment
         android:id="@+id/confirmUserInformationFragment"
         android:name="jp.aoyama.mki.thermometer.view.user.fragments.ConfirmUserInformationFragment"
-        android:label="新しいユーザーを追加" />
+        android:label="@string/create_new_user" />
     <fragment
         android:id="@+id/editUserFragment"
         android:name="jp.aoyama.mki.thermometer.view.user.fragments.EditUserFragment"
@@ -78,9 +78,17 @@
     <fragment
         android:id="@+id/createUserFragment"
         android:name="jp.aoyama.mki.thermometer.view.user.fragments.CreateUserFragment"
-        android:label="CreateUserFragment">
+        android:label="@string/create_new_user">
         <action
             android:id="@+id/create_to_edit"
             app:destination="@id/editNameFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editGradeFragment"
+        android:name="jp.aoyama.mki.thermometer.view.user.fragments.EditGradeFragment"
+        android:label="@string/create_new_user">
+        <action
+            android:id="@+id/edit_grade_to_pairing"
+            app:destination="@id/bluetoothPairingFragment" />
     </fragment>
 </navigation>

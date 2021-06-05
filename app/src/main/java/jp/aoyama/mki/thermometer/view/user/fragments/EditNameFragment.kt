@@ -54,6 +54,6 @@ class EditNameFragment : Fragment() {
             return
         }
         mViewModel.name = name
-        findNavController().navigate(EditNameFragmentDirections.editNameToPairing())
+        findNavController().navigate(EditNameFragmentDirections.editNameToEditGrade())
     }
 }
