@@ -2,9 +2,7 @@ package jp.aoyama.mki.thermometer.view.user.fragments
 
 import android.app.AlertDialog
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -76,9 +74,27 @@ class EditUserFragment : Fragment(), BluetoothViewHolder.CallbackListener,
             }
         }
 
+        setHasOptionsMenu(true)
         reloadData()
 
         return mBinding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.menu_edit_user, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.delete_user -> {
+                lifecycleScope.launch {
+                    mViewModel.deleteUser(requireContext(), userId)
+                    findNavController().popBackStack()
+                }
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun updateName() {
