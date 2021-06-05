@@ -52,7 +52,7 @@ class BluetoothApiScanner : BluetoothDeviceScanner {
             null
         } ?: return emptyList()
 
-        return response.results
+        return response
             .filter { it.found }
             .map {
                 val device = BluetoothData(name = null, address = it.address)
@@ -67,6 +67,6 @@ class BluetoothApiScanner : BluetoothDeviceScanner {
     companion object {
         private const val TAG = "BluetoothApiScanner"
         private const val INTERVAL_IN_MILLIS = 10 * 1000
-        private const val BASE_URL = ApiRepositoryUtil.BASE_URL
+        private const val BASE_URL = "${ApiRepositoryUtil.BASE_URL}/bluetooth/"
     }
 }

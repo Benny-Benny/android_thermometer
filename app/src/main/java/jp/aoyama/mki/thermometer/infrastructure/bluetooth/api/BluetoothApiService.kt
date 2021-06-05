@@ -13,6 +13,6 @@ data class BluetoothDevice(
 )
 
 interface BluetoothApiService {
-    @GET("/bluetooth/scan")
-    fun scan(): Call<BluetoothScanResponse>
+    @GET("scan")
+    fun scan(): Call<List<BluetoothDevice>>
 }

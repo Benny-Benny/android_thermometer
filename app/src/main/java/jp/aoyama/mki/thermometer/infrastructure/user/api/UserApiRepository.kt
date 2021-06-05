@@ -91,6 +91,6 @@ class UserApiRepository : UserRepository {
 
     companion object {
         private const val TAG = "UserApiRepository"
-        private const val BASE_URL = "${ApiRepositoryUtil.BASE_URL}"
+        private const val BASE_URL = ApiRepositoryUtil.BASE_URL
     }
 }
