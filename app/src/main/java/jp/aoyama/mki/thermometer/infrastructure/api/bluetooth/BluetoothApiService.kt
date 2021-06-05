@@ -4,8 +4,9 @@ import retrofit2.Call
 import retrofit2.http.GET
 
 data class BluetoothDevice(
-    val address: String = "",
-    val found: Boolean = false
+    val address: String,
+    val found: Boolean,
+    val userId: String,
 )
 
 interface BluetoothApiService {

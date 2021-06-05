@@ -3,8 +3,9 @@ package jp.aoyama.mki.thermometer.infrastructure.api.bluetooth
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import jp.aoyama.mki.thermometer.domain.models.BluetoothData
-import jp.aoyama.mki.thermometer.domain.models.BluetoothDeviceData
+import jp.aoyama.mki.thermometer.domain.models.BluetoothScanResult
+import jp.aoyama.mki.thermometer.domain.models.Device
+import jp.aoyama.mki.thermometer.domain.models.DeviceData
 import jp.aoyama.mki.thermometer.domain.repository.BluetoothDeviceScanner
 import jp.aoyama.mki.thermometer.infrastructure.api.ApiRepositoryUtil
 import kotlinx.coroutines.*
@@ -14,8 +15,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class BluetoothApiScanner : BluetoothDeviceScanner {
 
-    private val _deviceLiveData: MutableLiveData<List<BluetoothDeviceData>> = MutableLiveData()
-    override val devicesLiveData: LiveData<List<BluetoothDeviceData>>
+    private val _deviceLiveData: MutableLiveData<List<BluetoothScanResult>> = MutableLiveData()
+    override val devicesLiveData: LiveData<List<BluetoothScanResult>>
         get() = _deviceLiveData
 
     private val scope = CoroutineScope(Dispatchers.IO)
@@ -37,14 +38,20 @@ class BluetoothApiScanner : BluetoothDeviceScanner {
             while (true) {
                 val results = scan()
                 withContext(Dispatchers.Main) {
-                    _deviceLiveData.value = results
+                    _deviceLiveData.value = results.map {
+                        BluetoothScanResult(
+                            address = it.device.address,
+                            name = it.device.name,
+                            foundAt = it.foundAt
+                        )
+                    }
                 }
                 delay(INTERVAL_IN_MILLIS.toLong())
             }
         }
     }
 
-    private fun scan(): List<BluetoothDeviceData> {
+    private fun scan(): List<DeviceData> {
         val response = try {
             service.scan().execute().body()
         } catch (e: Exception) {
@@ -55,8 +62,8 @@ class BluetoothApiScanner : BluetoothDeviceScanner {
         return response
             .filter { it.found }
             .map {
-                val device = BluetoothData(name = null, address = it.address)
-                return@map BluetoothDeviceData(device)
+                val device = Device(name = null, address = it.address, userId = it.userId)
+                return@map DeviceData(device)
             }
     }
 

@@ -2,7 +2,6 @@ package jp.aoyama.mki.thermometer.infrastructure.csv.user
 
 import android.content.Context
 import android.net.Uri
-import jp.aoyama.mki.thermometer.domain.models.BluetoothData
 import jp.aoyama.mki.thermometer.domain.models.UserEntity
 import java.util.*
 
@@ -30,18 +29,11 @@ class UserCSVUtil {
         if (elements.size != 3) return null
 
         val name = elements[0]
-        val macAddress = elements[1].toUpperCase(Locale.ROOT)
         val grade = elements[2]
-
-        val bluetoothData = BluetoothData(
-            address = macAddress,
-            name = null
-        )
 
         return UserEntity(
             id = UUID.randomUUID().toString(),
             name = name,
-            bluetoothDevices = listOfNotNull(bluetoothData),
             grade = grade
         )
     }

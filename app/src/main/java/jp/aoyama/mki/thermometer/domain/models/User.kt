@@ -5,6 +5,6 @@ import java.util.*
 data class User(
     val id: String = UUID.randomUUID().toString(),
     val name: String,
-    val bluetoothDevices: List<BluetoothData>,
+    val devices: List<Device>,
     val grade: Grade? = null
 )

@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import jp.aoyama.mki.thermometer.R
 import jp.aoyama.mki.thermometer.databinding.ItemBluetoothDeviceBinding
-import jp.aoyama.mki.thermometer.domain.models.BluetoothData
+import jp.aoyama.mki.thermometer.domain.models.BluetoothScanResult
 
 class BluetoothViewHolder(
     private val mBinding: ItemBluetoothDeviceBinding,
@@ -16,14 +16,14 @@ class BluetoothViewHolder(
     RecyclerView.ViewHolder(mBinding.root) {
 
     interface CallbackListener {
-        fun onClick(device: BluetoothData)
+        fun onClick(device: BluetoothScanResult)
     }
 
     interface EditCallbackListener {
-        fun onDelete(device: BluetoothData)
+        fun onDelete(device: BluetoothScanResult)
     }
 
-    fun bind(device: BluetoothData) {
+    fun bind(device: BluetoothScanResult) {
         mBinding.apply {
             textDeviceAddress.text = device.address
             textDeviceName.text =

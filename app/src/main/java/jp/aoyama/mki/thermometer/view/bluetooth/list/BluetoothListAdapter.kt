@@ -2,13 +2,13 @@ package jp.aoyama.mki.thermometer.view.bluetooth.list
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
-import jp.aoyama.mki.thermometer.domain.models.BluetoothData
+import jp.aoyama.mki.thermometer.domain.models.BluetoothScanResult
 
 class BluetoothListAdapter(
     private val callbackListener: BluetoothViewHolder.CallbackListener,
     private val editCallbackListener: BluetoothViewHolder.EditCallbackListener? = null
 ) :
-    ListAdapter<BluetoothData, BluetoothViewHolder>(BluetoothDiffUtil()) {
+    ListAdapter<BluetoothScanResult, BluetoothViewHolder>(BluetoothDiffUtil()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BluetoothViewHolder {
         return BluetoothViewHolder.from(parent, callbackListener, editCallbackListener)

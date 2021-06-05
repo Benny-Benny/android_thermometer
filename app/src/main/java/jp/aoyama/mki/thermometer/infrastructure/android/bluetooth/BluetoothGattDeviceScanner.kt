@@ -8,8 +8,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.distinctUntilChanged
-import jp.aoyama.mki.thermometer.domain.models.BluetoothData
-import jp.aoyama.mki.thermometer.domain.models.BluetoothDeviceData
+import jp.aoyama.mki.thermometer.domain.models.BluetoothScanResult
 import jp.aoyama.mki.thermometer.domain.repository.BluetoothDeviceScanner
 import kotlinx.coroutines.*
 import java.util.*
@@ -25,10 +24,11 @@ class BluetoothGattDeviceScanner(
 ) : BluetoothDeviceScanner {
     private val scannerScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
-    private var devices: MutableMap<String, BluetoothDeviceData> = mutableMapOf()
-    private val _devicesLiveData: MutableLiveData<List<BluetoothDeviceData>> =
+    private var devices: MutableMap<String, BluetoothScanResult> = mutableMapOf()
+    private val _devicesLiveData: MutableLiveData<List<BluetoothScanResult>> =
         MutableLiveData(emptyList())
-    override val devicesLiveData: LiveData<List<BluetoothDeviceData>> get() = _devicesLiveData.distinctUntilChanged()
+    override val devicesLiveData: LiveData<List<BluetoothScanResult>>
+        get() = _devicesLiveData.distinctUntilChanged()
 
     private val mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
 
@@ -37,8 +37,9 @@ class BluetoothGattDeviceScanner(
             super.onReadRemoteRssi(gatt, rssi, status)
             if (gatt == null) return
             val address = gatt.device.address ?: return
-            devices[address] = BluetoothDeviceData(
-                device = BluetoothData(name = gatt.device.name, address = address),
+            devices[address] = BluetoothScanResult(
+                address = gatt.device.address,
+                name = gatt.device.name,
                 foundAt = Calendar.getInstance()
             )
 
@@ -73,7 +74,7 @@ class BluetoothGattDeviceScanner(
 
     private suspend fun publishDevices() {
         // MACアドレス順に並び替え
-        val sortedByAddress = devices.values.sortedBy { it.device.address }.toMutableList()
+        val sortedByAddress = devices.values.sortedBy { it.address }.toMutableList()
 
         // タイムアウトしたデバイスを削除
         if (timeoutInMillis != null) {
