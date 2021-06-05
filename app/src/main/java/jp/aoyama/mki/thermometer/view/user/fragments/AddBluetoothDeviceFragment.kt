@@ -54,15 +54,21 @@ class AddBluetoothDeviceFragment : Fragment(), BluetoothViewHolder.CallbackListe
         mBluetoothDeviceScanner.startDiscovery()
         mBluetoothDeviceScanner.devicesLiveData.observe(viewLifecycleOwner) { devices ->
             // 登録済みのデバイスを一覧から削除
-            val notRegistered = devices.toMutableList()
-            notRegistered.removeAll { mUserDevices.contains(it.device.address) }
+            val notRegistered = devices
+                .filter { it.device.name != null }
+                .filter { !mUserDevices.contains(it.device.address) }
+                .map {
+                    BluetoothData(
+                        name = it.device.name,
+                        address = it.device.address
+                    )
+                }
 
-            mAdapter.submitList(notRegistered.map {
-                BluetoothData(
-                    name = it.device.name,
-                    address = it.device.address
-                )
-            })
+            mBinding.progressCircular.visibility =
+                if (notRegistered.isEmpty()) View.VISIBLE
+                else View.GONE
+
+            mAdapter.submitList(notRegistered)
         }
         return mBinding.root
     }

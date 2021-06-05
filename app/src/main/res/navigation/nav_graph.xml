@@ -32,7 +32,7 @@
     </fragment>
     <fragment
         android:id="@+id/bluetoothPairingFragment"
-        android:name="jp.aoyama.mki.thermometer.view.user.fragments.BluetoothPairingFragment"
+        android:name="jp.aoyama.mki.thermometer.view.user.fragments.SelectBluetoothDeviceFragment"
         android:label="新しいユーザーを追加">
         <action
             android:id="@+id/pairing_to_confirm"

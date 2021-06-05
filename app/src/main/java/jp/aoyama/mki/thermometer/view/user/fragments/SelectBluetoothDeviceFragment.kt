@@ -20,7 +20,7 @@ import jp.aoyama.mki.thermometer.view.bluetooth.list.BluetoothListAdapter
 import jp.aoyama.mki.thermometer.view.bluetooth.list.BluetoothViewHolder
 import jp.aoyama.mki.thermometer.view.user.viewmodels.CreateUserSharedViewModel
 
-class BluetoothPairingFragment : Fragment(), BluetoothViewHolder.CallbackListener {
+class SelectBluetoothDeviceFragment : Fragment(), BluetoothViewHolder.CallbackListener {
 
     private lateinit var mBinding: FragmentBluetoothPairingBinding
     private lateinit var mBluetoothDeviceScanner: BluetoothDeviceScanner
@@ -42,7 +42,7 @@ class BluetoothPairingFragment : Fragment(), BluetoothViewHolder.CallbackListene
 
         mBinding.apply {
             buttonSkip.setOnClickListener {
-                findNavController().navigate(BluetoothPairingFragmentDirections.pairingToConfirm())
+                findNavController().navigate(SelectBluetoothDeviceFragmentDirections.pairingToConfirm())
             }
             buttonBack.setOnClickListener {
                 findNavController().popBackStack()
@@ -53,16 +53,20 @@ class BluetoothPairingFragment : Fragment(), BluetoothViewHolder.CallbackListene
         }
 
         mBluetoothDeviceScanner.devicesLiveData.observe(viewLifecycleOwner) { devices ->
+            val foundDevices = devices
+                .filter { it.device.name != null }
+                .map {
+                    BluetoothData(
+                        name = it.device.name,
+                        address = it.device.address
+                    )
+                }
+
             mBinding.progressCircular.visibility =
-                if (devices.isEmpty()) View.VISIBLE
+                if (foundDevices.isEmpty()) View.VISIBLE
                 else View.GONE
 
-            mAdapter.submitList(devices.map {
-                BluetoothData(
-                    name = it.device.name,
-                    address = it.device.address
-                )
-            })
+            mAdapter.submitList(foundDevices)
         }
 
         val accessFineLocation = ContextCompat.checkSelfPermission(
@@ -90,6 +94,6 @@ class BluetoothPairingFragment : Fragment(), BluetoothViewHolder.CallbackListene
     override fun onClick(device: BluetoothData) {
         mViewModel.bluetoothDeviceName = device.name
         mViewModel.bluetoothMacAddress = device.address
-        findNavController().navigate(BluetoothPairingFragmentDirections.pairingToConfirm())
+        findNavController().navigate(SelectBluetoothDeviceFragmentDirections.pairingToConfirm())
     }
 }
