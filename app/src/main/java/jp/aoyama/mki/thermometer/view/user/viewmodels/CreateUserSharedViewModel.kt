@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import jp.aoyama.mki.thermometer.domain.models.device.Device
 import jp.aoyama.mki.thermometer.domain.models.user.Grade
 import jp.aoyama.mki.thermometer.domain.models.user.User
-import jp.aoyama.mki.thermometer.domain.models.user.UserEntity
 import jp.aoyama.mki.thermometer.domain.service.UserService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -57,7 +56,7 @@ class CreateUserSharedViewModel : ViewModel() {
             )
 
             val service = UserService(context)
-            service.addUser(UserEntity(user))
+            service.createUser(user)
             state = CreateUserState()
         }
     }

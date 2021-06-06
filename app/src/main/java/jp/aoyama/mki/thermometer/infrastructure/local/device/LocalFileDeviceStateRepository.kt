@@ -14,7 +14,6 @@ class LocalFileDeviceStateRepository(
     private val mFileInputStream get() = mContext.openFileInput(FILE_NAME)
     private val mFileOutputStream get() = mContext.openFileOutput(FILE_NAME, Context.MODE_PRIVATE)
 
-
     companion object {
         private const val TAG = "LocalFileDeviceStateRep"
         private const val FILE_NAME = "device_states.json"

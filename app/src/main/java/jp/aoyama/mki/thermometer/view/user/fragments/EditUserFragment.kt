@@ -167,7 +167,7 @@ class EditUserFragment : Fragment(), BluetoothViewHolder.CallbackListener,
                 BluetoothScanResult(
                     address = it.address,
                     name = it.name,
-                    foundAt = Calendar.getInstance()
+                    scannedAt = Calendar.getInstance()
                 )
             })
         }

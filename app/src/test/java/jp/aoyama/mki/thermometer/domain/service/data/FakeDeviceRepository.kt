@@ -22,13 +22,6 @@ class FakeDeviceRepository : DeviceRepository {
         baseRepository.delete(address)
     }
 
-    override suspend fun deleteAllByUserId(userId: String) {
-        val userDevices = findByUserId(userId)
-        userDevices.forEach {
-            delete(it.address)
-        }
-    }
-
     fun clear() {
         baseRepository.clear()
     }

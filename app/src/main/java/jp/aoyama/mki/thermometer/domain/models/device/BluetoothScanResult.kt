@@ -5,5 +5,5 @@ import java.util.*
 data class BluetoothScanResult(
     val address: String,
     val name: String?,
-    val foundAt: Calendar
+    val scannedAt: Calendar
 )

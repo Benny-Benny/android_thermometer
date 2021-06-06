@@ -83,7 +83,7 @@ class UserViewModel : ViewModel() {
             UserCSVUtil().importFromCsv(context, uri)
         }
         val service = UserService(context)
-        users.map { user -> service.addUser(user) }
+        users.map { user -> service.createUser(user) }
     }
 
     suspend fun deleteUser(context: Context, userId: String) {

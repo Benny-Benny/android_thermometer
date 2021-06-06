@@ -13,7 +13,7 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class BluetoothApiScanner : BluetoothDeviceScanner {
+class ApiBluetoothScanner : BluetoothDeviceScanner {
 
     private val _deviceLiveData: MutableLiveData<List<BluetoothScanResult>> = MutableLiveData()
     override val devicesLiveData: LiveData<List<BluetoothScanResult>>
@@ -21,7 +21,7 @@ class BluetoothApiScanner : BluetoothDeviceScanner {
 
     private val scope = CoroutineScope(Dispatchers.IO)
 
-    private val service: BluetoothApiService by lazy {
+    private val service: ApiBluetoothService by lazy {
         val client = OkHttpClient()
         val retrofit = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
@@ -29,7 +29,7 @@ class BluetoothApiScanner : BluetoothDeviceScanner {
             .client(client)
             .build()
 
-        retrofit.create(BluetoothApiService::class.java)
+        retrofit.create(ApiBluetoothService::class.java)
     }
 
 
@@ -42,7 +42,7 @@ class BluetoothApiScanner : BluetoothDeviceScanner {
                         BluetoothScanResult(
                             address = it.device.address,
                             name = it.device.name,
-                            foundAt = it.foundAt
+                            scannedAt = it.foundAt
                         )
                     }
                 }
@@ -74,6 +74,6 @@ class BluetoothApiScanner : BluetoothDeviceScanner {
     companion object {
         private const val TAG = "BluetoothApiScanner"
         private const val INTERVAL_IN_MILLIS = 10 * 1000
-        private const val BASE_URL = "${ApiRepositoryUtil.BASE_URL}/bluetooth/"
+        private const val BASE_URL = "${ApiRepositoryUtil.BASE_URL}/devices/"
     }
 }

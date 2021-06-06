@@ -40,7 +40,7 @@ class BluetoothGattDeviceScanner(
             devices[address] = BluetoothScanResult(
                 address = gatt.device.address,
                 name = gatt.device.name,
-                foundAt = Calendar.getInstance()
+                scannedAt = Calendar.getInstance()
             )
 
             scannerScope.launch { publishDevices() }
@@ -83,7 +83,7 @@ class BluetoothGattDeviceScanner(
             val timeout =
                 if (timeoutInMillis > timeoutMin) timeoutInMillis
                 else timeoutMin
-            sortedByAddress.removeAll { it.foundAt.timeInMillis < now.timeInMillis - timeout }
+            sortedByAddress.removeAll { it.scannedAt.timeInMillis < now.timeInMillis - timeout }
         }
 
         withContext(Dispatchers.Main) {

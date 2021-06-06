@@ -10,6 +10,4 @@ interface DeviceRepository {
     suspend fun save(device: Device)
 
     suspend fun delete(address: String)
-
-    suspend fun deleteAllByUserId(userId: String)
 }
