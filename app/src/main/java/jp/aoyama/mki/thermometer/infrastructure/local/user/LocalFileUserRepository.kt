@@ -1,4 +1,4 @@
-package jp.aoyama.mki.thermometer.infrastructure.csv.user
+package jp.aoyama.mki.thermometer.infrastructure.local.user
 
 import android.content.Context
 import com.google.gson.Gson
@@ -6,7 +6,7 @@ import jp.aoyama.mki.thermometer.domain.models.Grade
 import jp.aoyama.mki.thermometer.domain.models.UserEntity
 import jp.aoyama.mki.thermometer.domain.repository.UserRepository
 
-class CsvUserRepository(private val context: Context) : UserRepository {
+class LocalFileUserRepository(private val context: Context) : UserRepository {
 
     private val mGson: Gson = Gson()
     private val mFileInputStream get() = context.openFileInput(FILE_NAME)
@@ -70,6 +70,6 @@ class CsvUserRepository(private val context: Context) : UserRepository {
     }
 
     companion object {
-        private const val FILE_NAME = "Name List.txt"
+        private const val FILE_NAME = "users.json"
     }
 }

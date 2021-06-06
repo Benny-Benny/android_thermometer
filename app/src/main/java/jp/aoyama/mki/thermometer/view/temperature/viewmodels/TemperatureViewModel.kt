@@ -5,17 +5,17 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import jp.aoyama.mki.thermometer.domain.models.BodyTemperatureEntity
 import jp.aoyama.mki.thermometer.domain.models.TemperatureData
-import jp.aoyama.mki.thermometer.infrastructure.csv.temperature.CsvTemperatureRepository
-import jp.aoyama.mki.thermometer.infrastructure.csv.user.CsvUserRepository
-import jp.aoyama.mki.thermometer.infrastructure.csv.user.TemperatureCSVUtil
+import jp.aoyama.mki.thermometer.infrastructure.local.temperature.LocalFileTemperatureRepository
+import jp.aoyama.mki.thermometer.infrastructure.local.user.LocalFileUserRepository
+import jp.aoyama.mki.thermometer.infrastructure.local.user.TemperatureCSVUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
 
 class TemperatureViewModel : ViewModel() {
     suspend fun getTemperatureData(context: Context): List<TemperatureData> {
-        val temperatureRepository = CsvTemperatureRepository(context)
-        val userRepository = CsvUserRepository(context)
+        val temperatureRepository = LocalFileTemperatureRepository(context)
+        val userRepository = LocalFileUserRepository(context)
 
         return withContext(Dispatchers.IO) {
             val users = userRepository.findAll()
@@ -45,7 +45,7 @@ class TemperatureViewModel : ViewModel() {
             createdAt = Calendar.getInstance()
         )
         withContext(Dispatchers.IO) {
-            val temperatureRepository = CsvTemperatureRepository(context)
+            val temperatureRepository = LocalFileTemperatureRepository(context)
             temperatureRepository.save(data)
         }
 

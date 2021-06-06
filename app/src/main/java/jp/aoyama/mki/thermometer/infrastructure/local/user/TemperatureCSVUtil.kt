@@ -1,4 +1,4 @@
-package jp.aoyama.mki.thermometer.infrastructure.csv.user
+package jp.aoyama.mki.thermometer.infrastructure.local.user
 
 import android.content.Context
 import android.net.Uri

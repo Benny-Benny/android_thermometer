@@ -1,4 +1,4 @@
-package jp.aoyama.mki.thermometer.infrastructure.csv.temperature
+package jp.aoyama.mki.thermometer.infrastructure.local.temperature
 
 import android.content.Context
 import android.util.Log
@@ -6,7 +6,7 @@ import com.google.gson.Gson
 import jp.aoyama.mki.thermometer.domain.models.BodyTemperatureEntity
 import jp.aoyama.mki.thermometer.domain.repository.TemperatureRepository
 
-class CsvTemperatureRepository(
+class LocalFileTemperatureRepository(
     private val mContext: Context
 ) : TemperatureRepository {
 
@@ -39,6 +39,6 @@ class CsvTemperatureRepository(
 
     companion object {
         private const val TAG = "LocalFileTemperatureRep"
-        private const val FILE_NAME = "Body_Temperature.txt"
+        private const val FILE_NAME = "Body_Temperature.json"
     }
 }

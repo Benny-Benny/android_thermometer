@@ -7,8 +7,8 @@ import jp.aoyama.mki.thermometer.domain.models.User
 import jp.aoyama.mki.thermometer.domain.models.UserEntity
 import jp.aoyama.mki.thermometer.domain.repository.DeviceRepository
 import jp.aoyama.mki.thermometer.domain.repository.UserRepository
-import jp.aoyama.mki.thermometer.infrastructure.csv.device.LocalFileDeviceRepository
-import jp.aoyama.mki.thermometer.infrastructure.csv.user.CsvUserRepository
+import jp.aoyama.mki.thermometer.infrastructure.local.device.LocalFileDeviceRepository
+import jp.aoyama.mki.thermometer.infrastructure.local.user.LocalFileUserRepository
 import jp.aoyama.mki.thermometer.view.models.UserData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -20,7 +20,7 @@ class UserService(
 ) {
 
     constructor(context: Context) : this(
-        userRepository = CsvUserRepository(context),
+        userRepository = LocalFileUserRepository(context),
         deviceRepository = LocalFileDeviceRepository(context)
     )
 

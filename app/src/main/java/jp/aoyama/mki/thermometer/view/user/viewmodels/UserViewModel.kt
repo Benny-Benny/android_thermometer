@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import jp.aoyama.mki.thermometer.domain.models.*
 import jp.aoyama.mki.thermometer.domain.service.UserService
-import jp.aoyama.mki.thermometer.infrastructure.csv.user.UserCSVUtil
+import jp.aoyama.mki.thermometer.infrastructure.local.user.UserCSVUtil
 import jp.aoyama.mki.thermometer.view.models.UserData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

@@ -1,4 +1,4 @@
-package jp.aoyama.mki.thermometer.infrastructure.csv.device
+package jp.aoyama.mki.thermometer.infrastructure.local.device
 
 import android.content.Context
 import android.util.Log
@@ -17,12 +17,12 @@ class LocalFileDeviceRepository(
 
     companion object {
         private const val TAG = "LocalFileDeviceReposito"
-        private const val FILE_NAME = "devices.txt"
+        private const val FILE_NAME = "devices.json"
     }
 
     override suspend fun findAll(): List<Device> {
         return kotlin.runCatching {
-            val devicesJson = mFileInputStream.bufferedReader().readLine()
+            val devicesJson = mFileInputStream.bufferedReader().readLine() ?: "[]"
             mGson.fromJson(devicesJson, Array<Device>::class.java).toList()
         }.fold(
             onSuccess = { it },
