@@ -18,8 +18,8 @@ class FakeDeviceStateRepository : DeviceStateRepository {
         baseRepository.save(state.id, state)
     }
 
-    override suspend fun delete(state: DeviceStateEntity) {
-        baseRepository.delete(state.id)
+    override suspend fun delete(id: String) {
+        baseRepository.delete(id)
     }
 
     fun clear() {

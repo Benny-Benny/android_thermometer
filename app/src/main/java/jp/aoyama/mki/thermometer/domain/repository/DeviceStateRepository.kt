@@ -9,5 +9,5 @@ interface DeviceStateRepository {
 
     suspend fun save(state: DeviceStateEntity)
 
-    suspend fun delete(state: DeviceStateEntity)
+    suspend fun delete(id: String)
 }
