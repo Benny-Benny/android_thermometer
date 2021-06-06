@@ -1,4 +1,4 @@
-package jp.aoyama.mki.thermometer.domain.models
+package jp.aoyama.mki.thermometer.domain.models.device
 
 data class Device(
     val name: String? = null,

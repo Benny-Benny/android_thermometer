@@ -1,7 +1,7 @@
 package jp.aoyama.mki.thermometer.domain.service.data
 
-import jp.aoyama.mki.thermometer.domain.models.Grade
-import jp.aoyama.mki.thermometer.domain.models.UserEntity
+import jp.aoyama.mki.thermometer.domain.models.user.Grade
+import jp.aoyama.mki.thermometer.domain.models.user.UserEntity
 import jp.aoyama.mki.thermometer.domain.repository.UserRepository
 
 class FakeUserRepository : UserRepository {

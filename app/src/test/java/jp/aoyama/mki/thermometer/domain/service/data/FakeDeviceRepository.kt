@@ -1,6 +1,6 @@
 package jp.aoyama.mki.thermometer.domain.service.data
 
-import jp.aoyama.mki.thermometer.domain.models.Device
+import jp.aoyama.mki.thermometer.domain.models.device.Device
 import jp.aoyama.mki.thermometer.domain.repository.DeviceRepository
 
 class FakeDeviceRepository : DeviceRepository {

@@ -2,7 +2,7 @@ package jp.aoyama.mki.thermometer.infrastructure.local.user
 
 import android.content.Context
 import android.net.Uri
-import jp.aoyama.mki.thermometer.domain.models.UserEntity
+import jp.aoyama.mki.thermometer.domain.models.user.UserEntity
 import java.util.*
 
 class UserCSVUtil {

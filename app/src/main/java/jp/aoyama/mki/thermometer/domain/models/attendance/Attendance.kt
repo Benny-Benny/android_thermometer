@@ -1,4 +1,4 @@
-package jp.aoyama.mki.thermometer.domain.models
+package jp.aoyama.mki.thermometer.domain.models.attendance
 
 import java.util.*
 

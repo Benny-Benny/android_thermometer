@@ -3,9 +3,9 @@ package jp.aoyama.mki.thermometer.infrastructure.api.bluetooth
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import jp.aoyama.mki.thermometer.domain.models.BluetoothScanResult
-import jp.aoyama.mki.thermometer.domain.models.Device
-import jp.aoyama.mki.thermometer.domain.models.DeviceData
+import jp.aoyama.mki.thermometer.domain.models.device.BluetoothScanResult
+import jp.aoyama.mki.thermometer.domain.models.device.Device
+import jp.aoyama.mki.thermometer.domain.models.device.DeviceData
 import jp.aoyama.mki.thermometer.domain.repository.BluetoothDeviceScanner
 import jp.aoyama.mki.thermometer.infrastructure.api.ApiRepositoryUtil
 import kotlinx.coroutines.*

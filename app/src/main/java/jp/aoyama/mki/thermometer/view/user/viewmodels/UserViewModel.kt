@@ -7,6 +7,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import jp.aoyama.mki.thermometer.domain.models.*
+import jp.aoyama.mki.thermometer.domain.models.device.BluetoothScanResult
+import jp.aoyama.mki.thermometer.domain.models.device.Device
+import jp.aoyama.mki.thermometer.domain.models.user.Grade
+import jp.aoyama.mki.thermometer.domain.models.user.User
 import jp.aoyama.mki.thermometer.domain.service.UserService
 import jp.aoyama.mki.thermometer.infrastructure.local.user.UserCSVUtil
 import jp.aoyama.mki.thermometer.view.models.UserData

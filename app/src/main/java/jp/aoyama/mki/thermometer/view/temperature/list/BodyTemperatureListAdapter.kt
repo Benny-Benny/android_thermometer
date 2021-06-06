@@ -2,7 +2,7 @@ package jp.aoyama.mki.thermometer.view.temperature.list
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
-import jp.aoyama.mki.thermometer.domain.models.TemperatureData
+import jp.aoyama.mki.thermometer.domain.models.temperature.TemperatureData
 
 class BodyTemperatureListAdapter :
     ListAdapter<TemperatureData, BodyTemperatureViewHolder>(BodyTemperatureDataDiffUtil()) {

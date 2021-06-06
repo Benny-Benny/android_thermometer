@@ -14,9 +14,9 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import jp.aoyama.mki.thermometer.R
 import jp.aoyama.mki.thermometer.databinding.FragmentEditUserBinding
-import jp.aoyama.mki.thermometer.domain.models.BluetoothScanResult
-import jp.aoyama.mki.thermometer.domain.models.Device
-import jp.aoyama.mki.thermometer.domain.models.Grade
+import jp.aoyama.mki.thermometer.domain.models.device.BluetoothScanResult
+import jp.aoyama.mki.thermometer.domain.models.device.Device
+import jp.aoyama.mki.thermometer.domain.models.user.Grade
 import jp.aoyama.mki.thermometer.view.bluetooth.list.BluetoothListAdapter
 import jp.aoyama.mki.thermometer.view.bluetooth.list.BluetoothViewHolder
 import jp.aoyama.mki.thermometer.view.user.viewmodels.UserViewModel

@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.map
-import jp.aoyama.mki.thermometer.domain.models.BluetoothScanResult
+import jp.aoyama.mki.thermometer.domain.models.device.BluetoothScanResult
 import jp.aoyama.mki.thermometer.domain.repository.BluetoothDeviceScanner
 
 /**

@@ -10,7 +10,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.distinctUntilChanged
-import jp.aoyama.mki.thermometer.domain.models.BluetoothScanResult
+import jp.aoyama.mki.thermometer.domain.models.device.BluetoothScanResult
 import jp.aoyama.mki.thermometer.domain.repository.BluetoothDeviceScanner
 import kotlinx.coroutines.*
 import java.util.*

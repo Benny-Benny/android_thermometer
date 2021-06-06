@@ -3,7 +3,7 @@ package jp.aoyama.mki.thermometer.infrastructure.local.device
 import android.content.Context
 import android.util.Log
 import com.google.gson.Gson
-import jp.aoyama.mki.thermometer.domain.models.DeviceStateEntity
+import jp.aoyama.mki.thermometer.domain.models.device.DeviceStateEntity
 import jp.aoyama.mki.thermometer.domain.repository.DeviceStateRepository
 
 class LocalFileDeviceStateRepository(

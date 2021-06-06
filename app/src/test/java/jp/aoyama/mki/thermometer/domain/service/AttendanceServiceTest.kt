@@ -1,6 +1,10 @@
 package jp.aoyama.mki.thermometer.domain.service
 
-import jp.aoyama.mki.thermometer.domain.models.*
+import jp.aoyama.mki.thermometer.domain.models.attendance.AttendanceEntity
+import jp.aoyama.mki.thermometer.domain.models.attendance.UserAttendance
+import jp.aoyama.mki.thermometer.domain.models.device.Device
+import jp.aoyama.mki.thermometer.domain.models.device.DeviceStateEntity
+import jp.aoyama.mki.thermometer.domain.models.user.UserEntity
 import jp.aoyama.mki.thermometer.domain.service.data.FakeDeviceRepository
 import jp.aoyama.mki.thermometer.domain.service.data.FakeDeviceStateRepository
 import jp.aoyama.mki.thermometer.domain.service.data.FakeUserRepository

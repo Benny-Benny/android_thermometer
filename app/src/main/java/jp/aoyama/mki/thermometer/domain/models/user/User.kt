@@ -1,5 +1,6 @@
-package jp.aoyama.mki.thermometer.domain.models
+package jp.aoyama.mki.thermometer.domain.models.user
 
+import jp.aoyama.mki.thermometer.domain.models.device.Device
 import java.util.*
 
 data class User(

@@ -1,7 +1,7 @@
 package jp.aoyama.mki.thermometer.view.models
 
-import jp.aoyama.mki.thermometer.domain.models.Device
-import jp.aoyama.mki.thermometer.domain.models.User
+import jp.aoyama.mki.thermometer.domain.models.device.Device
+import jp.aoyama.mki.thermometer.domain.models.user.User
 import java.util.*
 
 data class UserEntity(

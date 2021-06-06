@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import jp.aoyama.mki.thermometer.R
 import jp.aoyama.mki.thermometer.databinding.ItemBluetoothDeviceBinding
-import jp.aoyama.mki.thermometer.domain.models.BluetoothScanResult
+import jp.aoyama.mki.thermometer.domain.models.device.BluetoothScanResult
 
 class BluetoothViewHolder(
     private val mBinding: ItemBluetoothDeviceBinding,

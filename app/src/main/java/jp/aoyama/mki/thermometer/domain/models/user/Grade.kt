@@ -1,4 +1,4 @@
-package jp.aoyama.mki.thermometer.domain.models
+package jp.aoyama.mki.thermometer.domain.models.user
 
 enum class Grade(val gradeName: String) {
     B4("B4"),

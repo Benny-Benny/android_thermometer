@@ -1,10 +1,10 @@
 package jp.aoyama.mki.thermometer.domain.service
 
 import android.content.Context
-import jp.aoyama.mki.thermometer.domain.models.Device
-import jp.aoyama.mki.thermometer.domain.models.Grade
-import jp.aoyama.mki.thermometer.domain.models.User
-import jp.aoyama.mki.thermometer.domain.models.UserEntity
+import jp.aoyama.mki.thermometer.domain.models.device.Device
+import jp.aoyama.mki.thermometer.domain.models.user.Grade
+import jp.aoyama.mki.thermometer.domain.models.user.User
+import jp.aoyama.mki.thermometer.domain.models.user.UserEntity
 import jp.aoyama.mki.thermometer.domain.repository.DeviceRepository
 import jp.aoyama.mki.thermometer.domain.repository.UserRepository
 import jp.aoyama.mki.thermometer.infrastructure.local.device.LocalFileDeviceRepository

@@ -3,7 +3,7 @@ package jp.aoyama.mki.thermometer.infrastructure.local.user
 import android.content.Context
 import android.net.Uri
 import androidx.core.content.FileProvider
-import jp.aoyama.mki.thermometer.domain.models.TemperatureData
+import jp.aoyama.mki.thermometer.domain.models.temperature.TemperatureData
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStreamWriter

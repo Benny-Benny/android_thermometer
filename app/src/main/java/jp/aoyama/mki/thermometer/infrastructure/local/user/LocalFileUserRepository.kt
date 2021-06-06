@@ -2,8 +2,8 @@ package jp.aoyama.mki.thermometer.infrastructure.local.user
 
 import android.content.Context
 import com.google.gson.Gson
-import jp.aoyama.mki.thermometer.domain.models.Grade
-import jp.aoyama.mki.thermometer.domain.models.UserEntity
+import jp.aoyama.mki.thermometer.domain.models.user.Grade
+import jp.aoyama.mki.thermometer.domain.models.user.UserEntity
 import jp.aoyama.mki.thermometer.domain.repository.UserRepository
 
 class LocalFileUserRepository(private val context: Context) : UserRepository {

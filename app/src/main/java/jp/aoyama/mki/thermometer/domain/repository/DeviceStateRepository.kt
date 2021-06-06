@@ -1,6 +1,6 @@
 package jp.aoyama.mki.thermometer.domain.repository
 
-import jp.aoyama.mki.thermometer.domain.models.DeviceStateEntity
+import jp.aoyama.mki.thermometer.domain.models.device.DeviceStateEntity
 
 interface DeviceStateRepository {
     suspend fun findAll(): List<DeviceStateEntity>

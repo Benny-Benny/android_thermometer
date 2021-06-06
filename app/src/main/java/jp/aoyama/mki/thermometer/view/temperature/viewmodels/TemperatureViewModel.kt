@@ -3,8 +3,8 @@ package jp.aoyama.mki.thermometer.view.temperature.viewmodels
 import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.ViewModel
-import jp.aoyama.mki.thermometer.domain.models.BodyTemperatureEntity
-import jp.aoyama.mki.thermometer.domain.models.TemperatureData
+import jp.aoyama.mki.thermometer.domain.models.temperature.BodyTemperatureEntity
+import jp.aoyama.mki.thermometer.domain.models.temperature.TemperatureData
 import jp.aoyama.mki.thermometer.infrastructure.local.temperature.LocalFileTemperatureRepository
 import jp.aoyama.mki.thermometer.infrastructure.local.user.LocalFileUserRepository
 import jp.aoyama.mki.thermometer.infrastructure.local.user.TemperatureCSVUtil

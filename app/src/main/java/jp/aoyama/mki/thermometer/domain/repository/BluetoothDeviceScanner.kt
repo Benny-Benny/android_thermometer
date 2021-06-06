@@ -1,7 +1,7 @@
 package jp.aoyama.mki.thermometer.domain.repository
 
 import androidx.lifecycle.LiveData
-import jp.aoyama.mki.thermometer.domain.models.BluetoothScanResult
+import jp.aoyama.mki.thermometer.domain.models.device.BluetoothScanResult
 
 /**
  * 付近のBluetooth端末を検索し、[BluetoothDeviceScanner.devicesLiveData]により配信する。

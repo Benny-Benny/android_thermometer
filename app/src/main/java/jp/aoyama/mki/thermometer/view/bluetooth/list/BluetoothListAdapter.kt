@@ -2,7 +2,7 @@ package jp.aoyama.mki.thermometer.view.bluetooth.list
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
-import jp.aoyama.mki.thermometer.domain.models.BluetoothScanResult
+import jp.aoyama.mki.thermometer.domain.models.device.BluetoothScanResult
 
 class BluetoothListAdapter(
     private val callbackListener: BluetoothViewHolder.CallbackListener,

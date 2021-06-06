@@ -1,7 +1,7 @@
 package jp.aoyama.mki.thermometer.domain.service
 
-import jp.aoyama.mki.thermometer.domain.models.AttendanceEntity
-import jp.aoyama.mki.thermometer.domain.models.UserAttendance
+import jp.aoyama.mki.thermometer.domain.models.attendance.AttendanceEntity
+import jp.aoyama.mki.thermometer.domain.models.attendance.UserAttendance
 import jp.aoyama.mki.thermometer.domain.repository.DeviceRepository
 import jp.aoyama.mki.thermometer.domain.repository.DeviceStateRepository
 import jp.aoyama.mki.thermometer.domain.repository.UserRepository

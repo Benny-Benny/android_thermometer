@@ -3,7 +3,7 @@ package jp.aoyama.mki.thermometer.infrastructure.local.temperature
 import android.content.Context
 import android.util.Log
 import com.google.gson.Gson
-import jp.aoyama.mki.thermometer.domain.models.BodyTemperatureEntity
+import jp.aoyama.mki.thermometer.domain.models.temperature.BodyTemperatureEntity
 import jp.aoyama.mki.thermometer.domain.repository.TemperatureRepository
 
 class LocalFileTemperatureRepository(
