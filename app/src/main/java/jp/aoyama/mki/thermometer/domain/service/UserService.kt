@@ -11,7 +11,6 @@ import jp.aoyama.mki.thermometer.domain.repository.DeviceRepository
 import jp.aoyama.mki.thermometer.domain.repository.TemperatureRepository
 import jp.aoyama.mki.thermometer.domain.repository.UserRepository
 import jp.aoyama.mki.thermometer.infrastructure.repositories.RepositoryContainer
-import jp.aoyama.mki.thermometer.view.models.UserData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -41,16 +40,15 @@ class UserService(
             userRepository.delete(userId)
         }
 
-    suspend fun getUsers(): UserData =
+    suspend fun getUsers(): List<UserViewEntity> =
         withContext(Dispatchers.IO) {
             val users = userRepository.findAll()
             val devices = deviceRepository.findAll()
-            val entities = users.map { entity ->
+            return@withContext users.map { entity ->
                 val userDevices = devices.filter { it.userId == entity.id }
                 val user = entity.toUser(userDevices)
-                UserViewEntity(user, null, null)
+                UserViewEntity(user, null)
             }
-            UserData(users = entities)
         }
 
     suspend fun getUser(userId: String): User? =

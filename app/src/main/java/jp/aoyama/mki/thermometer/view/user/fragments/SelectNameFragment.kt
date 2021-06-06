@@ -27,8 +27,7 @@ import kotlinx.coroutines.launch
 class SelectNameFragment : Fragment(), UserViewHolder.CallbackListener {
     private val mViewModel: UserViewModel by viewModels()
     private lateinit var mBinding: FragmentSelectNameBinding
-    private val mAdapterNearUser: UserListAdapter = UserListAdapter(this)
-    private val mAdapterOutUser: UserListAdapter = UserListAdapter(this)
+    private val mUserListAdapter: UserListAdapter = UserListAdapter(this)
 
     private val mBluetoothDeviceScanner: BluetoothDeviceScanner by lazy {
         ApiBluetoothScanner()
@@ -45,12 +44,9 @@ class SelectNameFragment : Fragment(), UserViewHolder.CallbackListener {
     ): View {
         mBinding = FragmentSelectNameBinding.inflate(inflater, container, false)
         mBinding.apply {
-            listNearUser.layoutManager = LinearLayoutManager(requireContext())
-            listNearUser.adapter = mAdapterNearUser
-            (listNearUser.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
-
-            listOutUser.layoutManager = LinearLayoutManager(requireContext())
-            listOutUser.adapter = mAdapterOutUser
+            recyclerViewUsers.layoutManager = LinearLayoutManager(requireContext())
+            recyclerViewUsers.adapter = mUserListAdapter
+            (recyclerViewUsers.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
             floatingActionButton.setOnClickListener {
                 findNavController().navigate(
@@ -59,9 +55,8 @@ class SelectNameFragment : Fragment(), UserViewHolder.CallbackListener {
             }
         }
 
-        mViewModel.observeUsers(requireContext()).observe(viewLifecycleOwner) { data ->
-            mAdapterNearUser.submitList(data.near)
-            mAdapterOutUser.submitList(data.outs)
+        mViewModel.observeUsers(requireContext()).observe(viewLifecycleOwner) { users ->
+            mUserListAdapter.submitList(users)
         }
 
         lifecycleScope.launch {

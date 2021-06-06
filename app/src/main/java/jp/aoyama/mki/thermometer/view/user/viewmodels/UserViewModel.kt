@@ -2,10 +2,8 @@ package jp.aoyama.mki.thermometer.view.user.viewmodels
 
 import android.content.Context
 import android.net.Uri
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import android.util.Log
+import androidx.lifecycle.*
 import jp.aoyama.mki.thermometer.domain.models.*
 import jp.aoyama.mki.thermometer.domain.models.device.BluetoothScanResult
 import jp.aoyama.mki.thermometer.domain.models.device.Device
@@ -13,36 +11,36 @@ import jp.aoyama.mki.thermometer.domain.models.user.Grade
 import jp.aoyama.mki.thermometer.domain.models.user.User
 import jp.aoyama.mki.thermometer.domain.service.UserService
 import jp.aoyama.mki.thermometer.infrastructure.local.user.UserCSVUtil
-import jp.aoyama.mki.thermometer.view.models.UserData
+import jp.aoyama.mki.thermometer.view.models.UserEntity
+import jp.aoyama.mki.thermometer.view.models.UserEntity.Companion.updateUser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
 
 class UserViewModel : ViewModel() {
-    private val _mUserData: MutableLiveData<UserData> = MutableLiveData()
+    private val _mUserData: MutableLiveData<List<UserEntity>> = MutableLiveData()
 
     fun onReceiveBluetoothResult(devices: List<BluetoothScanResult>) {
-        var data = _mUserData.value ?: return
-
+        var users = _mUserData.value ?: return
+        Log.d("VIEWMODEL", "onReceiveBluetoothResult: $devices")
         devices.map { device ->
-            val user = data.users.find { user ->
+            val user = users.find { user ->
                 user.devices.any { it.address == device.address }
             } ?: return@map
 
-            val updated = user.copy(lastFoundAt = Calendar.getInstance())
-            data = data.addNearUser(updated)
+            users = users.updateUser(user.copy(lastFoundAt = Calendar.getInstance()))
         }
 
-        _mUserData.value = data
+        _mUserData.value = users
     }
 
-    fun observeUsers(context: Context): LiveData<UserData> {
+    fun observeUsers(context: Context): LiveData<List<UserEntity>> {
         viewModelScope.launch { getUsers(context) }
-        return _mUserData
+        return _mUserData.map { users -> users.sortedBy { it.name.toLowerCase(Locale.getDefault()) } }
     }
 
-    private suspend fun getUsers(context: Context): UserData {
+    private suspend fun getUsers(context: Context): List<UserEntity> {
         val service = UserService(context)
         val users = service.getUsers()
         _mUserData.value = users

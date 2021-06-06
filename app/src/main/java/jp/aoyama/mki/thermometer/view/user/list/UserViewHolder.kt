@@ -3,6 +3,7 @@ package jp.aoyama.mki.thermometer.view.user.list
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import jp.aoyama.mki.thermometer.R
 import jp.aoyama.mki.thermometer.databinding.ItemUserBinding
 import jp.aoyama.mki.thermometer.view.models.UserEntity
 
@@ -23,6 +24,11 @@ class UserViewHolder(
             root.setOnClickListener { mCallbackListener.onClick(data) }
             buttonEdit.setOnClickListener { mCallbackListener.onEdit(data) }
             textName.text = data.name
+
+            val statusIcon =
+                if (data.found) R.drawable.drawbale_circle_active
+                else R.drawable.drawbale_circle_inactive
+            imageStatus.setImageResource(statusIcon)
         }
     }
 
