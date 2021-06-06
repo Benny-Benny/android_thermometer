@@ -185,6 +185,40 @@ class AttendanceServiceTest {
         )
     }
 
+    @Test
+    fun `まだ退出していない場合の出席データを取得`() = runBlockingTest {
+        /*
+        初期データ: [
+            DeviceState(address=test,  at=12:00, found=True)
+        ]
+        期待する結果: Attendance(enterAt=12:00, leftAt=null)
+         */
+        userRepository.save(testUser)
+        deviceRepository.save(testUserDevice)
+        val enterState = DeviceStateEntity(
+            address = testUserDevice.address,
+            found = true,
+            createdAt = getDay(hour = 12)
+        )
+        deviceStateRepository.save(enterState)
+
+        val attendance = attendanceService.getUserAttendance(testUser.id, testUser.name)
+        Assertions.assertEquals(
+            UserAttendance(
+                userId = testUser.id,
+                userName = testUser.name,
+                attendances = listOf(
+                    AttendanceEntity(
+                        testUser.id,
+                        enterAt = enterState.createdAt,
+                        leftAt = null
+                    )
+                )
+            ),
+            attendance
+        )
+    }
+
     private fun getDay(
         year: Int = 2000,
         month: Int = 1,

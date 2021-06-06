@@ -42,12 +42,12 @@ class AttendanceService(
         }
 
         val foundStates = deviceStates.filter { it.found }
-        val attendances = foundStates.mapNotNull { enterState ->
-            val nextLeftState = deviceStates.firstOrNull { !it.found } ?: return@mapNotNull null
+        val attendances = foundStates.map { enterState ->
+            val nextLeftState = deviceStates.firstOrNull { !it.found }
             AttendanceEntity(
                 userId = userId,
                 enterAt = enterState.createdAt,
-                leftAt = nextLeftState.createdAt
+                leftAt = nextLeftState?.createdAt
             )
         }
 
