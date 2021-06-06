@@ -5,5 +5,9 @@ import jp.aoyama.mki.thermometer.domain.models.DeviceStateEntity
 interface DeviceStateRepository {
     suspend fun findAll(): List<DeviceStateEntity>
 
-    suspend fun findByUserId(userId: String): List<DeviceStateEntity>
+    suspend fun findByAddress(address: String): List<DeviceStateEntity>
+
+    suspend fun save(state: DeviceStateEntity)
+
+    suspend fun delete(state: DeviceStateEntity)
 }

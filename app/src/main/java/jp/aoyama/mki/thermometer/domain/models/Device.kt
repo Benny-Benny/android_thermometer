@@ -1,7 +1,7 @@
 package jp.aoyama.mki.thermometer.domain.models
 
 data class Device(
-    val name: String?,
+    val name: String? = null,
     val userId: String,
     val address: String,
 ) {
