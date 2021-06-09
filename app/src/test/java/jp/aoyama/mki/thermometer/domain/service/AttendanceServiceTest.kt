@@ -38,23 +38,41 @@ class AttendanceServiceTest {
         初期データ: [
             DeviceState(at=12:00, found=True)
             DeviceState(at=13:00, found=False)
+            DeviceState(at=14:00, found=True)
+            DeviceState(at=15:00, found=False)
         ]
-        期待する結果: Attendance(enterAt=12:00, leftAt=13:00)
+        期待する結果: [
+            Attendance(enterAt=12:00, leftAt=13:00),
+            Attendance(enterAt=14:00, leftAt=15:00)
+        ]
          */
         userRepository.save(testUser)
         deviceRepository.save(testUserDevice)
-        val enterState = DeviceStateEntity(
-            address = testUserDevice.address,
-            found = true,
-            createdAt = getDay(hour = 12)
+
+        val states = listOf(
+            DeviceStateEntity(
+                address = testUserDevice.address,
+                found = true,
+                createdAt = getDay(hour = 12)
+            ),
+            DeviceStateEntity(
+                address = testUserDevice.address,
+                found = false,
+                createdAt = getDay(hour = 13)
+            ),
+            DeviceStateEntity(
+                address = testUserDevice.address,
+                found = true,
+                createdAt = getDay(hour = 14)
+            ),
+            DeviceStateEntity(
+                address = testUserDevice.address,
+                found = false,
+                createdAt = getDay(hour = 15)
+            )
         )
-        val leftState = DeviceStateEntity(
-            address = testUserDevice.address,
-            found = false,
-            createdAt = getDay(hour = 13)
-        )
-        deviceStateRepository.save(enterState)
-        deviceStateRepository.save(leftState)
+
+        states.forEach { deviceStateRepository.save(it) }
 
         val attendance = attendanceService.getUserAttendance(testUser.id, testUser.name)
         Assertions.assertEquals(
@@ -64,8 +82,13 @@ class AttendanceServiceTest {
                 attendances = listOf(
                     AttendanceEntity(
                         testUser.id,
-                        enterAt = enterState.createdAt,
-                        leftAt = leftState.createdAt
+                        enterAt = states[0].createdAt,
+                        leftAt = states[1].createdAt
+                    ),
+                    AttendanceEntity(
+                        testUser.id,
+                        enterAt = states[2].createdAt,
+                        leftAt = states[3].createdAt
                     )
                 )
             ),
@@ -82,7 +105,7 @@ class AttendanceServiceTest {
             DeviceState(at=15:00, found=False)
             DeviceState(at=16:00, found=False)
         ]
-        期待する結果: Attendance(enterAt=12:00, leftAt=16:00)
+        期待する結果: Attendance(enterAt=12:00, leftAt=15:00)
          */
         userRepository.save(testUser)
         deviceRepository.save(testUserDevice)
@@ -91,25 +114,25 @@ class AttendanceServiceTest {
             found = true,
             createdAt = getDay(hour = 12)
         )
-        val middleEnterState = DeviceStateEntity(
+        val additionalEnterState = DeviceStateEntity(
             address = testUserDevice.address,
             found = true,
             createdAt = getDay(hour = 13)
         )
-        val middleLeftState = DeviceStateEntity(
+        val leftState = DeviceStateEntity(
             address = testUserDevice.address,
             found = false,
             createdAt = getDay(hour = 14)
         )
-        val leftState = DeviceStateEntity(
+        val additionalLeftState = DeviceStateEntity(
             address = testUserDevice.address,
             found = false,
             createdAt = getDay(hour = 15)
         )
         deviceStateRepository.save(enterState)
-        deviceStateRepository.save(middleEnterState)
-        deviceStateRepository.save(middleLeftState)
+        deviceStateRepository.save(additionalEnterState)
         deviceStateRepository.save(leftState)
+        deviceStateRepository.save(additionalLeftState)
 
         val attendance = attendanceService.getUserAttendance(testUser.id, testUser.name)
         Assertions.assertEquals(
@@ -133,33 +156,35 @@ class AttendanceServiceTest {
         /*
         初期データ: [
             DeviceState(address=test,  at=12:00, found=True)
-            DeviceState(address=other, at=14:00, found=True)
-            DeviceState(address=test,  at=15:00, found=False)
-            DeviceState(address=other, at=16:00, found=False)
+            DeviceState(address=other, at=13:00, found=True)
+            DeviceState(address=test,  at=14:00, found=False)
+            DeviceState(address=other, at=15:00, found=False)
         ]
-        期待する結果: Attendance(enterAt=12:00, leftAt=16:00)
+        期待する結果: Attendance(enterAt=12:00, leftAt=15:00)
          */
         userRepository.save(testUser)
         val otherDevice = Device(userId = testUser.id, address = "other")
         deviceRepository.save(testUserDevice)
         deviceRepository.save(otherDevice)
 
+        val enterState = DeviceStateEntity(
+            address = testUserDevice.address,
+            found = true,
+            createdAt = getDay(hour = 12)
+        )
+        val leftState = DeviceStateEntity(
+            address = otherDevice.address,
+            found = false,
+            createdAt = getDay(hour = 14)
+        )
         val states = listOf(
-            DeviceStateEntity(
-                address = testUserDevice.address,
-                found = true,
-                createdAt = getDay(hour = 12)
-            ),
+            enterState,
             DeviceStateEntity(
                 address = otherDevice.address,
                 found = true,
                 createdAt = getDay(hour = 13)
             ),
-            DeviceStateEntity(
-                address = testUserDevice.address,
-                found = false,
-                createdAt = getDay(hour = 14)
-            ),
+            leftState,
             DeviceStateEntity(
                 address = otherDevice.address,
                 found = false,
@@ -176,8 +201,8 @@ class AttendanceServiceTest {
                 attendances = listOf(
                     AttendanceEntity(
                         testUser.id,
-                        enterAt = states.first().createdAt,
-                        leftAt = states.last().createdAt
+                        enterAt = enterState.createdAt,
+                        leftAt = leftState.createdAt
                     )
                 )
             ),
@@ -190,17 +215,25 @@ class AttendanceServiceTest {
         /*
         初期データ: [
             DeviceState(address=test,  at=12:00, found=True)
+            DeviceState(address=test,  at=13:00, found=True)
         ]
         期待する結果: Attendance(enterAt=12:00, leftAt=null)
          */
         userRepository.save(testUser)
         deviceRepository.save(testUserDevice)
-        val enterState = DeviceStateEntity(
-            address = testUserDevice.address,
-            found = true,
-            createdAt = getDay(hour = 12)
+        val states = listOf(
+            DeviceStateEntity(
+                address = testUserDevice.address,
+                found = true,
+                createdAt = getDay(hour = 12)
+            ),
+            DeviceStateEntity(
+                address = testUserDevice.address,
+                found = true,
+                createdAt = getDay(hour = 13)
+            )
         )
-        deviceStateRepository.save(enterState)
+        states.forEach { deviceStateRepository.save(it) }
 
         val attendance = attendanceService.getUserAttendance(testUser.id, testUser.name)
         Assertions.assertEquals(
@@ -210,7 +243,7 @@ class AttendanceServiceTest {
                 attendances = listOf(
                     AttendanceEntity(
                         testUser.id,
-                        enterAt = enterState.createdAt,
+                        enterAt = states.first().createdAt,
                         leftAt = null
                     )
                 )
