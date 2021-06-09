@@ -6,7 +6,6 @@ import jp.aoyama.mki.thermometer.infrastructure.api.ApiRepositoryUtil
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.*
 
 class ApiDeviceStateRepository : DeviceStateRepository {
 
@@ -23,27 +22,12 @@ class ApiDeviceStateRepository : DeviceStateRepository {
 
     override suspend fun findAll(): List<DeviceStateEntity> {
         val response = service.getAllDeviceStates().execute().body() ?: emptyList()
-        return response.map {
-            DeviceStateEntity(
-                id = it.id,
-                address = it.address,
-                found = it.found,
-                createdAt = getCalendar(it.createdAt)
-            )
-        }
+        return response.map { it.toDeviceStateEntity() }
     }
 
     override suspend fun findByAddress(address: String): List<DeviceStateEntity> {
         val response = service.getDeviceStates(address).execute().body() ?: emptyList()
-        return response.map {
-
-            DeviceStateEntity(
-                id = it.id,
-                address = it.address,
-                found = it.found,
-                createdAt = getCalendar(it.createdAt)
-            )
-        }
+        return response.map { it.toDeviceStateEntity() }
     }
 
     override suspend fun save(state: DeviceStateEntity) {
@@ -52,12 +36,6 @@ class ApiDeviceStateRepository : DeviceStateRepository {
 
     override suspend fun delete(id: String) {
         // no op
-    }
-
-    private fun getCalendar(time: Int): Calendar {
-        return Calendar.getInstance().apply {
-            timeInMillis = time * 1000L
-        }
     }
 
     companion object {

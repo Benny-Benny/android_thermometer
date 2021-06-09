@@ -16,4 +16,13 @@ data class AttendanceEntity(
         val leftAtStr = if (leftAt != null) formatter.format(leftAt.time) else null
         return "AttendanceEntity(userId=$userId, enterAt=$enterAtStr, leftAt=$leftAtStr)"
     }
+
+    fun toAttendance(userName: String): Attendance {
+        return Attendance(
+            userId = userId,
+            userName = userName,
+            enterAt = enterAt,
+            leftAt = leftAt
+        )
+    }
 }
