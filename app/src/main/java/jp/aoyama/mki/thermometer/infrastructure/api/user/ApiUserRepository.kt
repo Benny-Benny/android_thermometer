@@ -1,5 +1,6 @@
 package jp.aoyama.mki.thermometer.infrastructure.api.user
 
+import android.content.Context
 import android.util.Log
 import jp.aoyama.mki.thermometer.domain.models.user.Grade
 import jp.aoyama.mki.thermometer.domain.models.user.UserEntity
@@ -12,13 +13,14 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class ApiUserRepository : UserRepository {
+class ApiUserRepository(context: Context) : UserRepository {
 
     private val service: UserApiService by lazy {
+        val baseUrl = ApiRepositoryUtil(context).baseUrl
         val client = OkHttpClient()
         val retrofit = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(BASE_URL)
+            .baseUrl(baseUrl)
             .client(client)
             .build()
 
@@ -73,6 +75,5 @@ class ApiUserRepository : UserRepository {
 
     companion object {
         private const val TAG = "UserApiRepository"
-        private const val BASE_URL = ApiRepositoryUtil.BASE_URL
     }
 }

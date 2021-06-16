@@ -1,5 +1,6 @@
 package jp.aoyama.mki.thermometer.infrastructure.api.bluetooth
 
+import android.content.Context
 import jp.aoyama.mki.thermometer.domain.models.device.Device
 import jp.aoyama.mki.thermometer.domain.repository.DeviceRepository
 import jp.aoyama.mki.thermometer.infrastructure.api.ApiRepositoryUtil
@@ -7,13 +8,14 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class ApiDeviceRepository : DeviceRepository {
+class ApiDeviceRepository(context: Context) : DeviceRepository {
 
     private val service: ApiDeviceService by lazy {
+        val baseUrl = ApiRepositoryUtil(context).baseUrl
         val client = OkHttpClient()
         val retrofit = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(BASE_URL)
+            .baseUrl(baseUrl)
             .client(client)
             .build()
 
@@ -42,9 +44,5 @@ class ApiDeviceRepository : DeviceRepository {
     override suspend fun delete(address: String) {
         val request = DeleteDeviceRequest(address)
         service.deleteDevice(request).execute()
-    }
-
-    companion object {
-        private const val BASE_URL = ApiRepositoryUtil.BASE_URL
     }
 }

@@ -1,5 +1,6 @@
 package jp.aoyama.mki.thermometer.infrastructure.api.bluetooth
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -13,7 +14,7 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class ApiBluetoothScanner : BluetoothDeviceScanner {
+class ApiBluetoothScanner(context: Context) : BluetoothDeviceScanner {
 
     private val _deviceLiveData: MutableLiveData<List<BluetoothScanResult>> = MutableLiveData()
     override val devicesLiveData: LiveData<List<BluetoothScanResult>>
@@ -22,10 +23,11 @@ class ApiBluetoothScanner : BluetoothDeviceScanner {
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     private val service: ApiBluetoothService by lazy {
+        val baseUrl = "${ApiRepositoryUtil(context).baseUrl}/devices/"
         val client = OkHttpClient()
         val retrofit = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(BASE_URL)
+            .baseUrl(baseUrl)
             .client(client)
             .build()
 
@@ -74,6 +76,5 @@ class ApiBluetoothScanner : BluetoothDeviceScanner {
     companion object {
         private const val TAG = "BluetoothApiScanner"
         private const val INTERVAL_IN_MILLIS = 10 * 1000
-        private const val BASE_URL = "${ApiRepositoryUtil.BASE_URL}/devices/"
     }
 }

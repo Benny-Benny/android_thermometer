@@ -1,5 +1,6 @@
 package jp.aoyama.mki.thermometer.infrastructure.api.temperature
 
+import android.content.Context
 import jp.aoyama.mki.thermometer.domain.models.temperature.BodyTemperatureEntity
 import jp.aoyama.mki.thermometer.domain.repository.TemperatureRepository
 import jp.aoyama.mki.thermometer.infrastructure.api.ApiRepositoryUtil
@@ -8,12 +9,13 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 
-class ApiTemperatureRepository : TemperatureRepository {
+class ApiTemperatureRepository(context: Context) : TemperatureRepository {
     private val service: BodyTemperatureService by lazy {
+        val baseUrl = ApiRepositoryUtil(context).baseUrl
         val client = OkHttpClient()
         val retrofit = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(BASE_URL)
+            .baseUrl(baseUrl)
             .client(client)
             .build()
 
@@ -39,9 +41,5 @@ class ApiTemperatureRepository : TemperatureRepository {
             temperature = data.temperature
         )
         service.save(request).execute()
-    }
-
-    companion object {
-        private const val BASE_URL = ApiRepositoryUtil.BASE_URL
     }
 }

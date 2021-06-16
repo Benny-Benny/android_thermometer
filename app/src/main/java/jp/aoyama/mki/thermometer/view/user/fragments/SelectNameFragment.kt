@@ -30,7 +30,7 @@ class SelectNameFragment : Fragment(), UserViewHolder.CallbackListener {
     private val mUserListAdapter: UserListAdapter = UserListAdapter(this)
 
     private val mBluetoothDeviceScanner: BluetoothDeviceScanner by lazy {
-        ApiBluetoothScanner()
+        ApiBluetoothScanner(requireContext())
     }
 
     private val mRequestPermission =

@@ -11,8 +11,8 @@ import jp.aoyama.mki.thermometer.infrastructure.api.temperature.ApiTemperatureRe
 import jp.aoyama.mki.thermometer.infrastructure.api.user.ApiUserRepository
 
 class RepositoryContainer(private val context: Context) {
-    val deviceRepository: DeviceRepository get() = ApiDeviceRepository()
-    val deviceStateRepository: DeviceStateRepository get() = ApiDeviceStateRepository()
-    val userRepository: UserRepository get() = ApiUserRepository()
-    val temperatureRepository: TemperatureRepository get() = ApiTemperatureRepository()
+    val deviceRepository: DeviceRepository get() = ApiDeviceRepository(context)
+    val deviceStateRepository: DeviceStateRepository get() = ApiDeviceStateRepository(context)
+    val userRepository: UserRepository get() = ApiUserRepository(context)
+    val temperatureRepository: TemperatureRepository get() = ApiTemperatureRepository(context)
 }
