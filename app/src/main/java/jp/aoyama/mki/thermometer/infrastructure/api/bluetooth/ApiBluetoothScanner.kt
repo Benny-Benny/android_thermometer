@@ -20,7 +20,7 @@ class ApiBluetoothScanner(context: Context) : BluetoothDeviceScanner {
     override val devicesLiveData: LiveData<List<BluetoothScanResult>>
         get() = _deviceLiveData
 
-    private val coroutineScope = CoroutineScope(Dispatchers.IO)
+    private var coroutineScope: CoroutineScope? = null
 
     private val service: ApiBluetoothService by lazy {
         val baseUrl = "${ApiRepositoryUtil(context).baseUrl}/devices/"
@@ -36,7 +36,8 @@ class ApiBluetoothScanner(context: Context) : BluetoothDeviceScanner {
 
 
     override fun startDiscovery() {
-        coroutineScope.launch {
+        coroutineScope = CoroutineScope(Dispatchers.IO)
+        coroutineScope?.launch {
             while (true) {
                 val results = scan()
                 withContext(Dispatchers.Main) {
@@ -70,7 +71,7 @@ class ApiBluetoothScanner(context: Context) : BluetoothDeviceScanner {
     }
 
     override fun cancelDiscovery() {
-        coroutineScope.cancel()
+        coroutineScope?.cancel()
     }
 
     companion object {
