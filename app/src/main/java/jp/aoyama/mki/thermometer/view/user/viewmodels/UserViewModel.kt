@@ -3,6 +3,7 @@ package jp.aoyama.mki.thermometer.view.user.viewmodels
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.*
 import jp.aoyama.mki.thermometer.domain.models.*
 import jp.aoyama.mki.thermometer.domain.models.device.BluetoothScanResult
@@ -42,15 +43,29 @@ class UserViewModel : ViewModel() {
 
     private suspend fun getUsers(context: Context): List<UserEntity> {
         val service = UserService(context)
-        val users = service.getUsers()
+        val users = try {
+            service.getUsers()
+        } catch (e: Exception) {
+            Toast.makeText(context, "データ取得中にエラーが発生しました。", Toast.LENGTH_LONG).show()
+            Log.e(TAG, "getUsers: error while getting users", e)
+            emptyList()
+        }
         _mUserData.value = users
         return users
     }
 
     suspend fun getUser(context: Context, userId: String): User? {
         val service = UserService(context)
-        return service.getUser(userId)
-
+        return kotlin.runCatching {
+            service.getUser(userId)
+        }.fold(
+            onSuccess = { it },
+            onFailure = { e ->
+                Toast.makeText(context, "データ取得中にエラーが発生しました。", Toast.LENGTH_LONG).show()
+                Log.e(TAG, "getUser: error while getting users", e)
+                null
+            }
+        )
     }
 
     suspend fun updateName(context: Context, userId: String, name: String) {
@@ -87,5 +102,9 @@ class UserViewModel : ViewModel() {
     suspend fun deleteUser(context: Context, userId: String) {
         val service = UserService(context)
         service.deleteUser(userId)
+    }
+
+    companion object {
+        private const val TAG = "UserViewModel"
     }
 }
