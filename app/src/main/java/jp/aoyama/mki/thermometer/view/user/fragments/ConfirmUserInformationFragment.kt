@@ -34,6 +34,7 @@ class ConfirmUserInformationFragment : Fragment() {
             textName.text = mViewModel.name
             if (mViewModel.bluetoothMacAddress != null) {
                 textBluetoothName.text = mViewModel.bluetoothDeviceName
+                textGrade.text = mViewModel.grade?.gradeName ?: "選択されていません"
                 textBluetoothAddress.text = mViewModel.bluetoothMacAddress
             } else {
                 textBluetoothName.text = "登録されていません。"

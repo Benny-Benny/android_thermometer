@@ -2,16 +2,18 @@ package jp.aoyama.mki.thermometer.view.user.viewmodels
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
-import jp.aoyama.mki.thermometer.domain.models.BluetoothData
-import jp.aoyama.mki.thermometer.domain.models.User
-import jp.aoyama.mki.thermometer.domain.models.UserEntity
-import jp.aoyama.mki.thermometer.infrastructure.user.LocalFileUserRepository
+import jp.aoyama.mki.thermometer.domain.models.device.Device
+import jp.aoyama.mki.thermometer.domain.models.user.Grade
+import jp.aoyama.mki.thermometer.domain.models.user.User
+import jp.aoyama.mki.thermometer.domain.service.UserService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.*
 
 class CreateUserSharedViewModel : ViewModel() {
     private data class CreateUserState(
         var name: String? = null,
+        var grade: Grade? = null,
         var bluetoothDeviceName: String? = null,
         var bluetoothMacAddress: String? = null,
     )
@@ -36,12 +38,25 @@ class CreateUserSharedViewModel : ViewModel() {
             state.bluetoothMacAddress = value
         }
 
+    var grade: Grade?
+        get() = state.grade
+        set(value) {
+            state.grade = value
+        }
+
     suspend fun createUser(context: Context) = withContext(Dispatchers.IO) {
-        val repository = LocalFileUserRepository(context)
         if (name != null) {
-            val bluetooth = BluetoothData.create(bluetoothDeviceName, bluetoothMacAddress)
-            val user = User(name = name!!, bluetoothDevices = listOfNotNull(bluetooth))
-            repository.save(UserEntity(user))
+            val userId = UUID.randomUUID().toString()
+            val bluetooth = Device.create(bluetoothDeviceName, userId, bluetoothMacAddress)
+            val user = User(
+                id = userId,
+                name = name!!,
+                grade = grade,
+                devices = listOfNotNull(bluetooth)
+            )
+
+            val service = UserService(context)
+            service.createUser(user)
             state = CreateUserState()
         }
     }

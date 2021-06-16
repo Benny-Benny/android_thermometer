@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import jp.aoyama.mki.thermometer.R
 import jp.aoyama.mki.thermometer.databinding.ItemBodyTemperatureBinding
-import jp.aoyama.mki.thermometer.domain.models.TemperatureData
+import jp.aoyama.mki.thermometer.domain.models.temperature.TemperatureData
 import java.util.*
 
 class BodyTemperatureViewHolder(

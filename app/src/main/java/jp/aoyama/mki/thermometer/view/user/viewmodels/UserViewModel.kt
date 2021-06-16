@@ -2,93 +2,75 @@ package jp.aoyama.mki.thermometer.view.user.viewmodels
 
 import android.content.Context
 import android.net.Uri
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import jp.aoyama.mki.thermometer.domain.models.BluetoothData
-import jp.aoyama.mki.thermometer.domain.models.Grade
-import jp.aoyama.mki.thermometer.domain.models.User
-import jp.aoyama.mki.thermometer.domain.repository.UserRepository
-import jp.aoyama.mki.thermometer.infrastructure.user.LocalFileUserRepository
-import jp.aoyama.mki.thermometer.infrastructure.user.UserCSVUtil
-import jp.aoyama.mki.thermometer.view.bluetooth.scanner.BluetoothDeviceData
-import jp.aoyama.mki.thermometer.view.models.UserData
+import android.util.Log
+import androidx.lifecycle.*
+import jp.aoyama.mki.thermometer.domain.models.*
+import jp.aoyama.mki.thermometer.domain.models.device.BluetoothScanResult
+import jp.aoyama.mki.thermometer.domain.models.device.Device
+import jp.aoyama.mki.thermometer.domain.models.user.Grade
+import jp.aoyama.mki.thermometer.domain.models.user.User
+import jp.aoyama.mki.thermometer.domain.service.UserService
+import jp.aoyama.mki.thermometer.infrastructure.local.user.UserCSVUtil
 import jp.aoyama.mki.thermometer.view.models.UserEntity
+import jp.aoyama.mki.thermometer.view.models.UserEntity.Companion.updateUser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
 
 class UserViewModel : ViewModel() {
-    private val _mUserData: MutableLiveData<UserData> = MutableLiveData()
+    private val _mUserData: MutableLiveData<List<UserEntity>> = MutableLiveData()
 
-    fun onReceiveBluetoothResult(devices: List<BluetoothDeviceData>) {
-        var data = _mUserData.value ?: return
-
-        devices.map { bluetoothData ->
-            val device = bluetoothData.device
-            val user = data.users.find { user ->
-                user.bluetoothDevices.any { it.address == device.address }
+    fun onReceiveBluetoothResult(devices: List<BluetoothScanResult>) {
+        var users = _mUserData.value ?: return
+        Log.d("VIEWMODEL", "onReceiveBluetoothResult: $devices")
+        devices.map { device ->
+            val user = users.find { user ->
+                user.devices.any { it.address == device.address }
             } ?: return@map
 
-            val updated = user.copy(
-                rssi = bluetoothData.rssi,
-                lastFoundAt = Calendar.getInstance()
-            )
-            data = data.addNearUser(updated)
+            users = users.updateUser(user.copy(lastFoundAt = Calendar.getInstance()))
         }
 
-        _mUserData.value = data
+        _mUserData.value = users
     }
 
-    fun observeUsers(context: Context): LiveData<UserData> {
+    fun observeUsers(context: Context): LiveData<List<UserEntity>> {
         viewModelScope.launch { getUsers(context) }
-        return _mUserData
+        return _mUserData.map { users -> users.sortedBy { it.name.toLowerCase(Locale.getDefault()) } }
     }
 
-    suspend fun getUsers(context: Context): UserData {
-        val userRepository = LocalFileUserRepository(context)
-        val users = withContext(Dispatchers.IO) { userRepository.findAll() }
-        val entities = users.map { UserEntity(it.user, null, null) }
-        val data = UserData(users = entities)
-        _mUserData.value = data
-        return data
+    private suspend fun getUsers(context: Context): List<UserEntity> {
+        val service = UserService(context)
+        val users = service.getUsers()
+        _mUserData.value = users
+        return users
     }
 
     suspend fun getUser(context: Context, userId: String): User? {
-        val userRepository: UserRepository = LocalFileUserRepository(context)
-        return withContext(Dispatchers.IO) {
-            userRepository.find(userId)?.user
-        }
+        val service = UserService(context)
+        return service.getUser(userId)
+
     }
 
     suspend fun updateName(context: Context, userId: String, name: String) {
-        val userRepository: UserRepository = LocalFileUserRepository(context)
-        withContext(Dispatchers.IO) {
-            userRepository.updateName(userId, name)
-        }
+        val service = UserService(context)
+        service.updateName(userId, name)
     }
 
     suspend fun updateGrade(context: Context, userId: String, grade: Grade?) {
-        val userRepository: UserRepository = LocalFileUserRepository(context)
-        withContext(Dispatchers.IO) {
-            userRepository.updateGrade(userId, grade)
-        }
+        val service = UserService(context)
+        service.updateGrade(userId, grade)
     }
 
-    suspend fun addBluetoothDevice(context: Context, userId: String, device: BluetoothData) {
-        val userRepository: UserRepository = LocalFileUserRepository(context)
-        withContext(Dispatchers.IO) {
-            userRepository.addBluetoothDevice(userId, device)
-        }
+    suspend fun addBluetoothDevice(context: Context, device: Device) {
+        val service = UserService(context)
+        service.addBluetoothDevice(device)
     }
 
-    suspend fun removeBluetoothDevice(context: Context, userId: String, address: String) {
-        val userRepository: UserRepository = LocalFileUserRepository(context)
-        withContext(Dispatchers.IO) {
-            userRepository.deleteBluetoothDevice(userId, address)
-        }
+    suspend fun removeBluetoothDevice(context: Context, address: String) {
+        val service = UserService(context)
+        service.removeBluetoothDevice(address)
     }
 
     /**
@@ -98,20 +80,12 @@ class UserViewModel : ViewModel() {
         val users = withContext(Dispatchers.IO) {
             UserCSVUtil().importFromCsv(context, uri)
         }
-
-        val userRepository: UserRepository = LocalFileUserRepository(context)
-        withContext(Dispatchers.IO) {
-            users.map { user ->
-                userRepository.save(user)
-            }
-        }
+        val service = UserService(context)
+        users.map { user -> service.createUser(user) }
     }
 
     suspend fun deleteUser(context: Context, userId: String) {
-        val userRepository = LocalFileUserRepository(context)
-
-        withContext(Dispatchers.IO) {
-            userRepository.delete(userId)
-        }
+        val service = UserService(context)
+        service.deleteUser(userId)
     }
 }

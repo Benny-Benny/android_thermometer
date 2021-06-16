@@ -52,4 +52,8 @@
     <string name="unnamed_device">無名のデバイス</string>
     <string name="registered_bluetooth_devices">登録済みBluetooth端末</string>
     <string name="add_bluetooth_device">Bluetooth端末を追加</string>
+    <string name="select_your_grade">学年を選択してください</string>
+
+    <!--  通知  -->
+    <string name="scan_notification_title">周囲の端末をスキャンしています</string>
 </resources>

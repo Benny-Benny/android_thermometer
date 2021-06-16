@@ -2,9 +2,7 @@ package jp.aoyama.mki.thermometer.view.user.fragments
 
 import android.app.AlertDialog
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -16,12 +14,14 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import jp.aoyama.mki.thermometer.R
 import jp.aoyama.mki.thermometer.databinding.FragmentEditUserBinding
-import jp.aoyama.mki.thermometer.domain.models.BluetoothData
-import jp.aoyama.mki.thermometer.domain.models.Grade
+import jp.aoyama.mki.thermometer.domain.models.device.BluetoothScanResult
+import jp.aoyama.mki.thermometer.domain.models.device.Device
+import jp.aoyama.mki.thermometer.domain.models.user.Grade
 import jp.aoyama.mki.thermometer.view.bluetooth.list.BluetoothListAdapter
 import jp.aoyama.mki.thermometer.view.bluetooth.list.BluetoothViewHolder
 import jp.aoyama.mki.thermometer.view.user.viewmodels.UserViewModel
 import kotlinx.coroutines.launch
+import java.util.*
 
 class EditUserFragment : Fragment(), BluetoothViewHolder.CallbackListener,
     BluetoothViewHolder.EditCallbackListener {
@@ -76,9 +76,27 @@ class EditUserFragment : Fragment(), BluetoothViewHolder.CallbackListener,
             }
         }
 
+        setHasOptionsMenu(true)
         reloadData()
 
         return mBinding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.menu_edit_user, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.delete_user -> {
+                lifecycleScope.launch {
+                    mViewModel.deleteUser(requireContext(), userId)
+                    findNavController().popBackStack()
+                }
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun updateName() {
@@ -94,15 +112,21 @@ class EditUserFragment : Fragment(), BluetoothViewHolder.CallbackListener,
         }
     }
 
-    override fun onClick(device: BluetoothData) {
+    override fun onClick(device: BluetoothScanResult) {
         // noop
     }
 
-    override fun onDelete(device: BluetoothData) {
+    override fun onDelete(device: BluetoothScanResult) {
         val dialog = AlertDialog.Builder(requireContext())
             .setMessage("この端末を削除しますか")
             .setPositiveButton("削除") { dialog, _ ->
-                removeBluetoothDevice(device)
+                removeBluetoothDevice(
+                    Device(
+                        userId = userId,
+                        name = device.name,
+                        address = device.address
+                    )
+                )
                 dialog.dismiss()
             }
             .setNegativeButton("キャンセル") { dialog, _ ->
@@ -112,9 +136,9 @@ class EditUserFragment : Fragment(), BluetoothViewHolder.CallbackListener,
         dialog.show()
     }
 
-    private fun removeBluetoothDevice(device: BluetoothData) {
+    private fun removeBluetoothDevice(device: Device) {
         lifecycleScope.launch {
-            mViewModel.removeBluetoothDevice(requireContext(), userId, device.address)
+            mViewModel.removeBluetoothDevice(requireContext(), device.address)
             reloadData()
         }
     }
@@ -139,7 +163,13 @@ class EditUserFragment : Fragment(), BluetoothViewHolder.CallbackListener,
                     else 0
                 )
             }
-            mAdapter.submitList(user.bluetoothDevices)
+            mAdapter.submitList(user.devices.map {
+                BluetoothScanResult(
+                    address = it.address,
+                    name = it.name,
+                    scannedAt = Calendar.getInstance()
+                )
+            })
         }
     }
 }

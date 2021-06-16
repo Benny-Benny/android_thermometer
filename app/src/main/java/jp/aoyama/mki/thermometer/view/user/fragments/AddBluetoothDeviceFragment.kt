@@ -12,11 +12,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import jp.aoyama.mki.thermometer.databinding.FeagmentAddBluetoothDeviceBinding
-import jp.aoyama.mki.thermometer.domain.models.BluetoothData
+import jp.aoyama.mki.thermometer.domain.models.device.BluetoothScanResult
+import jp.aoyama.mki.thermometer.domain.models.device.Device
+import jp.aoyama.mki.thermometer.domain.repository.BluetoothDeviceScanner
+import jp.aoyama.mki.thermometer.infrastructure.android.bluetooth.BluetoothDiscoveryDeviceScanner
 import jp.aoyama.mki.thermometer.view.bluetooth.list.BluetoothListAdapter
 import jp.aoyama.mki.thermometer.view.bluetooth.list.BluetoothViewHolder
-import jp.aoyama.mki.thermometer.view.bluetooth.scanner.BluetoothDeviceScanner
-import jp.aoyama.mki.thermometer.view.bluetooth.scanner.BluetoothDiscoveryDeviceScanner
 import jp.aoyama.mki.thermometer.view.user.viewmodels.UserViewModel
 import kotlinx.coroutines.launch
 
@@ -46,7 +47,7 @@ class AddBluetoothDeviceFragment : Fragment(), BluetoothViewHolder.CallbackListe
 
         lifecycleScope.launch {
             val user = mViewModel.getUser(requireContext(), userId) ?: return@launch
-            val addresses = user.bluetoothDevices.map { it.address }
+            val addresses = user.devices.map { it.address }
             mUserDevices.addAll(addresses)
         }
 
@@ -54,15 +55,15 @@ class AddBluetoothDeviceFragment : Fragment(), BluetoothViewHolder.CallbackListe
         mBluetoothDeviceScanner.startDiscovery()
         mBluetoothDeviceScanner.devicesLiveData.observe(viewLifecycleOwner) { devices ->
             // 登録済みのデバイスを一覧から削除
-            val notRegistered = devices.toMutableList()
-            notRegistered.removeAll { mUserDevices.contains(it.device.address) }
+            val notRegistered = devices
+                .filter { it.name != null }
+                .filter { !mUserDevices.contains(it.address) }
 
-            mAdapter.submitList(notRegistered.map {
-                BluetoothData(
-                    name = it.device.name,
-                    address = it.device.address
-                )
-            })
+            mBinding.progressCircular.visibility =
+                if (notRegistered.isEmpty()) View.VISIBLE
+                else View.GONE
+
+            mAdapter.submitList(notRegistered)
         }
         return mBinding.root
     }
@@ -72,9 +73,16 @@ class AddBluetoothDeviceFragment : Fragment(), BluetoothViewHolder.CallbackListe
         mBluetoothDeviceScanner.cancelDiscovery()
     }
 
-    override fun onClick(device: BluetoothData) {
+    override fun onClick(device: BluetoothScanResult) {
         lifecycleScope.launch {
-            mViewModel.addBluetoothDevice(requireContext(), userId, device)
+            mViewModel.addBluetoothDevice(
+                requireContext(),
+                Device(
+                    name = device.name,
+                    address = device.address,
+                    userId = userId
+                )
+            )
             findNavController().popBackStack()
             Toast.makeText(requireContext(), "端末を追加しました", Toast.LENGTH_LONG).show()
         }
