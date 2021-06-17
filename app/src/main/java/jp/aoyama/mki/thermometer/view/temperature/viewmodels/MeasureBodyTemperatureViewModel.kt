@@ -1,5 +1,6 @@
 package jp.aoyama.mki.thermometer.view.temperature.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 
 class MeasureBodyTemperatureViewModel : ViewModel() {
@@ -9,6 +10,7 @@ class MeasureBodyTemperatureViewModel : ViewModel() {
      * 画像から取得された値から、数字を抽出
      */
     fun addData(value: String) {
+        Log.d("VIEWMODEL", "addData: ${value}")
         val numStr = value.replace("[^0-9]".toRegex(), "")
         if (numStr.isBlank() || numStr.length > 6) return
 

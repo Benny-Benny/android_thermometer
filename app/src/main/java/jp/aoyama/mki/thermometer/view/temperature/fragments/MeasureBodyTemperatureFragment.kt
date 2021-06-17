@@ -1,6 +1,7 @@
 package jp.aoyama.mki.thermometer.view.temperature.fragments
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -65,6 +66,7 @@ class MeasureBodyTemperatureFragment : Fragment(), TextRecognizer.CallbackListen
         return mBinding.root
     }
 
+    @SuppressLint("UnsafeOptInUsageError")
     private fun startCamera(cameraSelector: CameraSelector? = null) {
         mBinding.progressCircular.visibility = View.VISIBLE
 
@@ -87,7 +89,7 @@ class MeasureBodyTemperatureFragment : Fragment(), TextRecognizer.CallbackListen
             .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
             .build()
             .apply {
-                val analyzer = TextRecognizer(this@MeasureBodyTemperatureFragment)
+                val analyzer = TextRecognizer(this@MeasureBodyTemperatureFragment, requireContext())
                 setAnalyzer(cameraExecutor, analyzer)
             }
 
