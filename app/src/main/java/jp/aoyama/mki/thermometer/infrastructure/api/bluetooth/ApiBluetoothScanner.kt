@@ -39,7 +39,16 @@ class ApiBluetoothScanner(context: Context) : BluetoothDeviceScanner {
         coroutineScope = CoroutineScope(Dispatchers.IO)
         coroutineScope?.launch {
             while (true) {
-                val results = scan()
+                val results = kotlin
+                    .runCatching { scan() }
+                    .fold(
+                        onSuccess = { it },
+                        onFailure = { e ->
+                            Log.e(TAG, "startDiscovery: error while scanning", e)
+                            emptyList()
+                        }
+                    )
+
                 withContext(Dispatchers.Main) {
                     _deviceLiveData.value = results.map {
                         BluetoothScanResult(
