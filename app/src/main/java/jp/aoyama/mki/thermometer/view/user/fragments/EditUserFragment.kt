@@ -89,14 +89,24 @@ class EditUserFragment : Fragment(), BluetoothViewHolder.CallbackListener,
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.delete_user -> {
+            R.id.delete_user -> deleteUser()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun deleteUser() {
+        val dialog = AlertDialog.Builder(requireContext())
+            .setMessage(R.string.delete_confirm)
+            .setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
+            .setPositiveButton(R.string.ok) { dialog, _ ->
+                dialog.dismiss()
                 lifecycleScope.launch {
                     mViewModel.deleteUser(requireContext(), userId)
                     findNavController().popBackStack()
                 }
             }
-        }
-        return super.onOptionsItemSelected(item)
+            .create()
+        dialog.show()
     }
 
     private fun updateName() {
