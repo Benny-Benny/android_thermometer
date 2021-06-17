@@ -32,13 +32,17 @@ class UserViewModel : ViewModel() {
 
             users = users.updateUser(user.copy(lastFoundAt = Calendar.getInstance()))
         }
-
         _mUserData.value = users
     }
 
     fun observeUsers(context: Context): LiveData<List<UserEntity>> {
         viewModelScope.launch { getUsers(context) }
-        return _mUserData.map { users -> users.sortedBy { it.name.toLowerCase(Locale.getDefault()) } }
+        return _mUserData.map { users ->
+            val sortByName = users.sortedBy { it.name.toLowerCase(Locale.getDefault()) }
+            val foundUsers = sortByName.filter { it.found }
+            val notFoundUsers = sortByName - foundUsers
+            foundUsers + notFoundUsers
+        }
     }
 
     private suspend fun getUsers(context: Context): List<UserEntity> {
