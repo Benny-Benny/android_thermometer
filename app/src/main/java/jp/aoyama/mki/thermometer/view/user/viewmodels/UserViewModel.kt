@@ -14,6 +14,7 @@ import jp.aoyama.mki.thermometer.domain.service.UserService
 import jp.aoyama.mki.thermometer.infrastructure.local.user.UserCSVUtil
 import jp.aoyama.mki.thermometer.view.models.UserEntity
 import jp.aoyama.mki.thermometer.view.models.UserEntity.Companion.updateUser
+import jp.aoyama.mki.thermometer.view.models.UserEntity.Companion.updateUsers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -44,9 +45,8 @@ class UserViewModel : ViewModel() {
                 return@launch
             }
 
-            val newUsers = users.filter { user -> !currentUsers.any { it.id == user.id } }
-            newUsers.forEach { user -> users = users.updateUser(user) }
-            _mUserData.value
+            users = currentUsers.updateUsers(users)
+            _mUserData.value = users
         }
 
         return _mUserData.map { users ->
