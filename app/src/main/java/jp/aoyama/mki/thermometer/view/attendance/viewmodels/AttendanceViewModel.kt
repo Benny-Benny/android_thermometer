@@ -5,13 +5,26 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import jp.aoyama.mki.thermometer.domain.models.attendance.Attendance
 import jp.aoyama.mki.thermometer.domain.service.AttendanceService
+import java.util.*
 
 class AttendanceViewModel : ViewModel() {
 
     suspend fun getAttendances(context: Context): List<Attendance> {
         val service = AttendanceService(context)
         return kotlin.runCatching {
-            service.getAttendances()
+            val now = Calendar.getInstance()
+            val today = Calendar.getInstance().apply {
+                set(Calendar.HOUR_OF_DAY, 0)
+                set(Calendar.MINUTE, 0)
+                set(Calendar.SECOND, 0)
+            }
+            val tomorrow = Calendar.getInstance().apply {
+                set(Calendar.DAY_OF_MONTH, now.get(Calendar.DAY_OF_MONTH) + 1)
+                set(Calendar.HOUR_OF_DAY, 0)
+                set(Calendar.MINUTE, 0)
+                set(Calendar.SECOND, 0)
+            }
+            service.getAttendancesOf(today, tomorrow)
                 .flatMap { userAttendance ->
                     val name = userAttendance.userName
                     userAttendance.attendances.map { it.toAttendance(name) }

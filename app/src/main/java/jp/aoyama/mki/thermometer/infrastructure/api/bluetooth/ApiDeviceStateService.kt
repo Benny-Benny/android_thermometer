@@ -2,7 +2,9 @@ package jp.aoyama.mki.thermometer.infrastructure.api.bluetooth
 
 import jp.aoyama.mki.thermometer.domain.models.device.DeviceStateEntity
 import retrofit2.Call
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 import java.util.*
 
@@ -25,9 +27,17 @@ data class DeviceStateResponse(
     }
 }
 
+data class GetDeviceStatesRequest(
+    val start: Long,
+    val end: Long
+)
+
 interface ApiDeviceStateService {
     @GET("states")
     fun getAllDeviceStates(): Call<List<DeviceStateResponse>>
+
+    @POST("states")
+    fun getDeviceStatesInDateRange(@Body request: GetDeviceStatesRequest): Call<List<DeviceStateResponse>>
 
     @GET("states/{address}")
     fun getDeviceStates(@Path("address") address: String): Call<List<DeviceStateResponse>>

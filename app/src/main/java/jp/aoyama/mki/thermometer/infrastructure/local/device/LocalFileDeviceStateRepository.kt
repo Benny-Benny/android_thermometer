@@ -5,6 +5,7 @@ import android.util.Log
 import com.google.gson.Gson
 import jp.aoyama.mki.thermometer.domain.models.device.DeviceStateEntity
 import jp.aoyama.mki.thermometer.domain.repository.DeviceStateRepository
+import java.util.*
 
 class LocalFileDeviceStateRepository(
     private val mContext: Context
@@ -30,6 +31,12 @@ class LocalFileDeviceStateRepository(
                 emptyList()
             }
         )
+    }
+
+    override suspend fun findInRange(start: Calendar, end: Calendar): List<DeviceStateEntity> {
+        return findAll().filter {
+            start.timeInMillis < it.createdAt.timeInMillis && it.createdAt.timeInMillis < end.timeInMillis
+        }
     }
 
     override suspend fun findByAddress(address: String): List<DeviceStateEntity> {

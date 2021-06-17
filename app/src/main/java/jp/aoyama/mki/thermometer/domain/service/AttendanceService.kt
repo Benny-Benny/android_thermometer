@@ -12,6 +12,7 @@ import jp.aoyama.mki.thermometer.domain.repository.UserRepository
 import jp.aoyama.mki.thermometer.infrastructure.repositories.RepositoryContainer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.*
 
 class AttendanceService(
     private val userRepository: UserRepository,
@@ -39,25 +40,40 @@ class AttendanceService(
         }
     }
 
-    suspend fun getUserAttendance(
+    // 指定した日付の範囲内の出席データを取得
+    suspend fun getAttendancesOf(start: Calendar, end: Calendar): List<UserAttendance> =
+        withContext(Dispatchers.IO) {
+            val users = userRepository.findAll()
+            val devices = deviceRepository.findAll()
+            val states = deviceStateRepository.findInRange(start, end)
+            return@withContext users.map { user ->
+                getUserAttendance(
+                    user.id,
+                    user.name,
+                    devices,
+                    states
+                )
+            }
+        }
+
+    suspend fun getUserAttendance(userId: String, userName: String): UserAttendance {
+        val userDevices = deviceRepository.findByUserId(userId)
+        // ユーザーに紐づくすべての端末の検索記録を、日時順にソート
+        val userAllDeviceStates =
+            userDevices.flatMap { deviceStateRepository.findByAddress(it.address) }
+        return getUserAttendance(userId, userName, userDevices, userAllDeviceStates)
+    }
+
+    private fun getUserAttendance(
         userId: String,
         userName: String,
-        devices: List<Device>? = null,
-        allDeviceStates: List<DeviceStateEntity>? = null
+        devices: List<Device>,
+        allDeviceStates: List<DeviceStateEntity>
     ): UserAttendance {
-        val userDevices =
-            if (devices == null) {
-                deviceRepository.findByUserId(userId)
-            } else {
-                devices.filter { it.userId == userId }
-            }
+        val userDevices = devices.filter { it.userId == userId }
 
         // ユーザーに紐づくすべての端末の検索記録を、日時順にソート
-        val userAllDeviceStates = if (allDeviceStates == null) {
-            userDevices.flatMap { deviceStateRepository.findByAddress(it.address) }
-        } else {
-            allDeviceStates.getAddressOf(userDevices.map { it.address })
-        }
+        val userAllDeviceStates = allDeviceStates.getAddressOf(userDevices.map { it.address })
         val sortedStates = userAllDeviceStates.sortedBy { it.createdAt.timeInMillis }
 
         // 中間の結果を破棄する

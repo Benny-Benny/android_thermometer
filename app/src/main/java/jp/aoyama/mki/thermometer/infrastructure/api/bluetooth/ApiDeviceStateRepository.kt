@@ -7,6 +7,7 @@ import jp.aoyama.mki.thermometer.infrastructure.api.ApiRepositoryUtil
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.*
 
 class ApiDeviceStateRepository(context: Context) : DeviceStateRepository {
 
@@ -24,6 +25,12 @@ class ApiDeviceStateRepository(context: Context) : DeviceStateRepository {
 
     override suspend fun findAll(): List<DeviceStateEntity> {
         val response = service.getAllDeviceStates().execute().body() ?: emptyList()
+        return response.map { it.toDeviceStateEntity() }
+    }
+
+    override suspend fun findInRange(start: Calendar, end: Calendar): List<DeviceStateEntity> {
+        val request = GetDeviceStatesRequest(start.timeInMillis / 1000, end.timeInMillis / 1000)
+        val response = service.getDeviceStatesInDateRange(request).execute().body() ?: emptyList()
         return response.map { it.toDeviceStateEntity() }
     }
 
