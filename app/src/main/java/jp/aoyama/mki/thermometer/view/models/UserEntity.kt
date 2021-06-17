@@ -21,7 +21,8 @@ data class UserEntity(
         }
 
     companion object {
-        private const val TIMEOUT_IN_MILLIS = 5 * 1000
+        // 最後に端末を発見してから、1分は表示されるようにする。
+        private const val TIMEOUT_IN_MILLIS = 1 * 60 * 1000
 
         fun List<UserEntity>.updateUser(user: UserEntity): List<UserEntity> {
             val users = this.toMutableList()

@@ -25,7 +25,7 @@ import jp.aoyama.mki.thermometer.view.user.viewmodels.UserViewModel
 import kotlinx.coroutines.launch
 
 class SelectNameFragment : Fragment(), UserViewHolder.CallbackListener {
-    private val mViewModel: UserViewModel by viewModels()
+    private val mViewModel: UserViewModel by viewModels({ requireActivity() })
     private lateinit var mBinding: FragmentSelectNameBinding
     private val mUserListAdapter: UserListAdapter = UserListAdapter(this)
 

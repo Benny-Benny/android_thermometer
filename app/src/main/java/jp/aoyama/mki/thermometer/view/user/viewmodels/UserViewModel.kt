@@ -24,7 +24,6 @@ class UserViewModel : ViewModel() {
 
     fun onReceiveBluetoothResult(devices: List<BluetoothScanResult>) {
         var users = _mUserData.value ?: return
-        Log.d("VIEWMODEL", "onReceiveBluetoothResult: $devices")
         devices.map { device ->
             val user = users.find { user ->
                 user.devices.any { it.address == device.address }
@@ -36,7 +35,20 @@ class UserViewModel : ViewModel() {
     }
 
     fun observeUsers(context: Context): LiveData<List<UserEntity>> {
-        viewModelScope.launch { getUsers(context) }
+        viewModelScope.launch {
+            var users = getUsers(context)
+
+            val currentUsers = _mUserData.value
+            if (currentUsers == null) {
+                _mUserData.value = users
+                return@launch
+            }
+
+            val newUsers = users.filter { user -> !currentUsers.any { it.id == user.id } }
+            newUsers.forEach { user -> users = users.updateUser(user) }
+            _mUserData.value
+        }
+
         return _mUserData.map { users ->
             val sortByName = users.sortedBy { it.name.toLowerCase(Locale.getDefault()) }
             val foundUsers = sortByName.filter { it.found }
@@ -47,15 +59,14 @@ class UserViewModel : ViewModel() {
 
     private suspend fun getUsers(context: Context): List<UserEntity> {
         val service = UserService(context)
-        val users = try {
+
+        return try {
             service.getUsers()
         } catch (e: Exception) {
             Toast.makeText(context, "データ取得中にエラーが発生しました。", Toast.LENGTH_LONG).show()
             Log.e(TAG, "getUsers: error while getting users", e)
             emptyList()
         }
-        _mUserData.value = users
-        return users
     }
 
     suspend fun getUser(context: Context, userId: String): User? {
