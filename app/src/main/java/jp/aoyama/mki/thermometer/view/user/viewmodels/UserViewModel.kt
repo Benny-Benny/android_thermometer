@@ -11,7 +11,7 @@ import jp.aoyama.mki.thermometer.domain.models.device.Device
 import jp.aoyama.mki.thermometer.domain.models.user.Grade
 import jp.aoyama.mki.thermometer.domain.models.user.User
 import jp.aoyama.mki.thermometer.domain.service.UserService
-import jp.aoyama.mki.thermometer.infrastructure.local.user.UserCSVUtil
+import jp.aoyama.mki.thermometer.infrastructure.export.UserCSVUtil
 import jp.aoyama.mki.thermometer.view.models.UserEntity
 import jp.aoyama.mki.thermometer.view.models.UserEntity.Companion.updateUser
 import jp.aoyama.mki.thermometer.view.models.UserEntity.Companion.updateUsers

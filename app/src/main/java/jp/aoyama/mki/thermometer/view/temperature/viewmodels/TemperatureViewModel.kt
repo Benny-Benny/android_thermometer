@@ -7,7 +7,7 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import jp.aoyama.mki.thermometer.domain.models.temperature.TemperatureData
 import jp.aoyama.mki.thermometer.domain.service.UserService
-import jp.aoyama.mki.thermometer.infrastructure.local.user.TemperatureCSVUtil
+import jp.aoyama.mki.thermometer.infrastructure.export.TemperatureCSVUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
