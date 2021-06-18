@@ -17,7 +17,7 @@ class LocalFileDeviceRepository(
     }
 
     companion object {
-        private const val FILE_NAME = "device_states.json"
+        private const val FILE_NAME = "devices.json"
     }
 
     override suspend fun findAll(): List<Device> {

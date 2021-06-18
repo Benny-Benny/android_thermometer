@@ -7,12 +7,16 @@ import jp.aoyama.mki.thermometer.domain.repository.TemperatureRepository
 import jp.aoyama.mki.thermometer.domain.repository.UserRepository
 import jp.aoyama.mki.thermometer.infrastructure.api.bluetooth.ApiDeviceRepository
 import jp.aoyama.mki.thermometer.infrastructure.api.bluetooth.ApiDeviceStateRepository
+import jp.aoyama.mki.thermometer.infrastructure.local.device.LocalFileDeviceRepository
 import jp.aoyama.mki.thermometer.infrastructure.local.temperature.LocalFileBodyTemperatureRepository
 import jp.aoyama.mki.thermometer.infrastructure.local.user.LocalFileUserRepository
 
 class RepositoryContainer(private val context: Context) {
     val deviceRepository: DeviceRepository
-        get() = ApiDeviceRepository(context)
+        get() = DeviceRepositoryImpl(
+            localRepository = LocalFileDeviceRepository(context),
+            remoteRepository = ApiDeviceRepository(context)
+        )
 
     val deviceStateRepository: DeviceStateRepository
         get() = ApiDeviceStateRepository(context)
