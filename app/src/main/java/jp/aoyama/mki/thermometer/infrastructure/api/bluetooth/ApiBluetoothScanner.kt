@@ -1,5 +1,6 @@
 package jp.aoyama.mki.thermometer.infrastructure.api.bluetooth
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -13,19 +14,20 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class ApiBluetoothScanner : BluetoothDeviceScanner {
+class ApiBluetoothScanner(context: Context) : BluetoothDeviceScanner {
 
     private val _deviceLiveData: MutableLiveData<List<BluetoothScanResult>> = MutableLiveData()
     override val devicesLiveData: LiveData<List<BluetoothScanResult>>
         get() = _deviceLiveData
 
-    private val coroutineScope = CoroutineScope(Dispatchers.IO)
+    private var coroutineScope: CoroutineScope? = null
 
     private val service: ApiBluetoothService by lazy {
+        val baseUrl = "${ApiRepositoryUtil(context).baseUrl}/devices/"
         val client = OkHttpClient()
         val retrofit = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(BASE_URL)
+            .baseUrl(baseUrl)
             .client(client)
             .build()
 
@@ -34,9 +36,19 @@ class ApiBluetoothScanner : BluetoothDeviceScanner {
 
 
     override fun startDiscovery() {
-        coroutineScope.launch {
+        coroutineScope = CoroutineScope(Dispatchers.IO)
+        coroutineScope?.launch {
             while (true) {
-                val results = scan()
+                val results = kotlin
+                    .runCatching { scan() }
+                    .fold(
+                        onSuccess = { it },
+                        onFailure = { e ->
+                            Log.e(TAG, "startDiscovery: error while scanning", e)
+                            emptyList()
+                        }
+                    )
+
                 withContext(Dispatchers.Main) {
                     _deviceLiveData.value = results.map {
                         BluetoothScanResult(
@@ -68,12 +80,11 @@ class ApiBluetoothScanner : BluetoothDeviceScanner {
     }
 
     override fun cancelDiscovery() {
-        coroutineScope.cancel()
+        coroutineScope?.cancel()
     }
 
     companion object {
         private const val TAG = "BluetoothApiScanner"
         private const val INTERVAL_IN_MILLIS = 10 * 1000
-        private const val BASE_URL = "${ApiRepositoryUtil.BASE_URL}/devices/"
     }
 }

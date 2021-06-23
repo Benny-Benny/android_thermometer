@@ -1,7 +1,10 @@
 package jp.aoyama.mki.thermometer.infrastructure.api.bluetooth
 
 import retrofit2.Call
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Path
 
 data class DeviceEntity(
     val address: String,
@@ -27,6 +30,6 @@ interface ApiDeviceService {
     @POST("/devices/create")
     fun addUserDevice(@Body request: AddUserDeviceRequest): Call<Unit>
 
-    @DELETE("/devices/delete")
+    @POST("/devices/delete")
     fun deleteDevice(@Body request: DeleteDeviceRequest): Call<Unit>
 }

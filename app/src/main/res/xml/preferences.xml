@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory
+        app:key="@string/category_api"
+        app:title="APIの設定">
+        <EditTextPreference
+            app:defaultValue="@string/default_api_endpoint"
+            app:key="@string/key_api_end_point"
+            app:title="APIエンドポイントを設定" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="@string/category_export"
+        app:title="エキスポート">
+        <Preference
+            app:key="@string/key_export_users"
+            app:summary="データをこのアプリケーションで利用可能な形式でエキスポートします。　エキスポートされたデータを用いて、他の端末にユーザーを登録することが可能です。"
+            app:title="ユーザー情報をエキスポート">
+
+        </Preference>
+    </PreferenceCategory>
+</PreferenceScreen>

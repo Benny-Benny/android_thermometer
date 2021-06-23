@@ -1,5 +1,19 @@
 package jp.aoyama.mki.thermometer.infrastructure.api
 
-object ApiRepositoryUtil {
-    const val BASE_URL = "http://192.168.0.20:5000"
+import android.content.Context
+import androidx.preference.PreferenceManager
+import jp.aoyama.mki.thermometer.R
+
+class ApiRepositoryUtil(private val context: Context) {
+    val baseUrl: String
+        get() {
+            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+            val keyApiEndPoint = context.getString(R.string.key_api_end_point)
+            val defaultApiEndPoint = context.getString(R.string.default_api_endpoint)
+
+            return sharedPreferences.getString(keyApiEndPoint, "").let {
+                if (it != null && it.isNotBlank()) it
+                else defaultApiEndPoint
+            }
+        }
 }

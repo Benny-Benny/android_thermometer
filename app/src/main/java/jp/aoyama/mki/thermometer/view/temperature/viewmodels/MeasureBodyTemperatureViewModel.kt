@@ -10,6 +10,7 @@ class MeasureBodyTemperatureViewModel : ViewModel() {
      * 画像から取得された値から、数字を抽出
      */
     fun addData(value: String) {
+        Log.d("VIEWMODEL", "addData: ${value}")
         val numStr = value.replace("[^0-9]".toRegex(), "")
         if (numStr.isBlank() || numStr.length > 6) return
         Log.d("temp", numStr)

@@ -10,6 +10,7 @@
     <string name="edit">編集</string>
     <string name="delete">削除</string>
     <string name="save">保存</string>
+    <string name="settings">設定</string>
 
     <!--  名詞  -->
     <string name="makelist_edit_name">名前</string>
@@ -25,6 +26,10 @@
     <string name="format_ymdhm">%1$d/%2$02d/%3$02d %4$02d:%5$02d</string>
     <string name="format_body_temperature">%1$.1f</string>
 
+    <!-- ファイル名 -->
+    <string name="export_file_name_user">user.csv</string>
+    <string name="export_file_name_body_temperature">body_temperature.csv</string>
+
     <!--  ユーザー  -->
     <string name="tell_your_name">あなたの名前を教えて下さい。</string>
     <string name="user_saved">情報が登録されました</string>
@@ -37,6 +42,7 @@
     <string name="import_from_csv">CSVからインポート</string>
     <string name="create_new_user">新規ユーザー登録</string>
     <string name="how_to_add_user">ユーザーの追加方法を選択</string>
+    <string name="export_user_data">ユーザーデータを出力</string>
 
     <!--  体温  -->
     <string name="chooser_title">体温を入力してください</string>
@@ -56,4 +62,11 @@
 
     <!--  通知  -->
     <string name="scan_notification_title">周囲の端末をスキャンしています</string>
+
+    <!--  Preferences  -->
+    <string name="category_api">api_category</string>
+    <string name="key_api_end_point">api_end_point</string>
+    <string name="default_api_endpoint">http://192.168.0.20:5000</string>
+    <string name="category_export">export_category</string>
+    <string name="key_export_users">export_users</string>
 </resources>
