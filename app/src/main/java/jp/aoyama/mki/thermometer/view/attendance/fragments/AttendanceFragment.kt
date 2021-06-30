@@ -10,7 +10,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import jp.aoyama.mki.thermometer.databinding.FragmentAttendanceBinding
-import jp.aoyama.mki.thermometer.infrastructure.workmanager.ExportAttendanceWorker
 import jp.aoyama.mki.thermometer.view.attendance.list.AttendanceListAdapter
 import jp.aoyama.mki.thermometer.view.attendance.viewmodels.AttendanceViewModel
 import kotlinx.coroutines.launch
@@ -31,9 +30,6 @@ class AttendanceFragment : Fragment() {
             recyclerViewAttendance.layoutManager = LinearLayoutManager(requireContext())
             recyclerViewAttendance.adapter = mAttendanceListAdapter
             swipeRefresh.setOnRefreshListener { reloadData() }
-            buttonExport.setOnClickListener {
-                ExportAttendanceWorker.startWork(requireContext().applicationContext)
-            }
         }
 
         reloadData()
