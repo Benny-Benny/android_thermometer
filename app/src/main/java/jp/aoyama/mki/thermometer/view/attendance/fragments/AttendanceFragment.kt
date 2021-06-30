@@ -1,6 +1,7 @@
 package jp.aoyama.mki.thermometer.view.attendance.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,6 +41,7 @@ class AttendanceFragment : Fragment() {
         lifecycleScope.launch {
             mBinding.progressCircular.visibility = View.VISIBLE
             val attendances = mViewModel.getAttendances(requireContext())
+            Log.d(TAG, "reloadData: $attendances")
             mBinding.progressCircular.visibility = View.GONE
 
             mAttendanceListAdapter.submitList(attendances)

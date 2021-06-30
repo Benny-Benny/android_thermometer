@@ -106,4 +106,8 @@ class AttendanceService(
             attendances = attendances
         )
     }
+
+    companion object {
+        private const val TAG = "AttendanceService"
+    }
 }

@@ -24,12 +24,17 @@ class AttendanceViewModel : ViewModel() {
                 set(Calendar.MINUTE, 0)
                 set(Calendar.SECOND, 0)
             }
-            service.getAttendancesOf(today, tomorrow)
+
+            val attendance = service.getAttendances()
+            Log.d(TAG, "getAttendances: $attendance")
+
+            attendance
                 .flatMap { userAttendance ->
                     val name = userAttendance.userName
                     userAttendance.attendances.map { it.toAttendance(name) }
                 }
                 .sortedBy { it.enterAt }
+
         }.fold(
             onSuccess = { it },
             onFailure = { e ->
