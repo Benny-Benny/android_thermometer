@@ -17,12 +17,24 @@ android {
 
     defaultConfig {
         applicationId "jp.aoyama.mki.thermometer"
-        minSdkVersion 23
+        minSdkVersion 24
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+        exclude("META-INF/*.kotlin_module")
     }
 
     buildTypes {
@@ -66,6 +78,8 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1"
     // Coroutine
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.5.0"
+
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.7.1'
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.0'
@@ -78,7 +92,8 @@ dependencies {
     implementation "androidx.camera:camera-lifecycle:1.1.0-alpha05"
     implementation "androidx.camera:camera-view:1.0.0-alpha25"
 
-    // Firebase MLKit
+    // Firebase
+    implementation platform('com.google.firebase:firebase-bom:28.2.0')
     implementation 'com.google.android.gms:play-services-mlkit-text-recognition:16.2.0'
 
     // Network
@@ -89,4 +104,15 @@ dependencies {
 
     // Work Manager
     implementation "androidx.work:work-runtime-ktx:2.6.0-beta01"
+
+    // Google API
+    implementation 'com.google.http-client:google-http-client-gson:1.26.0'
+    implementation('com.google.api-client:google-api-client-android:1.28.0')
+    implementation('com.google.apis:google-api-services-drive:v3-rev173-1.25.0')
+    implementation('com.google.apis:google-api-services-calendar:v3-rev305-1.23.0')
+    implementation('com.google.apis:google-api-services-sheets:v4-rev571-1.25.0')
+
+    implementation('com.google.oauth-client:google-oauth-client-jetty:1.23.0')
+    implementation 'com.google.android.gms:play-services-auth:19.0.0'
+    implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
 }

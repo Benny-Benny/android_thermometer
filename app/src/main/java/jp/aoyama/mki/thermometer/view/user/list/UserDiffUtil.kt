@@ -9,6 +9,6 @@ class UserDiffUtil : DiffUtil.ItemCallback<UserEntity>() {
     }
 
     override fun areContentsTheSame(oldItem: UserEntity, newItem: UserEntity): Boolean {
-        return oldItem == newItem
+        return oldItem == newItem && oldItem.found == newItem.found
     }
 }

@@ -14,7 +14,6 @@ import jp.aoyama.mki.thermometer.domain.service.UserService
 import jp.aoyama.mki.thermometer.infrastructure.export.UserCSVUtil
 import jp.aoyama.mki.thermometer.view.models.UserEntity
 import jp.aoyama.mki.thermometer.view.models.UserEntity.Companion.updateUser
-import jp.aoyama.mki.thermometer.view.models.UserEntity.Companion.updateUsers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -37,16 +36,7 @@ class UserViewModel : ViewModel() {
 
     fun observeUsers(context: Context): LiveData<List<UserEntity>> {
         viewModelScope.launch {
-            var users = getUsers(context)
-
-            val currentUsers = _mUserData.value
-            if (currentUsers == null) {
-                _mUserData.value = users
-                return@launch
-            }
-
-            users = currentUsers.updateUsers(users)
-            _mUserData.value = users
+            reloadUserData(context)
         }
 
         return _mUserData.map { users ->
@@ -55,6 +45,10 @@ class UserViewModel : ViewModel() {
             val notFoundUsers = sortByName - foundUsers
             foundUsers + notFoundUsers
         }
+    }
+
+    suspend fun reloadUserData(context: Context) {
+        _mUserData.value = getUsers(context)
     }
 
     private suspend fun getUsers(context: Context): List<UserEntity> {

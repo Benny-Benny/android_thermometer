@@ -53,6 +53,8 @@ class SelectNameFragment : Fragment(), UserViewHolder.CallbackListener {
                     HomeFragmentDirections.homeToCreateUser()
                 )
             }
+
+            swipeRefresh.setOnRefreshListener { reloadData() }
         }
 
         mViewModel.observeUsers(requireContext()).observe(viewLifecycleOwner) { users ->
@@ -70,6 +72,9 @@ class SelectNameFragment : Fragment(), UserViewHolder.CallbackListener {
 
     override fun onResume() {
         super.onResume()
+
+        reloadData()
+
         // Bluetooth端末の検索に必要なパーミッションの取得
         val accessFileLocation = ContextCompat.checkSelfPermission(
             requireContext(),
@@ -86,6 +91,13 @@ class SelectNameFragment : Fragment(), UserViewHolder.CallbackListener {
 
     private fun scanBluetoothDevices() {
         mBluetoothDeviceScanner.startDiscovery()
+    }
+
+    private fun reloadData() {
+        lifecycleScope.launch {
+            mViewModel.reloadUserData(requireContext())
+            mBinding.swipeRefresh.isRefreshing = false
+        }
     }
 
     // ============================

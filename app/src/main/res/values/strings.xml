@@ -66,7 +66,7 @@
     <!--  Preferences  -->
     <string name="category_api">api_category</string>
     <string name="key_api_end_point">api_end_point</string>
-    <string name="default_api_endpoint">http://192.168.0.20:5000</string>
+    <string name="default_api_endpoint">http://133.2.206.172:5000</string>
     <string name="category_export">export_category</string>
     <string name="key_export_users">export_users</string>
 </resources>
