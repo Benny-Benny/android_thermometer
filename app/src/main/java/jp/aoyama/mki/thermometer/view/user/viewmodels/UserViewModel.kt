@@ -1,7 +1,6 @@
 package jp.aoyama.mki.thermometer.view.user.viewmodels
 
 import android.content.Context
-import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.*
@@ -11,12 +10,9 @@ import jp.aoyama.mki.thermometer.domain.models.device.Device
 import jp.aoyama.mki.thermometer.domain.models.user.Grade
 import jp.aoyama.mki.thermometer.domain.models.user.User
 import jp.aoyama.mki.thermometer.domain.service.UserService
-import jp.aoyama.mki.thermometer.infrastructure.export.UserCSVUtil
 import jp.aoyama.mki.thermometer.view.models.UserEntity
 import jp.aoyama.mki.thermometer.view.models.UserEntity.Companion.updateUser
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.*
 
 class UserViewModel : ViewModel() {
@@ -95,17 +91,6 @@ class UserViewModel : ViewModel() {
     suspend fun removeBluetoothDevice(context: Context, address: String) {
         val service = UserService(context)
         service.removeBluetoothDevice(address)
-    }
-
-    /**
-     * CSVファイルからユーザを追加
-     */
-    suspend fun importFromCSV(context: Context, uri: Uri) {
-        val users = withContext(Dispatchers.IO) {
-            UserCSVUtil().importFromCsv(context, uri)
-        }
-        val service = UserService(context)
-        users.map { user -> service.createUser(user) }
     }
 
     suspend fun deleteUser(context: Context, userId: String) {

@@ -1,4 +1,4 @@
-package jp.aoyama.mki.thermometer.view.user.fragments
+package jp.aoyama.mki.thermometer.view.user.fragments.create
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -30,13 +30,10 @@ class ConfirmUserInformationFragment : Fragment() {
 
         mBinding.apply {
             textName.text = mViewModel.name
-            if (mViewModel.bluetoothMacAddress != null) {
-                textBluetoothName.text = mViewModel.bluetoothDeviceName
-                textGrade.text = mViewModel.grade?.gradeName ?: "選択されていません"
-                textBluetoothAddress.text = mViewModel.bluetoothMacAddress
-            } else {
-                textBluetoothName.text = "登録されていません。"
-            }
+            textGrade.text = mViewModel.grade?.gradeName ?: "選択されていません"
+
+            textBluetoothName.text = mViewModel.bluetoothDeviceName ?: "登録されていません。"
+            textBluetoothAddress.text = mViewModel.bluetoothMacAddress
 
             buttonSave.setOnClickListener { createUser() }
             buttonBack.setOnClickListener { findNavController().popBackStack() }

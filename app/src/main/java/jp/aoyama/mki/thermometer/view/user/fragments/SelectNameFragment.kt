@@ -49,7 +49,7 @@ class SelectNameFragment : Fragment(), UserViewHolder.CallbackListener {
             (recyclerViewUsers.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
             floatingActionButton.setOnClickListener {
-                findNavController().navigate(HomeFragmentDirections.homeToCreateUser())
+                findNavController().navigate(HomeFragmentDirections.homeToEditName())
             }
 
             swipeRefresh.setOnRefreshListener { reloadData() }

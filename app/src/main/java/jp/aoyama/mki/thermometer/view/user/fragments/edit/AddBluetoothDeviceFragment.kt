@@ -1,4 +1,4 @@
-package jp.aoyama.mki.thermometer.view.user.fragments
+package jp.aoyama.mki.thermometer.view.user.fragments.edit
 
 import android.os.Bundle
 import android.view.LayoutInflater

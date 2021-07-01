@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:paddingHorizontal="16dp"
     android:paddingVertical="32dp"
-    tools:context=".view.user.fragments.EditNameFragment">
+    tools:context=".view.user.fragments.create.EditNameFragment">
 
     <TextView
         android:id="@+id/text_name_title"
