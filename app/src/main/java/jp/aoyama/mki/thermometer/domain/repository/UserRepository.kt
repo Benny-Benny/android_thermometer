@@ -15,5 +15,7 @@ interface UserRepository {
 
     suspend fun updateGrade(userId: String, grade: Grade?)
 
+    suspend fun updateDevice(userId: String, device: String?)
+
     suspend fun delete(userId: String)
 }

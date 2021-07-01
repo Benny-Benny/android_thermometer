@@ -1,6 +1,8 @@
 package jp.aoyama.mki.thermometer.infrastructure.spreadsheet.user
 
 import android.content.Context
+import android.util.Log
+import jp.aoyama.mki.thermometer.domain.models.device.Device
 import jp.aoyama.mki.thermometer.domain.models.user.Grade
 import jp.aoyama.mki.thermometer.domain.models.user.UserEntity
 import jp.aoyama.mki.thermometer.domain.repository.UserRepository
@@ -10,16 +12,18 @@ class SpreadSheetUserRepository(
     context: Context
 ) : UserRepository {
     companion object {
-        private const val USERS_SHEET_RANGE = "users!A:C"
+        private const val USERS_SHEET_RANGE = "users!A:D"
+        private const val TAG = "SpreadSheetUserReposito"
     }
 
     private val mSpreadSheet = SpreadSheetUtil(context)
 
     private suspend fun userSheetRangeOf(id: String): String? {
         val row = mSpreadSheet.getColumnOf(USERS_SHEET_RANGE) {
+            if (it.isEmpty()) return@getColumnOf false
             it[0] == id
         } ?: return null
-        return "users!A${row}:C${row}"
+        return "users!${row}:${row}"
     }
 
     private suspend fun getAllEntities(): List<SpreadSheetUserEntity> {
@@ -61,6 +65,18 @@ class SpreadSheetUserRepository(
         val range = userSheetRangeOf(userId) ?: return
         val updated = SpreadSheetUserEntity(user.copy(grade = grade?.gradeName))
         mSpreadSheet.updateValues(range, listOf(updated.toCsv()))
+    }
+
+    override suspend fun updateDevice(userId: String, device: String?) {
+        val user = find(userId) ?: return
+
+        val updated = user.copy(device = Device.create(userId, device))
+        val entity = SpreadSheetUserEntity(updated)
+
+        val range = userSheetRangeOf(userId) ?: return
+        mSpreadSheet.updateValues(range, listOf(entity.toCsv()))
+
+        Log.d(TAG, "updateDevice: update to ${entity.toCsv()}")
     }
 
     override suspend fun delete(userId: String) {

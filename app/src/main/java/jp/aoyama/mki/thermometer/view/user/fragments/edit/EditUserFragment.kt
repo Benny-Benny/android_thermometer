@@ -98,6 +98,7 @@ class EditUserFragment : Fragment() {
                 else 0
             )
 
+            textDeviceAddress.text = user.device?.address
             layoutBluetoothDevice.visibility =
                 if (user.device != null) View.VISIBLE
                 else View.GONE
@@ -139,11 +140,11 @@ class EditUserFragment : Fragment() {
     private fun showConfirmDeleteDeviceDialog() {
         val dialog = AlertDialog.Builder(requireContext())
             .setMessage("この端末を削除しますか")
-            .setPositiveButton("削除") { dialog, _ ->
-                removeBluetoothDevice()
+            .setNegativeButton("キャンセル") { dialog, _ ->
                 dialog.dismiss()
             }
-            .setNegativeButton("キャンセル") { dialog, _ ->
+            .setPositiveButton("削除") { dialog, _ ->
+                removeBluetoothDevice()
                 dialog.dismiss()
             }
             .create()
@@ -154,8 +155,7 @@ class EditUserFragment : Fragment() {
         mBinding.progressBar.visibility = View.VISIBLE
 
         lifecycleScope.launch {
-            val device = mViewModel.getUser(requireContext(), userId)?.device ?: return@launch
-            mViewModel.removeBluetoothDevice(requireContext(), device.address)
+            mViewModel.removeBluetoothDevice(requireContext(), userId = userId)
             reloadData()
         }.invokeOnCompletion {
             mBinding.progressBar.visibility = View.GONE

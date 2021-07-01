@@ -7,7 +7,6 @@ import jp.aoyama.mki.thermometer.domain.models.temperature.TemperatureData
 import jp.aoyama.mki.thermometer.domain.models.user.Grade
 import jp.aoyama.mki.thermometer.domain.models.user.User
 import jp.aoyama.mki.thermometer.domain.models.user.UserEntity
-import jp.aoyama.mki.thermometer.domain.repository.DeviceRepository
 import jp.aoyama.mki.thermometer.domain.repository.TemperatureRepository
 import jp.aoyama.mki.thermometer.domain.repository.UserRepository
 import jp.aoyama.mki.thermometer.infrastructure.repositories.RepositoryContainer
@@ -18,20 +17,16 @@ import jp.aoyama.mki.thermometer.view.models.UserEntity as UserViewEntity
 
 class UserService(
     private val userRepository: UserRepository,
-    private val deviceRepository: DeviceRepository,
     private val temperatureRepository: TemperatureRepository,
 ) {
 
     constructor(context: Context) : this(
         userRepository = RepositoryContainer(context).userRepository,
-        deviceRepository = RepositoryContainer(context).deviceRepository,
         temperatureRepository = RepositoryContainer(context).temperatureRepository
     )
 
     suspend fun createUser(user: User) = withContext(Dispatchers.IO) {
-        val savedUser = userRepository.save(UserEntity(user))
-        val device = user.device ?: return@withContext
-        deviceRepository.save(device.copy(userId = savedUser.id))
+        userRepository.save(UserEntity(user))
     }
 
     suspend fun deleteUser(userId: String) =
@@ -42,19 +37,15 @@ class UserService(
     suspend fun getUsers(): List<UserViewEntity> =
         withContext(Dispatchers.IO) {
             val users = userRepository.findAll()
-            val devices = deviceRepository.findAll()
             return@withContext users.map { entity ->
-                val device = devices.find { it.userId == entity.id }
-                val user = entity.toUser(device)
-                UserViewEntity(user, null)
+                UserViewEntity(entity.toUser(), null)
             }
         }
 
     suspend fun getUser(userId: String): User? =
         withContext(Dispatchers.IO) {
             val entity = userRepository.find(userId) ?: return@withContext null
-            val device = deviceRepository.findByUserId(userId)
-            entity.toUser(device)
+            entity.toUser()
         }
 
     suspend fun updateName(userId: String, name: String) =
@@ -69,12 +60,12 @@ class UserService(
 
     suspend fun addBluetoothDevice(device: Device) =
         withContext(Dispatchers.IO) {
-            deviceRepository.save(device)
+            userRepository.updateDevice(device.userId, device.address)
         }
 
-    suspend fun removeBluetoothDevice(address: String) =
+    suspend fun removeBluetoothDevice(userId: String) =
         withContext(Dispatchers.IO) {
-            deviceRepository.delete(address)
+            userRepository.updateDevice(userId, null)
         }
 
     /**

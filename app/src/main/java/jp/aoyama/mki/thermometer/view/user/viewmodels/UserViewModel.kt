@@ -90,9 +90,9 @@ class UserViewModel : ViewModel() {
         service.addBluetoothDevice(device)
     }
 
-    suspend fun removeBluetoothDevice(context: Context, address: String) {
+    suspend fun removeBluetoothDevice(context: Context, userId: String) {
         val service = UserService(context)
-        service.removeBluetoothDevice(address)
+        service.removeBluetoothDevice(userId)
     }
 
     suspend fun deleteUser(context: Context, userId: String) {

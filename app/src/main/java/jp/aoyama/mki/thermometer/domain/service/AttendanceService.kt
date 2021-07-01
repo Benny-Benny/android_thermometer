@@ -5,7 +5,6 @@ import jp.aoyama.mki.thermometer.domain.models.attendance.AttendanceEntity
 import jp.aoyama.mki.thermometer.domain.models.attendance.UserAttendance
 import jp.aoyama.mki.thermometer.domain.models.device.Device
 import jp.aoyama.mki.thermometer.domain.models.device.DeviceStateEntity
-import jp.aoyama.mki.thermometer.domain.repository.DeviceRepository
 import jp.aoyama.mki.thermometer.domain.repository.DeviceStateRepository
 import jp.aoyama.mki.thermometer.domain.repository.UserRepository
 import jp.aoyama.mki.thermometer.infrastructure.repositories.RepositoryContainer
@@ -15,23 +14,20 @@ import java.util.*
 
 class AttendanceService(
     private val userRepository: UserRepository,
-    private val deviceRepository: DeviceRepository,
     private val deviceStateRepository: DeviceStateRepository
 ) {
 
     constructor(context: Context) : this(
         userRepository = RepositoryContainer(context).userRepository,
-        deviceRepository = RepositoryContainer(context).deviceRepository,
         deviceStateRepository = RepositoryContainer(context).deviceStateRepository
     )
 
     suspend fun getAttendances(): List<UserAttendance> = withContext(Dispatchers.IO) {
         val users = userRepository.findAll()
-        val devices = deviceRepository.findAll()
         val states = deviceStateRepository.findAll()
 
         return@withContext users.mapNotNull { user ->
-            val device = devices.find { it.userId == user.id } ?: return@mapNotNull null
+            val device = user.device ?: return@mapNotNull null
             getUserAttendance(
                 user.id,
                 user.name,
@@ -47,11 +43,10 @@ class AttendanceService(
     suspend fun getAttendancesOf(start: Calendar, end: Calendar): List<UserAttendance> =
         withContext(Dispatchers.IO) {
             val users = userRepository.findAll()
-            val devices = deviceRepository.findAll()
             val states = deviceStateRepository.findInRange(start, end)
 
             return@withContext users.mapNotNull { user ->
-                val device = devices.find { it.userId == user.id } ?: return@mapNotNull null
+                val device = user.device ?: return@mapNotNull null
                 val deviceStates = states.filter { it.address == device.address }
                 getUserAttendance(
                     user.id,
@@ -66,7 +61,7 @@ class AttendanceService(
      * 指定したユーザーの出席記録をすべて取得
      */
     suspend fun getUserAttendance(userId: String, userName: String): UserAttendance {
-        val device = deviceRepository.findByUserId(userId)
+        val device = userRepository.find(userId)?.device
             ?: return UserAttendance(
                 userId,
                 userName,
