@@ -117,7 +117,9 @@ class EditUserFragment : Fragment(), BluetoothViewHolder.CallbackListener,
         }
 
         lifecycleScope.launch {
+            mBinding.progressBar.visibility = View.VISIBLE
             mViewModel.updateName(requireContext(), userId, input)
+            mBinding.progressBar.visibility = View.GONE
             Toast.makeText(requireContext(), "更新しました", Toast.LENGTH_LONG).show()
         }
     }
@@ -146,11 +148,11 @@ class EditUserFragment : Fragment(), BluetoothViewHolder.CallbackListener,
         dialog.show()
     }
 
-    private fun removeBluetoothDevice(device: Device) {
-        lifecycleScope.launch {
-            mViewModel.removeBluetoothDevice(requireContext(), device.address)
-            reloadData()
-        }
+    private fun removeBluetoothDevice(device: Device) = lifecycleScope.launch {
+        mBinding.progressBar.visibility = View.VISIBLE
+        mViewModel.removeBluetoothDevice(requireContext(), device.address)
+        reloadData()
+        mBinding.progressBar.visibility = View.GONE
     }
 
     private fun updateGrade(position: Int) {
@@ -159,7 +161,9 @@ class EditUserFragment : Fragment(), BluetoothViewHolder.CallbackListener,
             else -> null
         }
         lifecycleScope.launch {
+            mBinding.progressBar.visibility = View.VISIBLE
             mViewModel.updateGrade(requireContext(), userId, grade)
+            mBinding.progressBar.visibility = View.GONE
         }
     }
 

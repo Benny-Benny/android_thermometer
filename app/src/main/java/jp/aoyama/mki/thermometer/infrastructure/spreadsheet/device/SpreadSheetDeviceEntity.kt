@@ -1,37 +1,46 @@
 package jp.aoyama.mki.thermometer.infrastructure.spreadsheet.device
 
 import jp.aoyama.mki.thermometer.domain.models.device.Device
+import jp.aoyama.mki.thermometer.infrastructure.spreadsheet.user.SpreadSheetUserEntity
 
 data class SpreadSheetDeviceEntity(
-    val userId: String,
-    val macAddress: String
+    val userEntity: SpreadSheetUserEntity,
+    val macAddress: List<String>
 ) {
-
     fun toCSV(): List<String> {
-        return listOf(userId, macAddress)
+        return userEntity.toCsv() + macAddress
     }
 
-    fun toDevice(): Device {
-        return Device(
-            userId = userId,
-            name = null,
-            address = macAddress
-        )
+    fun toDevices(): List<Device> {
+        return macAddress.map { address ->
+            Device(
+                userId = userEntity.id,
+                name = null,
+                address = address
+            )
+        }
     }
 
     companion object {
         fun fromCSV(csv: List<String>): SpreadSheetDeviceEntity? {
-            if (csv.size < 2) return null
+            // A-C列はユーザーの基本データ
+            if (csv.size <= 3) return null
+            val user = SpreadSheetUserEntity.fromCSV(csv) ?: return null
+
+            // D列以降をMACアドレスとして取得
             return SpreadSheetDeviceEntity(
-                userId = csv[0],
-                macAddress = csv[1],
+                userEntity = user,
+                macAddress = csv.subList(3, csv.size).filter { it.isNotBlank() }
             )
         }
 
-        fun fromDevice(device: Device): SpreadSheetDeviceEntity {
+        fun fromDevices(
+            userEntity: SpreadSheetUserEntity,
+            devices: List<Device>
+        ): SpreadSheetDeviceEntity {
             return SpreadSheetDeviceEntity(
-                userId = device.userId,
-                macAddress = device.address,
+                userEntity = userEntity,
+                macAddress = devices.map { it.address },
             )
         }
     }
