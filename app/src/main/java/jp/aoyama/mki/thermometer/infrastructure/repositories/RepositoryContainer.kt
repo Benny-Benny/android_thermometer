@@ -25,5 +25,5 @@ class RepositoryContainer(private val context: Context) {
         get() = SpreadSheetUserRepository(context)
 
     val temperatureRepository: TemperatureRepository
-        get() = SpreadSheetBodyTemperatureRepository(context)
+        get() = SpreadSheetBodyTemperatureRepository(context, userRepository)
 }
