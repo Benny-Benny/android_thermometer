@@ -135,7 +135,6 @@ class EditUserFragment : Fragment(), BluetoothViewHolder.CallbackListener,
                 removeBluetoothDevice(
                     Device(
                         userId = userId,
-                        name = device.name,
                         address = device.address
                     )
                 )
@@ -182,8 +181,8 @@ class EditUserFragment : Fragment(), BluetoothViewHolder.CallbackListener,
 
         mAdapter.submitList(user.devices.map {
             BluetoothScanResult(
+                name = null,
                 address = it.address,
-                name = it.name,
                 scannedAt = Calendar.getInstance()
             )
         })

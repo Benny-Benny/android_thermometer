@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import jp.aoyama.mki.thermometer.R
 import jp.aoyama.mki.thermometer.databinding.ItemBluetoothDeviceBinding
 import jp.aoyama.mki.thermometer.domain.models.device.BluetoothScanResult
 
@@ -25,9 +24,13 @@ class BluetoothViewHolder(
 
     fun bind(device: BluetoothScanResult) {
         mBinding.apply {
-            textDeviceAddress.text = device.address
-            textDeviceName.text =
-                device.name ?: mBinding.root.context.getString(R.string.unnamed_device)
+            if (device.name != null) {
+                textDeviceName.text = device.name
+                textDeviceAddress.text = device.address
+            } else {
+                textDeviceName.text = device.address
+                textDeviceAddress.text = ""
+            }
             root.setOnClickListener { mCallbackListener.onClick(device) }
         }
 

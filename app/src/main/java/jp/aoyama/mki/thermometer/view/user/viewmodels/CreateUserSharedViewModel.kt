@@ -47,7 +47,7 @@ class CreateUserSharedViewModel : ViewModel() {
     suspend fun createUser(context: Context) = withContext(Dispatchers.IO) {
         if (name != null) {
             val userId = UUID.randomUUID().toString()
-            val bluetooth = Device.create(bluetoothDeviceName, userId, bluetoothMacAddress)
+            val bluetooth = Device.create(userId, bluetoothMacAddress)
             val user = User(
                 id = userId,
                 name = name!!,

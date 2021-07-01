@@ -78,7 +78,6 @@ class AddBluetoothDeviceFragment : Fragment(), BluetoothViewHolder.CallbackListe
             mViewModel.addBluetoothDevice(
                 requireContext(),
                 Device(
-                    name = device.name,
                     address = device.address,
                     userId = userId
                 )

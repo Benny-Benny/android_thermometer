@@ -15,7 +15,6 @@ data class SpreadSheetDeviceEntity(
         return macAddress.map { address ->
             Device(
                 userId = userEntity.id,
-                name = null,
                 address = address
             )
         }
@@ -31,16 +30,6 @@ data class SpreadSheetDeviceEntity(
             return SpreadSheetDeviceEntity(
                 userEntity = user,
                 macAddress = csv.subList(3, csv.size).filter { it.isNotBlank() }
-            )
-        }
-
-        fun fromDevices(
-            userEntity: SpreadSheetUserEntity,
-            devices: List<Device>
-        ): SpreadSheetDeviceEntity {
-            return SpreadSheetDeviceEntity(
-                userEntity = userEntity,
-                macAddress = devices.map { it.address },
             )
         }
     }
