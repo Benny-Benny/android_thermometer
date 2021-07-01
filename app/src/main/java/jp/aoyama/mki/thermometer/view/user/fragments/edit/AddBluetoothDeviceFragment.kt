@@ -29,7 +29,6 @@ class AddBluetoothDeviceFragment : Fragment(), BluetoothViewHolder.CallbackListe
 
     private val args: AddBluetoothDeviceFragmentArgs by navArgs()
     private val userId get() = args.userId
-    private val mUserDevices: MutableList<String> = mutableListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,25 +43,16 @@ class AddBluetoothDeviceFragment : Fragment(), BluetoothViewHolder.CallbackListe
             listBluetoothDevices.adapter = mAdapter
         }
 
-        lifecycleScope.launch {
-            val user = mViewModel.getUser(requireContext(), userId) ?: return@launch
-            val addresses = user.devices.map { it.address }
-            mUserDevices.addAll(addresses)
-        }
-
         mBluetoothDeviceScanner = BluetoothDiscoveryDeviceScanner(requireContext())
         mBluetoothDeviceScanner.startDiscovery()
         mBluetoothDeviceScanner.devicesLiveData.observe(viewLifecycleOwner) { devices ->
-            // 登録済みのデバイスを一覧から削除
-            val notRegistered = devices
-                .filter { it.name != null }
-                .filter { !mUserDevices.contains(it.address) }
+            val namedDevices = devices.filter { it.name != null }
 
             mBinding.progressCircular.visibility =
-                if (notRegistered.isEmpty()) View.VISIBLE
+                if (namedDevices.isEmpty()) View.VISIBLE
                 else View.GONE
 
-            mAdapter.submitList(notRegistered)
+            mAdapter.submitList(namedDevices)
         }
         return mBinding.root
     }

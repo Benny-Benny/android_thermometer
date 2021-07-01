@@ -37,8 +37,8 @@ class SpreadSheetDeviceRepository(context: Context) : DeviceRepository {
         return getAllEntities().flatMap { it.toDevices() }
     }
 
-    override suspend fun findByUserId(userId: String): List<Device> {
-        return findAll().filter { it.userId == userId }
+    override suspend fun findByUserId(userId: String): Device? {
+        return findAll().find { it.userId == userId }
     }
 
     override suspend fun save(device: Device) {

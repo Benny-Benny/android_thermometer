@@ -152,65 +152,6 @@ class AttendanceServiceTest {
     }
 
     @Test
-    fun `複数端末のデータから出席データを取得する`() = runBlockingTest {
-        /*
-        初期データ: [
-            DeviceState(address=test,  at=12:00, found=True)
-            DeviceState(address=other, at=13:00, found=True)
-            DeviceState(address=test,  at=14:00, found=False)
-            DeviceState(address=other, at=15:00, found=False)
-        ]
-        期待する結果: Attendance(enterAt=12:00, leftAt=15:00)
-         */
-        userRepository.save(testUser)
-        val otherDevice = Device(userId = testUser.id, address = "other")
-        deviceRepository.save(testUserDevice)
-        deviceRepository.save(otherDevice)
-
-        val enterState = DeviceStateEntity(
-            address = testUserDevice.address,
-            found = true,
-            createdAt = getDay(hour = 12)
-        )
-        val leftState = DeviceStateEntity(
-            address = otherDevice.address,
-            found = false,
-            createdAt = getDay(hour = 14)
-        )
-        val states = listOf(
-            enterState,
-            DeviceStateEntity(
-                address = otherDevice.address,
-                found = true,
-                createdAt = getDay(hour = 13)
-            ),
-            leftState,
-            DeviceStateEntity(
-                address = otherDevice.address,
-                found = false,
-                createdAt = getDay(hour = 15)
-            )
-        )
-        states.forEach { deviceStateRepository.save(it) }
-
-        val attendance = attendanceService.getUserAttendance(testUser.id, testUser.name)
-        Assertions.assertEquals(
-            UserAttendance(
-                userId = testUser.id,
-                userName = testUser.name,
-                attendances = listOf(
-                    AttendanceEntity(
-                        testUser.id,
-                        enterAt = enterState.createdAt,
-                        leftAt = leftState.createdAt
-                    )
-                )
-            ),
-            attendance
-        )
-    }
-
-    @Test
     fun `まだ退出していない場合の出席データを取得`() = runBlockingTest {
         /*
         初期データ: [

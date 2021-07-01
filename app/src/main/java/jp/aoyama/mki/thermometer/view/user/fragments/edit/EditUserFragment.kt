@@ -11,22 +11,15 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.LinearLayoutManager
 import jp.aoyama.mki.thermometer.R
 import jp.aoyama.mki.thermometer.databinding.FragmentEditUserBinding
-import jp.aoyama.mki.thermometer.domain.models.device.BluetoothScanResult
-import jp.aoyama.mki.thermometer.domain.models.device.Device
 import jp.aoyama.mki.thermometer.domain.models.user.Grade
-import jp.aoyama.mki.thermometer.view.bluetooth.list.BluetoothListAdapter
-import jp.aoyama.mki.thermometer.view.bluetooth.list.BluetoothViewHolder
 import jp.aoyama.mki.thermometer.view.user.viewmodels.UserViewModel
 import kotlinx.coroutines.launch
 import java.util.*
 
-class EditUserFragment : Fragment(), BluetoothViewHolder.CallbackListener,
-    BluetoothViewHolder.EditCallbackListener {
+class EditUserFragment : Fragment() {
     private lateinit var mBinding: FragmentEditUserBinding
-    private lateinit var mAdapter: BluetoothListAdapter
     private val mViewModel: UserViewModel by viewModels()
 
     private val args: EditUserFragmentArgs by navArgs()
@@ -53,10 +46,9 @@ class EditUserFragment : Fragment(), BluetoothViewHolder.CallbackListener,
         mBinding = FragmentEditUserBinding.inflate(inflater, container, false)
 
         mBinding.apply {
-            mAdapter = BluetoothListAdapter(this@EditUserFragment, this@EditUserFragment)
-            listBluetoothDevices.layoutManager = LinearLayoutManager(requireContext())
-            listBluetoothDevices.adapter = mAdapter
             buttonUpdateName.setOnClickListener { updateName() }
+
+            buttonDeleteDevice.setOnClickListener { showConfirmDeleteDeviceDialog() }
             buttonAddDevice.setOnClickListener {
                 findNavController().navigate(
                     EditUserFragmentDirections.editUserToAddBluetooth(userId)
@@ -94,19 +86,39 @@ class EditUserFragment : Fragment(), BluetoothViewHolder.CallbackListener,
         return super.onOptionsItemSelected(item)
     }
 
-    private fun deleteUser() {
-        val dialog = AlertDialog.Builder(requireContext())
-            .setMessage(R.string.delete_confirm)
-            .setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
-            .setPositiveButton(R.string.ok) { dialog, _ ->
-                dialog.dismiss()
-                lifecycleScope.launch {
-                    mViewModel.deleteUser(requireContext(), userId)
-                    findNavController().popBackStack()
-                }
-            }
-            .create()
-        dialog.show()
+    private fun reloadData() = lifecycleScope.launch {
+        mBinding.progressBar.visibility = View.VISIBLE
+
+        val user = mViewModel.getUser(requireContext(), userId) ?: return@launch
+
+        mBinding.apply {
+            editTextName.setText(user.name)
+            spinnerGrade.setSelection(
+                if (user.grade != null) user.grade.ordinal + 1 // position=0は何も選択されていない状態
+                else 0
+            )
+
+            layoutBluetoothDevice.visibility =
+                if (user.device != null) View.VISIBLE
+                else View.GONE
+            buttonAddDevice.visibility =
+                if (user.device == null) View.VISIBLE
+                else View.GONE
+        }
+
+        mBinding.progressBar.visibility = View.GONE
+    }
+
+    private fun updateGrade(position: Int) {
+        val grade = when (position) {
+            in 1..Grade.values().size -> Grade.values()[position - 1]
+            else -> null
+        }
+        lifecycleScope.launch {
+            mBinding.progressBar.visibility = View.VISIBLE
+            mViewModel.updateGrade(requireContext(), userId, grade)
+            mBinding.progressBar.visibility = View.GONE
+        }
     }
 
     private fun updateName() {
@@ -124,20 +136,11 @@ class EditUserFragment : Fragment(), BluetoothViewHolder.CallbackListener,
         }
     }
 
-    override fun onClick(device: BluetoothScanResult) {
-        // noop
-    }
-
-    override fun onDelete(device: BluetoothScanResult) {
+    private fun showConfirmDeleteDeviceDialog() {
         val dialog = AlertDialog.Builder(requireContext())
             .setMessage("この端末を削除しますか")
             .setPositiveButton("削除") { dialog, _ ->
-                removeBluetoothDevice(
-                    Device(
-                        userId = userId,
-                        address = device.address
-                    )
-                )
+                removeBluetoothDevice()
                 dialog.dismiss()
             }
             .setNegativeButton("キャンセル") { dialog, _ ->
@@ -147,46 +150,30 @@ class EditUserFragment : Fragment(), BluetoothViewHolder.CallbackListener,
         dialog.show()
     }
 
-    private fun removeBluetoothDevice(device: Device) = lifecycleScope.launch {
+    private fun removeBluetoothDevice() {
         mBinding.progressBar.visibility = View.VISIBLE
-        mViewModel.removeBluetoothDevice(requireContext(), device.address)
-        reloadData()
-        mBinding.progressBar.visibility = View.GONE
-    }
 
-    private fun updateGrade(position: Int) {
-        val grade = when (position) {
-            in 1..Grade.values().size -> Grade.values()[position - 1]
-            else -> null
-        }
         lifecycleScope.launch {
-            mBinding.progressBar.visibility = View.VISIBLE
-            mViewModel.updateGrade(requireContext(), userId, grade)
+            val device = mViewModel.getUser(requireContext(), userId)?.device ?: return@launch
+            mViewModel.removeBluetoothDevice(requireContext(), device.address)
+            reloadData()
+        }.invokeOnCompletion {
             mBinding.progressBar.visibility = View.GONE
         }
     }
 
-    private fun reloadData() = lifecycleScope.launch {
-        mBinding.progressBar.visibility = View.VISIBLE
-
-        val user = mViewModel.getUser(requireContext(), userId) ?: return@launch
-
-        mBinding.apply {
-            editTextName.setText(user.name)
-            spinnerGrade.setSelection(
-                if (user.grade != null) user.grade.ordinal + 1 // position=0は何も選択されていない状態
-                else 0
-            )
-        }
-
-        mAdapter.submitList(user.devices.map {
-            BluetoothScanResult(
-                name = null,
-                address = it.address,
-                scannedAt = Calendar.getInstance()
-            )
-        })
-
-        mBinding.progressBar.visibility = View.GONE
+    private fun deleteUser() {
+        val dialog = AlertDialog.Builder(requireContext())
+            .setMessage(R.string.delete_confirm)
+            .setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
+            .setPositiveButton(R.string.ok) { dialog, _ ->
+                dialog.dismiss()
+                lifecycleScope.launch {
+                    mViewModel.deleteUser(requireContext(), userId)
+                    findNavController().popBackStack()
+                }
+            }
+            .create()
+        dialog.show()
     }
 }

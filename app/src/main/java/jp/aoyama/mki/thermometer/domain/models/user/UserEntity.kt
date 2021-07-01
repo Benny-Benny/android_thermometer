@@ -13,9 +13,9 @@ data class UserEntity(
         grade = user.grade?.gradeName
     )
 
-    fun toUser(devices: List<Device>): User {
+    fun toUser(device: Device?): User {
         val grade = if (grade != null) Grade.fromGradeName(grade) else null
 
-        return User(id, name, devices, grade)
+        return User(id, name, device, grade)
     }
 }

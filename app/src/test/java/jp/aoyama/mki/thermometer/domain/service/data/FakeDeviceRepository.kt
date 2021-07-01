@@ -10,8 +10,8 @@ class FakeDeviceRepository : DeviceRepository {
         return baseRepository.findALl()
     }
 
-    override suspend fun findByUserId(userId: String): List<Device> {
-        return findAll().filter { it.userId == userId }
+    override suspend fun findByUserId(userId: String): Device? {
+        return findAll().find { it.userId == userId }
     }
 
     override suspend fun save(device: Device) {

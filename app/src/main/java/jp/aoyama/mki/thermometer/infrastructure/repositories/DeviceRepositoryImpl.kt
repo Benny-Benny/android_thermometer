@@ -24,7 +24,7 @@ class DeviceRepositoryImpl(
         return baseRepository.findAll()
     }
 
-    override suspend fun findByUserId(userId: String): List<Device> {
+    override suspend fun findByUserId(userId: String): Device? {
         return baseRepository.findByUserId(userId)
     }
 

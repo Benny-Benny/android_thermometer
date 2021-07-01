@@ -30,9 +30,8 @@ class UserService(
 
     suspend fun createUser(user: User) = withContext(Dispatchers.IO) {
         val savedUser = userRepository.save(UserEntity(user))
-        user.devices.forEach {
-            deviceRepository.save(it.copy(userId = savedUser.id))
-        }
+        val device = user.device ?: return@withContext
+        deviceRepository.save(device.copy(userId = savedUser.id))
     }
 
     suspend fun deleteUser(userId: String) =
@@ -45,8 +44,8 @@ class UserService(
             val users = userRepository.findAll()
             val devices = deviceRepository.findAll()
             return@withContext users.map { entity ->
-                val userDevices = devices.filter { it.userId == entity.id }
-                val user = entity.toUser(userDevices)
+                val device = devices.find { it.userId == entity.id }
+                val user = entity.toUser(device)
                 UserViewEntity(user, null)
             }
         }

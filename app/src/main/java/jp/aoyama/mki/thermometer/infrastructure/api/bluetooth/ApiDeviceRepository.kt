@@ -32,11 +32,10 @@ class ApiDeviceRepository(context: Context) : DeviceRepository {
         } ?: emptyList()
     }
 
-    override suspend fun findByUserId(userId: String): List<Device> {
+    override suspend fun findByUserId(userId: String): Device? {
         val response = service.getUserDevices(userId).execute()
-        return response.body()?.map {
-            Device(address = it.address, userId = it.userId)
-        } ?: emptyList()
+        val device = response.body()?.firstOrNull() ?: return null
+        return Device(address = device.address, userId = device.userId)
     }
 
     override suspend fun save(device: Device) {

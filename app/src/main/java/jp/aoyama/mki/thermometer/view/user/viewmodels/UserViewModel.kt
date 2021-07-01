@@ -20,13 +20,15 @@ class UserViewModel : ViewModel() {
 
     fun onReceiveBluetoothResult(devices: List<BluetoothScanResult>) {
         var users = _mUserData.value ?: return
-        devices.map { device ->
-            val user = users.find { user ->
-                user.devices.any { it.address == device.address }
-            } ?: return@map
 
+        devices.forEach { device ->
+            val user = users.find {
+                val userDevice = it.device ?: return@find false
+                userDevice.address == device.address
+            } ?: return@forEach
             users = users.updateUser(user.copy(lastFoundAt = Calendar.getInstance()))
         }
+
         _mUserData.value = users
     }
 
