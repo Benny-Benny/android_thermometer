@@ -25,14 +25,17 @@ class SpreadSheetUserRepository(
         return findAll().find { it.id == userId }
     }
 
-    override suspend fun save(user: UserEntity) {
+    override suspend fun save(user: UserEntity): UserEntity {
         delete(user.id)
 
         val id = getAllEntities().size.toString()
+        val saveUser = user.copy(id = id)
         val entity = SpreadSheetUserEntity.fromUserEntity(user.copy(id = id))
 
         val values = listOf(entity.toCsv())
         mSpreadSheet.appendValues(USERS_SHEET_RANGE, values)
+
+        return saveUser
     }
 
     override suspend fun updateName(userId: String, name: String) {

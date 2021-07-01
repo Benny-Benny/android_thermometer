@@ -29,9 +29,9 @@ class UserService(
     )
 
     suspend fun createUser(user: User) = withContext(Dispatchers.IO) {
-        userRepository.save(UserEntity(user))
+        val savedUser = userRepository.save(UserEntity(user))
         user.devices.forEach {
-            deviceRepository.save(it)
+            deviceRepository.save(it.copy(userId = savedUser.id))
         }
     }
 

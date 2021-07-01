@@ -9,7 +9,7 @@ interface UserRepository {
 
     suspend fun find(userId: String): UserEntity?
 
-    suspend fun save(user: UserEntity)
+    suspend fun save(user: UserEntity): UserEntity
 
     suspend fun updateName(userId: String, name: String)
 
