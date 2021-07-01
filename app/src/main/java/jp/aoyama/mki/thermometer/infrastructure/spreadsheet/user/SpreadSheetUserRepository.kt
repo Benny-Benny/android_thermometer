@@ -9,7 +9,18 @@ import jp.aoyama.mki.thermometer.infrastructure.spreadsheet.SpreadSheetUtil
 class SpreadSheetUserRepository(
     context: Context
 ) : UserRepository {
+    companion object {
+        private const val USERS_SHEET_RANGE = "users!A:C"
+    }
+
     private val mSpreadSheet = SpreadSheetUtil(context)
+
+    private suspend fun userSheetRangeOf(id: String): String? {
+        val row = mSpreadSheet.getColumnOf(USERS_SHEET_RANGE) {
+            it[0] == id
+        } ?: return null
+        return "users!A${row}:C${row}"
+    }
 
     private suspend fun getAllEntities(): List<SpreadSheetUserEntity> {
         return mSpreadSheet.getValues(USERS_SHEET_RANGE).mapNotNull {
@@ -28,9 +39,9 @@ class SpreadSheetUserRepository(
     override suspend fun save(user: UserEntity): UserEntity {
         delete(user.id)
 
-        val id = getAllEntities().size.toString()
-        val saveUser = user.copy(id = id)
-        val entity = SpreadSheetUserEntity.fromUserEntity(user.copy(id = id))
+        val id = getAllEntities().maxOf { it.id.toIntOrNull() ?: 0 } + 1
+        val saveUser = user.copy(id = id.toString())
+        val entity = SpreadSheetUserEntity(saveUser)
 
         val values = listOf(entity.toCsv())
         mSpreadSheet.appendValues(USERS_SHEET_RANGE, values)
@@ -40,12 +51,16 @@ class SpreadSheetUserRepository(
 
     override suspend fun updateName(userId: String, name: String) {
         val user = find(userId) ?: return
-        save(user.copy(name = name))
+        val range = userSheetRangeOf(userId) ?: return
+        val updated = SpreadSheetUserEntity(user.copy(name = name))
+        mSpreadSheet.updateValues(range, listOf(updated.toCsv()))
     }
 
     override suspend fun updateGrade(userId: String, grade: Grade?) {
         val user = find(userId) ?: return
-        save(user.copy(grade = grade?.gradeName))
+        val range = userSheetRangeOf(userId) ?: return
+        val updated = SpreadSheetUserEntity(user.copy(grade = grade?.gradeName))
+        mSpreadSheet.updateValues(range, listOf(updated.toCsv()))
     }
 
     override suspend fun delete(userId: String) {
@@ -56,10 +71,6 @@ class SpreadSheetUserRepository(
         val values = users.map { it.toCsv() }
         mSpreadSheet.clearValues(USERS_SHEET_RANGE)
         mSpreadSheet.appendValues(USERS_SHEET_RANGE, values)
-    }
-
-    companion object {
-        private const val USERS_SHEET_RANGE = "users!A:C"
     }
 }
 

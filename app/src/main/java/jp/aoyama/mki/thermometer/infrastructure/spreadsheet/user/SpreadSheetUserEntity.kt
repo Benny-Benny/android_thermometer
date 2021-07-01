@@ -7,6 +7,12 @@ data class SpreadSheetUserEntity(
     val name: String,
     val grade: String? = null
 ) {
+    constructor(user: UserEntity) : this(
+        id = user.id,
+        name = user.name,
+        grade = user.grade,
+    )
+
     fun toCsv(): List<String> {
         return listOf(
             this.id,
@@ -26,15 +32,6 @@ data class SpreadSheetUserEntity(
                 id = csv[0],
                 name = csv[1],
                 grade = if (csv.size < 3) "" else csv[2]
-            )
-        }
-
-
-        fun fromUserEntity(user: UserEntity): SpreadSheetUserEntity {
-            return SpreadSheetUserEntity(
-                id = user.id,
-                name = user.name,
-                grade = user.grade,
             )
         }
     }

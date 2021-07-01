@@ -21,6 +21,7 @@ class HomeFragment : Fragment() {
         mBinding.apply {
             val pageAdapter = PageAdapter(this@HomeFragment)
             viewPager.adapter = pageAdapter
+            viewPager.isUserInputEnabled = false
             TabLayoutMediator(layoutTab, viewPager) { tab, position ->
                 tab.text = pageAdapter.getPageTitle(position)
             }.attach()

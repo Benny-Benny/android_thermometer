@@ -28,6 +28,12 @@ class SpreadSheetUtil(private val mContext: Context) {
 
     private val spreadSheetId = mContext.getString(R.string.spread_sheet_id)
 
+    suspend fun getColumnOf(range: String, test: (List<String>) -> Boolean): Int? {
+        val row = getValues(range).indexOfFirst { test(it) }
+        if (row == -1) return null
+        return row + 1
+    }
+
     suspend fun getValues(range: String): List<List<String>> {
         val response = mSheetsService
             .spreadsheets().values()
@@ -48,7 +54,7 @@ class SpreadSheetUtil(private val mContext: Context) {
     fun updateValues(range: String, values: List<List<String>>) {
         val body = ValueRange().setValues(values)
         mSheetsService.spreadsheets().values()
-            .append(spreadSheetId, range, body)
+            .update(spreadSheetId, range, body)
             .setValueInputOption("RAW")
             .execute()
     }
