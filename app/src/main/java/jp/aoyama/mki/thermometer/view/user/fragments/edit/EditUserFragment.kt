@@ -163,23 +163,27 @@ class EditUserFragment : Fragment(), BluetoothViewHolder.CallbackListener,
         }
     }
 
-    private fun reloadData() {
-        lifecycleScope.launch {
-            val user = mViewModel.getUser(requireContext(), userId) ?: return@launch
-            mBinding.apply {
-                editTextName.setText(user.name)
-                spinnerGrade.setSelection(
-                    if (user.grade != null) user.grade.ordinal + 1 // position=0は何も選択されていない状態
-                    else 0
-                )
-            }
-            mAdapter.submitList(user.devices.map {
-                BluetoothScanResult(
-                    address = it.address,
-                    name = it.name,
-                    scannedAt = Calendar.getInstance()
-                )
-            })
+    private fun reloadData() = lifecycleScope.launch {
+        mBinding.progressBar.visibility = View.VISIBLE
+
+        val user = mViewModel.getUser(requireContext(), userId) ?: return@launch
+
+        mBinding.apply {
+            editTextName.setText(user.name)
+            spinnerGrade.setSelection(
+                if (user.grade != null) user.grade.ordinal + 1 // position=0は何も選択されていない状態
+                else 0
+            )
         }
+
+        mAdapter.submitList(user.devices.map {
+            BluetoothScanResult(
+                address = it.address,
+                name = it.name,
+                scannedAt = Calendar.getInstance()
+            )
+        })
+
+        mBinding.progressBar.visibility = View.GONE
     }
 }
