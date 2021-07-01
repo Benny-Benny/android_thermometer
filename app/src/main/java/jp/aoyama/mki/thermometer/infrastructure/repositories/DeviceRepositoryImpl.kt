@@ -11,7 +11,7 @@ import jp.aoyama.mki.thermometer.domain.repository.DeviceRepository
  * データはなるべくローカルで完結させたいため、このような措置をとっている。
  */
 class DeviceRepositoryImpl(
-    private val localRepository: DeviceRepository,
+    private val baseRepository: DeviceRepository,
     private val remoteRepository: DeviceRepository,
 ) : DeviceRepository {
 
@@ -21,15 +21,15 @@ class DeviceRepositoryImpl(
         }.onFailure { e ->
             Log.e(TAG, "findAll: error while checking consistency", e)
         }
-        return localRepository.findAll()
+        return baseRepository.findAll()
     }
 
     override suspend fun findByUserId(userId: String): List<Device> {
-        return localRepository.findByUserId(userId)
+        return baseRepository.findByUserId(userId)
     }
 
     override suspend fun save(device: Device) {
-        localRepository.save(device)
+        baseRepository.save(device)
         kotlin.runCatching {
             remoteRepository.save(device)
         }.onFailure { e ->
@@ -38,7 +38,7 @@ class DeviceRepositoryImpl(
     }
 
     override suspend fun delete(address: String) {
-        localRepository.delete(address)
+        baseRepository.delete(address)
         kotlin.runCatching {
             remoteRepository.delete(address)
         }.onFailure { e ->
@@ -51,7 +51,7 @@ class DeviceRepositoryImpl(
      * リモートに無いデータは追加し、ローカルから削除されたデータはリモートからも削除する。
      */
     private suspend fun checkConsistency() {
-        val localData = localRepository.findAll()
+        val localData = baseRepository.findAll()
         val remoteData = remoteRepository.findAll()
 
         val addedData = localData.filter { device ->

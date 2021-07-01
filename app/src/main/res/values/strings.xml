@@ -69,4 +69,8 @@
     <string name="default_api_endpoint">http://133.2.206.172:5000</string>
     <string name="category_export">export_category</string>
     <string name="key_export_users">export_users</string>
+
+    <!--  Files  -->
+    <string name="service_account">service_account.json</string>
+    <string name="spread_sheet_id">1rk9nK6fumSJvm9FVcWsVBp4oaXgk2LWgeHeNWukJrvU</string>
 </resources>
