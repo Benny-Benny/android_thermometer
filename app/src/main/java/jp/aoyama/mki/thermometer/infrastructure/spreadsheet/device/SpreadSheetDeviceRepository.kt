@@ -34,7 +34,7 @@ class SpreadSheetDeviceRepository(context: Context) : DeviceRepository {
     override suspend fun delete(address: String) {
         val devices = getAllEntities().toMutableList()
         devices.removeAll { it.macAddress == address }
-        devices.sortBy { it.userId.toInt() }
+        devices.sortBy { it.userId.toIntOrNull() }
 
         val values = devices.map { it.toCSV() }
         mSpreadSheet.clearValues(DEVICES_SHEET_RANGE)
