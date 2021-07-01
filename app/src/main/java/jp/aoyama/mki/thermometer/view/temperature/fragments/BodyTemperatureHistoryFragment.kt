@@ -38,13 +38,14 @@ class BodyTemperatureHistoryFragment : Fragment() {
         return mBinding.root
     }
 
-    private fun reloadData() {
-        lifecycleScope.launch {
-            val data = mViewModel.getTemperatureData(requireContext())
-            mAdapter.submitList(data)
+    private fun reloadData() = lifecycleScope.launch {
+        mBinding.progressCircular.visibility = View.VISIBLE
 
-            mBinding.swipeRefresh.isRefreshing = false
-        }
+        val data = mViewModel.getTemperatureData(requireContext())
+        mAdapter.submitList(data)
+
+        mBinding.swipeRefresh.isRefreshing = false
+        mBinding.progressCircular.visibility = View.GONE
     }
 
     private fun exportData() {

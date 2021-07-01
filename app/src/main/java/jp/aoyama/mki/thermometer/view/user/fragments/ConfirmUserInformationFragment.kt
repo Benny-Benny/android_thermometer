@@ -11,9 +11,7 @@ import androidx.navigation.fragment.findNavController
 import jp.aoyama.mki.thermometer.R
 import jp.aoyama.mki.thermometer.databinding.FragmentConfirmUserInformationBinding
 import jp.aoyama.mki.thermometer.view.user.viewmodels.CreateUserSharedViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class ConfirmUserInformationFragment : Fragment() {
 
@@ -40,18 +38,20 @@ class ConfirmUserInformationFragment : Fragment() {
                 textBluetoothName.text = "登録されていません。"
             }
 
-            buttonSave.setOnClickListener {
-                lifecycleScope.launch {
-                    withContext(Dispatchers.IO) {
-                        mViewModel.createUser(requireContext())
-                    }
-                    findNavController().popBackStack(R.id.homeFragment, false)
-                }
-            }
+            buttonSave.setOnClickListener { createUser() }
             buttonBack.setOnClickListener { findNavController().popBackStack() }
 
         }
 
         return mBinding.root
+    }
+
+    private fun createUser() {
+        lifecycleScope.launch {
+            mBinding.progressCircular.visibility = View.VISIBLE
+            mViewModel.createUser(requireContext())
+            mBinding.progressCircular.visibility = View.GONE
+            findNavController().popBackStack(R.id.homeFragment, false)
+        }
     }
 }
