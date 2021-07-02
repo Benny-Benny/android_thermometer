@@ -52,8 +52,8 @@ class ApiBluetoothScanner(context: Context) : BluetoothDeviceScanner {
                 withContext(Dispatchers.Main) {
                     _deviceLiveData.value = results.map {
                         BluetoothScanResult(
+                            name = null,
                             address = it.device.address,
-                            name = it.device.name,
                             scannedAt = it.foundAt
                         )
                     }
@@ -74,7 +74,7 @@ class ApiBluetoothScanner(context: Context) : BluetoothDeviceScanner {
         return response
             .filter { it.found }
             .map {
-                val device = Device(name = null, address = it.address, userId = it.userId)
+                val device = Device(address = it.address, userId = it.userId)
                 return@map DeviceData(device)
             }
     }

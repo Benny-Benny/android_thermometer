@@ -1,4 +1,4 @@
-package jp.aoyama.mki.thermometer.view.user.fragments
+package jp.aoyama.mki.thermometer.view.user.fragments.create
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,9 +11,7 @@ import androidx.navigation.fragment.findNavController
 import jp.aoyama.mki.thermometer.R
 import jp.aoyama.mki.thermometer.databinding.FragmentConfirmUserInformationBinding
 import jp.aoyama.mki.thermometer.view.user.viewmodels.CreateUserSharedViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class ConfirmUserInformationFragment : Fragment() {
 
@@ -32,26 +30,25 @@ class ConfirmUserInformationFragment : Fragment() {
 
         mBinding.apply {
             textName.text = mViewModel.name
-            if (mViewModel.bluetoothMacAddress != null) {
-                textBluetoothName.text = mViewModel.bluetoothDeviceName
-                textGrade.text = mViewModel.grade?.gradeName ?: "選択されていません"
-                textBluetoothAddress.text = mViewModel.bluetoothMacAddress
-            } else {
-                textBluetoothName.text = "登録されていません。"
-            }
+            textGrade.text = mViewModel.grade?.gradeName ?: "選択されていません"
 
-            buttonSave.setOnClickListener {
-                lifecycleScope.launch {
-                    withContext(Dispatchers.IO) {
-                        mViewModel.createUser(requireContext())
-                    }
-                    findNavController().popBackStack(R.id.homeFragment, false)
-                }
-            }
+            textBluetoothName.text = mViewModel.bluetoothDeviceName ?: "登録されていません。"
+            textBluetoothAddress.text = mViewModel.bluetoothMacAddress
+
+            buttonSave.setOnClickListener { createUser() }
             buttonBack.setOnClickListener { findNavController().popBackStack() }
 
         }
 
         return mBinding.root
+    }
+
+    private fun createUser() {
+        lifecycleScope.launch {
+            mBinding.progressCircular.visibility = View.VISIBLE
+            mViewModel.createUser(requireContext())
+            mBinding.progressCircular.visibility = View.GONE
+            findNavController().popBackStack(R.id.homeFragment, false)
+        }
     }
 }

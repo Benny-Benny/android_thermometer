@@ -5,7 +5,6 @@ import jp.aoyama.mki.thermometer.domain.models.attendance.UserAttendance
 import jp.aoyama.mki.thermometer.domain.models.device.Device
 import jp.aoyama.mki.thermometer.domain.models.device.DeviceStateEntity
 import jp.aoyama.mki.thermometer.domain.models.user.UserEntity
-import jp.aoyama.mki.thermometer.domain.service.data.FakeDeviceRepository
 import jp.aoyama.mki.thermometer.domain.service.data.FakeDeviceStateRepository
 import jp.aoyama.mki.thermometer.domain.service.data.FakeUserRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -18,18 +17,21 @@ import java.util.*
 @ExperimentalCoroutinesApi
 class AttendanceServiceTest {
     private val userRepository = FakeUserRepository()
-    private val deviceRepository = FakeDeviceRepository()
     private val deviceStateRepository = FakeDeviceStateRepository()
-    private val attendanceService =
-        AttendanceService(userRepository, deviceRepository, deviceStateRepository)
-    private val testUser = UserEntity(id = UUID.randomUUID().toString(), name = "test")
-    private val testUserDevice = Device(userId = testUser.id, address = "test")
+    private val attendanceService = AttendanceService(userRepository, deviceStateRepository)
+
+    private val testUserId = UUID.randomUUID().toString()
+    private val testUserDevice = Device(userId = testUserId, address = "test")
+    private val testUser = UserEntity(
+        id = testUserId,
+        name = "test",
+        device = testUserDevice
+    )
 
     @BeforeEach
     fun setUp() {
         userRepository.clear()
-        deviceRepository.clear()
-        deviceRepository.clear()
+        deviceStateRepository.clear()
     }
 
     @Test
@@ -47,7 +49,6 @@ class AttendanceServiceTest {
         ]
          */
         userRepository.save(testUser)
-        deviceRepository.save(testUserDevice)
 
         val states = listOf(
             DeviceStateEntity(
@@ -108,7 +109,6 @@ class AttendanceServiceTest {
         期待する結果: Attendance(enterAt=12:00, leftAt=15:00)
          */
         userRepository.save(testUser)
-        deviceRepository.save(testUserDevice)
         val enterState = DeviceStateEntity(
             address = testUserDevice.address,
             found = true,
@@ -152,65 +152,6 @@ class AttendanceServiceTest {
     }
 
     @Test
-    fun `複数端末のデータから出席データを取得する`() = runBlockingTest {
-        /*
-        初期データ: [
-            DeviceState(address=test,  at=12:00, found=True)
-            DeviceState(address=other, at=13:00, found=True)
-            DeviceState(address=test,  at=14:00, found=False)
-            DeviceState(address=other, at=15:00, found=False)
-        ]
-        期待する結果: Attendance(enterAt=12:00, leftAt=15:00)
-         */
-        userRepository.save(testUser)
-        val otherDevice = Device(userId = testUser.id, address = "other")
-        deviceRepository.save(testUserDevice)
-        deviceRepository.save(otherDevice)
-
-        val enterState = DeviceStateEntity(
-            address = testUserDevice.address,
-            found = true,
-            createdAt = getDay(hour = 12)
-        )
-        val leftState = DeviceStateEntity(
-            address = otherDevice.address,
-            found = false,
-            createdAt = getDay(hour = 14)
-        )
-        val states = listOf(
-            enterState,
-            DeviceStateEntity(
-                address = otherDevice.address,
-                found = true,
-                createdAt = getDay(hour = 13)
-            ),
-            leftState,
-            DeviceStateEntity(
-                address = otherDevice.address,
-                found = false,
-                createdAt = getDay(hour = 15)
-            )
-        )
-        states.forEach { deviceStateRepository.save(it) }
-
-        val attendance = attendanceService.getUserAttendance(testUser.id, testUser.name)
-        Assertions.assertEquals(
-            UserAttendance(
-                userId = testUser.id,
-                userName = testUser.name,
-                attendances = listOf(
-                    AttendanceEntity(
-                        testUser.id,
-                        enterAt = enterState.createdAt,
-                        leftAt = leftState.createdAt
-                    )
-                )
-            ),
-            attendance
-        )
-    }
-
-    @Test
     fun `まだ退出していない場合の出席データを取得`() = runBlockingTest {
         /*
         初期データ: [
@@ -220,7 +161,6 @@ class AttendanceServiceTest {
         期待する結果: Attendance(enterAt=12:00, leftAt=null)
          */
         userRepository.save(testUser)
-        deviceRepository.save(testUserDevice)
         val states = listOf(
             DeviceStateEntity(
                 address = testUserDevice.address,

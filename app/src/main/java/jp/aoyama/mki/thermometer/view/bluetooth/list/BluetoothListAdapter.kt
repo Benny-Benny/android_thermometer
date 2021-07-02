@@ -11,7 +11,7 @@ class BluetoothListAdapter(
     ListAdapter<BluetoothScanResult, BluetoothViewHolder>(BluetoothDiffUtil()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BluetoothViewHolder {
-        return BluetoothViewHolder.from(parent, callbackListener, editCallbackListener)
+        return BluetoothViewHolder.from(parent, callbackListener)
     }
 
     override fun onBindViewHolder(holder: BluetoothViewHolder, position: Int) {

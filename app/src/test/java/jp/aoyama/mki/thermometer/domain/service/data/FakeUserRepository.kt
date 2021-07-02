@@ -15,8 +15,9 @@ class FakeUserRepository : UserRepository {
         return baseRepository.find(userId)
     }
 
-    override suspend fun save(user: UserEntity) {
-        return baseRepository.save(user.id, user)
+    override suspend fun save(user: UserEntity): UserEntity {
+        baseRepository.save(user.id, user)
+        return user
     }
 
     override suspend fun updateName(userId: String, name: String) {

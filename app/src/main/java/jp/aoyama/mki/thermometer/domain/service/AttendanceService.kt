@@ -5,8 +5,6 @@ import jp.aoyama.mki.thermometer.domain.models.attendance.AttendanceEntity
 import jp.aoyama.mki.thermometer.domain.models.attendance.UserAttendance
 import jp.aoyama.mki.thermometer.domain.models.device.Device
 import jp.aoyama.mki.thermometer.domain.models.device.DeviceStateEntity
-import jp.aoyama.mki.thermometer.domain.models.device.DeviceStateEntity.Companion.getAddressOf
-import jp.aoyama.mki.thermometer.domain.repository.DeviceRepository
 import jp.aoyama.mki.thermometer.domain.repository.DeviceStateRepository
 import jp.aoyama.mki.thermometer.domain.repository.UserRepository
 import jp.aoyama.mki.thermometer.infrastructure.repositories.RepositoryContainer
@@ -16,68 +14,78 @@ import java.util.*
 
 class AttendanceService(
     private val userRepository: UserRepository,
-    private val deviceRepository: DeviceRepository,
     private val deviceStateRepository: DeviceStateRepository
 ) {
 
     constructor(context: Context) : this(
         userRepository = RepositoryContainer(context).userRepository,
-        deviceRepository = RepositoryContainer(context).deviceRepository,
         deviceStateRepository = RepositoryContainer(context).deviceStateRepository
     )
 
     suspend fun getAttendances(): List<UserAttendance> = withContext(Dispatchers.IO) {
         val users = userRepository.findAll()
-        val devices = deviceRepository.findAll()
         val states = deviceStateRepository.findAll()
-        return@withContext users.map { user ->
+
+        return@withContext users.mapNotNull { user ->
+            val device = user.device ?: return@mapNotNull null
             getUserAttendance(
                 user.id,
                 user.name,
-                devices,
+                device,
                 states
             )
         }
     }
 
-    // 指定した日付の範囲内の出席データを取得
+    /**
+     *  指定した日付の範囲内の出席データを取得
+     */
     suspend fun getAttendancesOf(start: Calendar, end: Calendar): List<UserAttendance> =
         withContext(Dispatchers.IO) {
             val users = userRepository.findAll()
-            val devices = deviceRepository.findAll()
             val states = deviceStateRepository.findInRange(start, end)
-            return@withContext users.map { user ->
+
+            return@withContext users.mapNotNull { user ->
+                val device = user.device ?: return@mapNotNull null
+                val deviceStates = states.filter { it.address == device.address }
                 getUserAttendance(
                     user.id,
                     user.name,
-                    devices,
-                    states
+                    device,
+                    deviceStates
                 )
             }
         }
 
+    /**
+     * 指定したユーザーの出席記録をすべて取得
+     */
     suspend fun getUserAttendance(userId: String, userName: String): UserAttendance {
-        val userDevices = deviceRepository.findByUserId(userId)
-        // ユーザーに紐づくすべての端末の検索記録を、日時順にソート
-        val userAllDeviceStates =
-            userDevices.flatMap { deviceStateRepository.findByAddress(it.address) }
-        return getUserAttendance(userId, userName, userDevices, userAllDeviceStates)
+        val device = userRepository.find(userId)?.device
+            ?: return UserAttendance(
+                userId,
+                userName,
+                attendances = emptyList()
+            )
+        val userDeviceStates = deviceStateRepository.findByAddress(device.address)
+        return getUserAttendance(userId, userName, device, userDeviceStates)
     }
 
     private fun getUserAttendance(
         userId: String,
         userName: String,
-        devices: List<Device>,
-        allDeviceStates: List<DeviceStateEntity>
+        device: Device,
+        deviceStates: List<DeviceStateEntity>
     ): UserAttendance {
-        val userDevices = devices.filter { it.userId == userId }
+        if (device.userId != userId) throw Exception("Device#userId is not same as $userId")
 
-        // ユーザーに紐づくすべての端末の検索記録を、日時順にソート
-        val userAllDeviceStates = allDeviceStates.getAddressOf(userDevices.map { it.address })
-        val sortedStates = userAllDeviceStates.sortedBy { it.createdAt.timeInMillis }
+        // 端末の検索記録を、日時順にソート
+        val sortedStates = deviceStates
+            .filter { it.address == device.address }
+            .sortedBy { it.createdAt.timeInMillis }
 
         // 中間の結果を破棄する
-        val deviceStates = sortedStates.mapIndexedNotNull { index, currentState ->
+        val removedMiddleStates = sortedStates.mapIndexedNotNull { index, currentState ->
             if (index == 0)
                 return@mapIndexedNotNull currentState
 
@@ -87,9 +95,9 @@ class AttendanceService(
         }
 
         // 入室と退室履歴の紐付けを行う
-        val foundStates = deviceStates.filter { it.found }
+        val foundStates = removedMiddleStates.filter { it.found }
         val attendances = foundStates.map { enterState ->
-            val nextLeftState = deviceStates
+            val nextLeftState = removedMiddleStates
                 .filter { !it.found }
                 .firstOrNull { it.createdAt.timeInMillis >= enterState.createdAt.timeInMillis }
 

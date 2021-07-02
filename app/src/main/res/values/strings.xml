@@ -49,7 +49,6 @@
     <string name="saved_body_temperature">体温を保存しました</string>
     <string name="share_file_description">体温のデータを出力</string>
     <string name="body_temperature_input_alert">体温計の通りに入力してください</string>
-    <string name="export_csv">CSVファイルでエキスポート</string>
 
     <!--  Bluetooth  -->
     <string name="select_your_bluetooth_device">Bluetooth端末を選択</string>
@@ -68,5 +67,8 @@
     <string name="key_api_end_point">api_end_point</string>
     <string name="default_api_endpoint">http://133.2.206.172:5000</string>
     <string name="category_export">export_category</string>
-    <string name="key_export_users">export_users</string>
+
+    <!--  Files  -->
+    <string name="service_account">service_account.json</string>
+    <string name="spread_sheet_id">1rk9nK6fumSJvm9FVcWsVBp4oaXgk2LWgeHeNWukJrvU</string>
 </resources>

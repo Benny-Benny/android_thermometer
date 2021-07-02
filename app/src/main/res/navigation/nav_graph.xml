@@ -23,7 +23,7 @@
     </fragment>
     <fragment
         android:id="@+id/editNameFragment"
-        android:name="jp.aoyama.mki.thermometer.view.user.fragments.EditNameFragment"
+        android:name="jp.aoyama.mki.thermometer.view.user.fragments.create.EditNameFragment"
         android:label="@string/create_new_user"
         tools:layout="@layout/fragment_edit_name">
         <action
@@ -32,7 +32,7 @@
     </fragment>
     <fragment
         android:id="@+id/bluetoothPairingFragment"
-        android:name="jp.aoyama.mki.thermometer.view.user.fragments.SelectBluetoothDeviceFragment"
+        android:name="jp.aoyama.mki.thermometer.view.user.fragments.create.SelectBluetoothDeviceFragment"
         android:label="@string/create_new_user">
         <action
             android:id="@+id/pairing_to_confirm"
@@ -40,11 +40,11 @@
     </fragment>
     <fragment
         android:id="@+id/confirmUserInformationFragment"
-        android:name="jp.aoyama.mki.thermometer.view.user.fragments.ConfirmUserInformationFragment"
+        android:name="jp.aoyama.mki.thermometer.view.user.fragments.create.ConfirmUserInformationFragment"
         android:label="@string/create_new_user" />
     <fragment
         android:id="@+id/editUserFragment"
-        android:name="jp.aoyama.mki.thermometer.view.user.fragments.EditUserFragment"
+        android:name="jp.aoyama.mki.thermometer.view.user.fragments.edit.EditUserFragment"
         android:label="ユーザー情報を編集">
         <argument
             android:name="userId"
@@ -55,7 +55,7 @@
     </fragment>
     <fragment
         android:id="@+id/addBluetoothDeviceFragment"
-        android:name="jp.aoyama.mki.thermometer.view.user.fragments.AddBluetoothDeviceFragment"
+        android:name="jp.aoyama.mki.thermometer.view.user.fragments.edit.AddBluetoothDeviceFragment"
         android:label="Bluetooth端末を追加">
         <argument
             android:name="userId"
@@ -72,20 +72,12 @@
             android:id="@+id/home_to_edit_user"
             app:destination="@id/editUserFragment" />
         <action
-            android:id="@+id/home_to_create_user"
-            app:destination="@id/createUserFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/createUserFragment"
-        android:name="jp.aoyama.mki.thermometer.view.user.fragments.CreateUserFragment"
-        android:label="@string/create_new_user">
-        <action
-            android:id="@+id/create_to_edit"
+            android:id="@+id/home_to_edit_name"
             app:destination="@id/editNameFragment" />
     </fragment>
     <fragment
         android:id="@+id/editGradeFragment"
-        android:name="jp.aoyama.mki.thermometer.view.user.fragments.EditGradeFragment"
+        android:name="jp.aoyama.mki.thermometer.view.user.fragments.create.EditGradeFragment"
         android:label="@string/create_new_user">
         <action
             android:id="@+id/edit_grade_to_pairing"

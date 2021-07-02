@@ -9,11 +9,13 @@ interface UserRepository {
 
     suspend fun find(userId: String): UserEntity?
 
-    suspend fun save(user: UserEntity)
+    suspend fun save(user: UserEntity): UserEntity
 
     suspend fun updateName(userId: String, name: String)
 
     suspend fun updateGrade(userId: String, grade: Grade?)
+
+    suspend fun updateDevice(userId: String, device: String?)
 
     suspend fun delete(userId: String)
 }

@@ -1,4 +1,4 @@
-package jp.aoyama.mki.thermometer.view.user.fragments
+package jp.aoyama.mki.thermometer.view.user.fragments.create
 
 import android.Manifest
 import android.content.pm.PackageManager

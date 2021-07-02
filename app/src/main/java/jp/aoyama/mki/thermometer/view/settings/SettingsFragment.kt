@@ -1,28 +1,17 @@
 package jp.aoyama.mki.thermometer.view.settings
 
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.lifecycleScope
-import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import jp.aoyama.mki.thermometer.R
-import jp.aoyama.mki.thermometer.infrastructure.export.UserCSVUtil
-import kotlinx.coroutines.launch
 
 class SettingsFragment : PreferenceFragmentCompat(),
     SharedPreferences.OnSharedPreferenceChangeListener {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences, rootKey)
-
-        val exportUserPreference = findPreference<Preference>(getString(R.string.key_export_users))
-        exportUserPreference?.setOnPreferenceClickListener {
-            exportUserData()
-            true
-        }
     }
 
     override fun onResume() {
@@ -51,23 +40,6 @@ class SettingsFragment : PreferenceFragmentCompat(),
             }
             .create()
         dialog.show()
-    }
-
-    private fun exportUserData() = lifecycleScope.launch {
-        val fileUri = UserCSVUtil().exportToCsv(requireContext())
-        val shareIntent = Intent().apply {
-            action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_STREAM, fileUri)
-            addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            type = "text/csv"
-        }
-
-        startActivity(
-            Intent.createChooser(
-                shareIntent,
-                getString(R.string.export_user_data)
-            )
-        )
     }
 
     companion object {

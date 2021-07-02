@@ -49,15 +49,15 @@ class SelectNameFragment : Fragment(), UserViewHolder.CallbackListener {
             (recyclerViewUsers.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
             floatingActionButton.setOnClickListener {
-                findNavController().navigate(
-                    HomeFragmentDirections.homeToCreateUser()
-                )
+                findNavController().navigate(HomeFragmentDirections.homeToEditName())
             }
 
             swipeRefresh.setOnRefreshListener { reloadData() }
+            progressCircular.visibility = View.VISIBLE
         }
 
         mViewModel.observeUsers(requireContext()).observe(viewLifecycleOwner) { users ->
+            mBinding.progressCircular.visibility = View.GONE
             mUserListAdapter.submitList(users)
         }
 
