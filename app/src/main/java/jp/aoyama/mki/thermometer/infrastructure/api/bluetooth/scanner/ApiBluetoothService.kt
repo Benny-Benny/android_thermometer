@@ -1,4 +1,4 @@
-package jp.aoyama.mki.thermometer.infrastructure.api.bluetooth
+package jp.aoyama.mki.thermometer.infrastructure.api.bluetooth.scanner
 
 import com.google.gson.annotations.SerializedName
 import retrofit2.Call

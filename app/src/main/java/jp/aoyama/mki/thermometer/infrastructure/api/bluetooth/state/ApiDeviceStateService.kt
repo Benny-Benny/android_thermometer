@@ -1,4 +1,4 @@
-package jp.aoyama.mki.thermometer.infrastructure.api.bluetooth
+package jp.aoyama.mki.thermometer.infrastructure.api.bluetooth.state
 
 import jp.aoyama.mki.thermometer.domain.models.device.DeviceStateEntity
 import retrofit2.Call

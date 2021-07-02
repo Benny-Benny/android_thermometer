@@ -1,4 +1,4 @@
-package jp.aoyama.mki.thermometer.infrastructure.api.bluetooth
+package jp.aoyama.mki.thermometer.infrastructure.api.bluetooth.scanner
 
 import android.content.Context
 import android.util.Log
@@ -14,6 +14,10 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+/**
+ * Raspberry Piに保存されたスキャン結果をもとに、
+ * 擬似的にスキャン結果を作成する。
+ */
 class ApiBluetoothScanner(context: Context) : BluetoothDeviceScanner {
 
     private val _deviceLiveData: MutableLiveData<List<BluetoothScanResult>> = MutableLiveData()

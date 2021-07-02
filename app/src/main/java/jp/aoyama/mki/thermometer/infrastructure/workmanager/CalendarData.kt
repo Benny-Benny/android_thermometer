@@ -7,6 +7,9 @@ import java.text.SimpleDateFormat
 import java.util.*
 import com.google.api.client.util.DateTime as GoogleCalendarDateTime
 
+/**
+ * Google Calendarに書き込むデータ
+ */
 data class CalendarData(
     val start: Calendar,
     val end: Calendar,
@@ -24,12 +27,15 @@ data class CalendarData(
         }
     }
 
+    /**
+     * Google Calendarに書込み可能なEvent型に変換する
+     */
     fun toEvent(): Event {
         //イベントのタイトル設定
         val event = Event()
             .setSummary(name)
 
-        val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX")
+        val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.JAPAN)
 
         //イベントの開始時刻設定
         val formattedStart = formatter.format(start.time)

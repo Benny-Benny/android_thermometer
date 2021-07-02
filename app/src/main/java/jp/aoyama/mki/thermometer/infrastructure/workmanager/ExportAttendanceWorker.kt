@@ -10,6 +10,7 @@ import com.google.api.client.json.jackson2.JacksonFactory
 import com.google.api.client.util.DateTime
 import com.google.api.services.calendar.CalendarScopes
 import com.google.api.services.sheets.v4.SheetsScopes
+import jp.aoyama.mki.thermometer.R
 import jp.aoyama.mki.thermometer.domain.models.attendance.UserAttendance
 import jp.aoyama.mki.thermometer.domain.service.AttendanceService
 import kotlinx.coroutines.Dispatchers
@@ -18,12 +19,16 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import com.google.api.services.calendar.Calendar as GoogleCalendar
 
-
+/**
+ * 出席データをGoogle Calendarに 20 分ごと書き出す
+ * インターバルは ExportAttendanceWorker#createWorkerRequest にて指定している。
+ */
 class ExportAttendanceWorker(
     private val context: Context,
     workerParams: WorkerParameters,
 ) : CoroutineWorker(context, workerParams) {
     private val attendanceService: AttendanceService = AttendanceService(context)
+    private val calendarId get() = context.getString(R.string.calendar_id)
 
     private val yesterday: Calendar
         get() {
@@ -55,13 +60,14 @@ class ExportAttendanceWorker(
         val transport = NetHttpTransport.Builder().build()
         val jsonFactory = JacksonFactory.getDefaultInstance()
 
+        val credentialFileName = context.getString(R.string.service_account)
         val credential = GoogleCredential
-            .fromStream(context.resources.assets.open("thermo-735c3-3c2f1f54225b.json"))
+            .fromStream(context.resources.assets.open(credentialFileName))
             .createScoped(scopes)
             ?: return Result.failure()
 
         val calendarService = GoogleCalendar.Builder(transport, jsonFactory, credential)
-            .setApplicationName("Thermometer")
+            .setApplicationName(context.getString(R.string.app_name))
             .build()
             ?: return Result.failure()
 
@@ -71,6 +77,7 @@ class ExportAttendanceWorker(
             Log.d(TAG, "doWork: events are successfully deleted")
         }.onFailure { e ->
             Log.e(TAG, "doWork: error while deleting events", e)
+            return Result.failure()
         }
 
         kotlin.runCatching {
@@ -91,14 +98,14 @@ class ExportAttendanceWorker(
         //今日の分だけ抽出して削除
         var pageToken: String? = null
         do {
-            val events = calendarService.events().list(CALENDAR_ID)
+            val events = calendarService.events().list(calendarId)
                 .setPageToken(pageToken)
                 .setTimeMin(DateTime(yesterday.time))
                 .setTimeMax(DateTime(tomorrow.time))
                 .execute()
 
             events.items.forEach { event ->
-                calendarService.events().delete(CALENDAR_ID, event.id).execute()
+                calendarService.events().delete(calendarId, event.id).execute()
             }
             pageToken = events.nextPageToken
         } while (pageToken != null)
@@ -114,13 +121,12 @@ class ExportAttendanceWorker(
             .map { it.toEvent() }
 
         events.forEach {
-            calendarService.events().insert(CALENDAR_ID, it).execute()
+            calendarService.events().insert(calendarId, it).execute()
         }
     }
 
     companion object {
         private const val TAG = "ExportAttendanceWorker"
-        private const val CALENDAR_ID = "00skbhatat744kdvg0875oi5ic@group.calendar.google.com"
 
         val scopes = listOf(
             Scopes.PROFILE,
@@ -129,9 +135,10 @@ class ExportAttendanceWorker(
         )
 
         private fun createWorkerRequest(): PeriodicWorkRequest {
+            // WorkManagerの最小インターバルが15分
             return PeriodicWorkRequestBuilder<ExportAttendanceWorker>(
-                repeatInterval = 1,
-                repeatIntervalTimeUnit = TimeUnit.HOURS
+                repeatInterval = 20,
+                repeatIntervalTimeUnit = TimeUnit.MINUTES
             ).build()
         }
 

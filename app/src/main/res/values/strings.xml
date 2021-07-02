@@ -71,4 +71,5 @@
     <!--  Files  -->
     <string name="service_account">service_account.json</string>
     <string name="spread_sheet_id">1rk9nK6fumSJvm9FVcWsVBp4oaXgk2LWgeHeNWukJrvU</string>
+    <string name="calendar_id">00skbhatat744kdvg0875oi5ic@group.calendar.google.com</string>
 </resources>

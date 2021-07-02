@@ -16,7 +16,7 @@ data class SpreadSheetUserEntity(
         deviceMacAddress = user.device?.address
     )
 
-    fun toCsv(): List<String> {
+    fun toCSV(): List<String> {
         return listOf(
             this.id,
             this.name,

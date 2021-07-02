@@ -15,6 +15,9 @@ import kotlinx.coroutines.withContext
 import java.util.*
 import jp.aoyama.mki.thermometer.view.models.UserEntity as UserViewEntity
 
+/**
+ * ユーザーのCRUD機能を管理
+ */
 class UserService(
     private val userRepository: UserRepository,
     private val temperatureRepository: TemperatureRepository,

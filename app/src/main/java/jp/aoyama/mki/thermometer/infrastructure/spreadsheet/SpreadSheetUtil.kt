@@ -10,6 +10,9 @@ import com.google.api.services.sheets.v4.model.ValueRange
 import jp.aoyama.mki.thermometer.R
 import jp.aoyama.mki.thermometer.infrastructure.workmanager.ExportAttendanceWorker
 
+/**
+ * SpreadSheetの共通する操作をまとめた Utility クラス
+ */
 class SpreadSheetUtil(private val mContext: Context) {
     private val mSheetsService: Sheets by lazy {
         val transport = NetHttpTransport.Builder().build()

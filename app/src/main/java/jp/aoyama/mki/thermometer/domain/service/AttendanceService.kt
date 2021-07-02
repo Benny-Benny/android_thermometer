@@ -12,6 +12,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
 
+/**
+ * 出席データの生成を行う
+ */
 class AttendanceService(
     private val userRepository: UserRepository,
     private val deviceStateRepository: DeviceStateRepository
