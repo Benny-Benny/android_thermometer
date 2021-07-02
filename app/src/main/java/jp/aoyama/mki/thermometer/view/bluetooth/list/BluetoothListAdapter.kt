@@ -5,8 +5,7 @@ import androidx.recyclerview.widget.ListAdapter
 import jp.aoyama.mki.thermometer.domain.models.device.BluetoothScanResult
 
 class BluetoothListAdapter(
-    private val callbackListener: BluetoothViewHolder.CallbackListener,
-    private val editCallbackListener: BluetoothViewHolder.EditCallbackListener? = null
+    private val callbackListener: BluetoothViewHolder.CallbackListener
 ) :
     ListAdapter<BluetoothScanResult, BluetoothViewHolder>(BluetoothDiffUtil()) {
 

@@ -14,12 +14,4 @@ data class DeviceStateEntity(
         val scannedAtStr = formatter.format(createdAt.time)
         return "DeviceStateEntity(address=$address, found=$found, scannedAt=${scannedAtStr})"
     }
-
-    companion object {
-        fun List<DeviceStateEntity>.getAddressOf(addresses: List<String>): List<DeviceStateEntity> {
-            return filter { state ->
-                addresses.any { address -> address == state.address }
-            }
-        }
-    }
 }
