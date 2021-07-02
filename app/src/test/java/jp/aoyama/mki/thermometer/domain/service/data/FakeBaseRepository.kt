@@ -1,7 +1,7 @@
 package jp.aoyama.mki.thermometer.domain.service.data
 
 class FakeBaseRepository<K, V> {
-    val data = mutableMapOf<K, V>()
+    private val data = mutableMapOf<K, V>()
 
     fun findALl(): List<V> {
         return data.values.toList()
