@@ -10,7 +10,7 @@ class MeasureBodyTemperatureViewModel : ViewModel() {
      * 画像から取得された値から、数字を抽出
      */
     fun addData(value: String) {
-        Log.d("VIEWMODEL", "addData: ${value}")
+        Log.d(TAG, "addData: $value")
         val numStr = value.replace("[^0-9]".toRegex(), "")
         if (numStr.isBlank() || numStr.length > 6) return
 
@@ -36,5 +36,9 @@ class MeasureBodyTemperatureViewModel : ViewModel() {
         if (max.value < 5F) return null
 
         return max.key
+    }
+
+    companion object {
+        private const val TAG = "MeasureBodyTemperatureV"
     }
 }
