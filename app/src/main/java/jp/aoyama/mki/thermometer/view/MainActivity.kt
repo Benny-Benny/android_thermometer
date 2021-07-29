@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
 import jp.aoyama.mki.thermometer.R
+import jp.aoyama.mki.thermometer.infrastructure.workmanager.ExportAttendanceWorker
 
 
 class MainActivity : AppCompatActivity() {
@@ -15,6 +16,7 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.elevation = 0f
 
         setupActionBarWithNavController(findNavController(R.id.nav_host_fragment))
+        ExportAttendanceWorker.startWork(applicationContext)
     }
 
     override fun onSupportNavigateUp(): Boolean {
