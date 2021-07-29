@@ -51,8 +51,6 @@ class SelectNameFragment : Fragment(), UserViewHolder.CallbackListener {
             floatingActionButton.setOnClickListener {
                 findNavController().navigate(HomeFragmentDirections.homeToEditName())
             }
-
-            swipeRefresh.setOnRefreshListener { reloadData() }
             progressCircular.visibility = View.VISIBLE
         }
 
@@ -96,7 +94,6 @@ class SelectNameFragment : Fragment(), UserViewHolder.CallbackListener {
     private fun reloadData() {
         lifecycleScope.launch {
             mViewModel.reloadUserData(requireContext())
-            mBinding.swipeRefresh.isRefreshing = false
         }
     }
 
