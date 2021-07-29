@@ -21,7 +21,8 @@
         android:padding="16dp"
         android:src="@drawable/flip_camera_android_24dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/white" />
 
     <LinearLayout
         android:id="@+id/layout_temperature"
@@ -34,13 +35,19 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/body_temperature_hint" />
+
+        <EditText
             android:id="@+id/text_temperature"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:textAlignment="center"
             android:textSize="100sp"
-            tools:text="36.5" />
+            android:hint="36.5"
+            android:inputType="numberDecimal" />
 
         <Button
             android:id="@+id/button_save"
@@ -54,8 +61,8 @@
     <ProgressBar
         android:id="@+id/progress_circular"
         android:layout_width="wrap_content"
+        android:visibility="gone"
         android:layout_height="wrap_content"
-        android:indeterminate="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

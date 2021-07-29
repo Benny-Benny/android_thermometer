@@ -81,4 +81,5 @@
     <string name="service_account">service_account.json</string>
     <string name="spread_sheet_id">1enzg6T1J62uDhKrPDR82dZ6yhRgIDfv9PANUXowIfTw</string>
     <string name="calendar_id">00skbhatat744kdvg0875oi5ic@group.calendar.google.com</string>
+    <string name="body_temperature_hint">体温計をスキャンするか、体温を直接入力してください。</string>
 </resources>

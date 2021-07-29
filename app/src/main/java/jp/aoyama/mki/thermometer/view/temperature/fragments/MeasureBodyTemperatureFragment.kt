@@ -13,6 +13,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -55,6 +56,10 @@ class MeasureBodyTemperatureFragment : Fragment(), TextRecognizer.CallbackListen
         mBinding.apply {
             buttonFlipCamera.setOnClickListener { flipCamera() }
             buttonSave.setOnClickListener { saveTemperature() }
+            textTemperature.addTextChangedListener {
+                buttonSave.isEnabled = it != null && it.toString().isNotBlank()
+            }
+            progressCircular.visibility = View.VISIBLE
         }
 
         // Request camera permissions
@@ -134,11 +139,13 @@ class MeasureBodyTemperatureFragment : Fragment(), TextRecognizer.CallbackListen
     }
 
     private fun saveTemperature() {
+        mBinding.progressCircular.visibility = View.VISIBLE
+
         lifecycleScope.launch {
             val valid = mViewModel.saveTemperature(
                 requireContext(),
                 mUserId,
-                mPageViewModel.getData()
+                mBinding.textTemperature.text?.toString()?.toFloatOrNull()
             )
             if (valid) {
                 Toast.makeText(context, "保存しました。", Toast.LENGTH_LONG).show()
@@ -150,6 +157,8 @@ class MeasureBodyTemperatureFragment : Fragment(), TextRecognizer.CallbackListen
                     Toast.LENGTH_LONG
                 ).show()
             }
+
+            requireActivity().runOnUiThread { mBinding.progressCircular.visibility = View.GONE }
         }
     }
 
@@ -160,8 +169,7 @@ class MeasureBodyTemperatureFragment : Fragment(), TextRecognizer.CallbackListen
         val showTxt = texts.joinToString(" ")
         mPageViewModel.addData(showTxt)
         val result = mPageViewModel.getData()
-        mBinding.textTemperature.text = result?.toString()
-        mBinding.buttonSave.isEnabled = result != null
+        if (result != null) mBinding.textTemperature.setText(result.toString())
     }
 
     companion object {
