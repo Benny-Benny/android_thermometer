@@ -6,6 +6,31 @@
         <EditTextPreference
             app:defaultValue="@string/default_api_endpoint"
             app:key="@string/key_api_end_point"
+            app:summary="RaspberryPiのIPアドレス"
             app:title="APIエンドポイントを設定" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="@string/category_api"
+        app:title="Google">
+        <EditTextPreference
+            app:defaultValue="@string/default_spreadsheet_id"
+            app:key="@string/key_google_spreadsheet_id"
+            app:summary="生徒名簿、体温データを保存するSpreadSheetのID"
+            app:title="SpreadSheet ID" />
+        <EditTextPreference
+            app:defaultValue="@string/default_calendar_id"
+            app:key="@string/key_google_calendar_id"
+            app:summary="出席データの出力先となるCalendarのID"
+            app:title="Calendar ID" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="@string/category_export"
+        app:title="エクスポート">
+        <Preference
+            app:key="@string/key_export_attendance"
+            app:summary="定期的にGoogleカレンダーに出力されますが、今すぐ確認したい場合は、これを利用してください。"
+            app:title="出席データをGoogleカレンダーに出力" />
     </PreferenceCategory>
 </PreferenceScreen>
