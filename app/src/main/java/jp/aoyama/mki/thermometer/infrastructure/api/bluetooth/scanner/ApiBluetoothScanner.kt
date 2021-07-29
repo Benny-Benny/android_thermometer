@@ -48,7 +48,7 @@ class ApiBluetoothScanner(context: Context) : BluetoothDeviceScanner {
                     .fold(
                         onSuccess = { it },
                         onFailure = { e ->
-                            Log.e(TAG, "startDiscovery: error while scanning", e)
+                            Log.i(TAG, "startDiscovery: error while scanning", e)
                             emptyList()
                         }
                     )
@@ -71,7 +71,7 @@ class ApiBluetoothScanner(context: Context) : BluetoothDeviceScanner {
         val response = try {
             service.scan().execute().body()
         } catch (e: Exception) {
-            Log.e(TAG, "request: error while requesting bluetooth scan result", e)
+            Log.i(TAG, "request: error while requesting bluetooth scan result", e)
             null
         } ?: return emptyList()
 

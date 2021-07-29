@@ -38,7 +38,7 @@ class AttendanceViewModel : ViewModel() {
         }.fold(
             onSuccess = { it },
             onFailure = { e ->
-                Log.e(TAG, "getAttendances: error while getting attendances", e)
+                Log.i(TAG, "getAttendances: error while getting attendances", e)
                 emptyList()
             }
         )

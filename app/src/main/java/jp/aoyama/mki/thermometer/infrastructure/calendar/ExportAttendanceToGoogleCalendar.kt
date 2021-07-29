@@ -61,7 +61,7 @@ class ExportAttendanceToGoogleCalendar(
         }.onSuccess {
             Log.d(TAG, "doWork: events are successfully deleted")
         }.onFailure { e ->
-            Log.e(TAG, "doWork: error while deleting events", e)
+            Log.i(TAG, "doWork: error while deleting events", e)
             throw e
         }
 
@@ -72,7 +72,7 @@ class ExportAttendanceToGoogleCalendar(
         }.onSuccess {
             Log.d(TAG, "doWork: events are successfully inserted")
         }.onFailure { e ->
-            Log.e(TAG, "doWork: error while inserting events", e)
+            Log.i(TAG, "doWork: error while inserting events", e)
             throw e
         }
 

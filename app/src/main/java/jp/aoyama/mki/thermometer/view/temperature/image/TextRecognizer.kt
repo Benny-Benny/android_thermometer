@@ -58,7 +58,7 @@ class TextRecognizer(
                 imageProxy.close()
             }
             .addOnFailureListener { e ->
-                Log.e(TAG, "analyze: error while analyzing image", e)
+                Log.i(TAG, "analyze: error while analyzing image", e)
                 imageProxy.close()
             }
     }
