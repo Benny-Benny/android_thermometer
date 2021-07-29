@@ -15,6 +15,9 @@ data class UserEntity(
     constructor(user: User, lastFoundAt: Calendar?) :
             this(user.id, user.name, user.grade, user.device, lastFoundAt)
 
+    constructor(user: User, lastFoundAt: Long) :
+            this(user, Calendar.getInstance().apply { timeInMillis = lastFoundAt })
+
     val found: Boolean
         get() {
             val lastFound = this.lastFoundAt ?: return false
@@ -23,8 +26,8 @@ data class UserEntity(
         }
 
     companion object {
-        // 最後に端末を発見してから、1分は表示されるようにする。
-        private const val TIMEOUT_IN_MILLIS = 1 * 60 * 1000
+        // 最後に端末を発見してから、10分は表示されるようにする。
+        private const val TIMEOUT_IN_MILLIS = 10 * 60 * 1000
 
         fun List<UserEntity>.updateUser(user: UserEntity): List<UserEntity> {
             val users = this.toMutableList()
