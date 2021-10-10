@@ -15,7 +15,7 @@ class TemperatureViewModel : ViewModel() {
         }.fold(
             onSuccess = { it },
             onFailure = { e ->
-                Log.e(TAG, "getTemperatureData: error while getting temperature data", e)
+                Log.i(TAG, "getTemperatureData: error while getting temperature data", e)
                 emptyList()
             }
         )
@@ -28,7 +28,7 @@ class TemperatureViewModel : ViewModel() {
         }.fold(
             onSuccess = { it },
             onFailure = { e ->
-                Log.e(TAG, "saveTemperature: error while saving temperature", e)
+                Log.i(TAG, "saveTemperature: error while saving temperature", e)
                 Toast.makeText(context, "エラーが発生しました", Toast.LENGTH_LONG).show()
                 false
             }

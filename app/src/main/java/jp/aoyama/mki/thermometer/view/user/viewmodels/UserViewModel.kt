@@ -56,7 +56,7 @@ class UserViewModel : ViewModel() {
             service.getUsers()
         } catch (e: Exception) {
             Toast.makeText(context, "データ取得中にエラーが発生しました。", Toast.LENGTH_LONG).show()
-            Log.e(TAG, "getUsers: error while getting users", e)
+            Log.i(TAG, "getUsers: error while getting users", e)
             emptyList()
         }
     }
@@ -69,7 +69,7 @@ class UserViewModel : ViewModel() {
             onSuccess = { it },
             onFailure = { e ->
                 Toast.makeText(context, "データ取得中にエラーが発生しました。", Toast.LENGTH_LONG).show()
-                Log.e(TAG, "getUser: error while getting users", e)
+                Log.i(TAG, "getUser: error while getting users", e)
                 null
             }
         )

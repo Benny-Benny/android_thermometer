@@ -2,16 +2,27 @@ package jp.aoyama.mki.thermometer.view.settings
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AlertDialog
+import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import jp.aoyama.mki.thermometer.R
+import jp.aoyama.mki.thermometer.infrastructure.calendar.ExportAttendanceToGoogleCalendar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.util.*
 
 class SettingsFragment : PreferenceFragmentCompat(),
     SharedPreferences.OnSharedPreferenceChangeListener {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences, rootKey)
+
+        val exportButton = findPreference<Preference>(getString(R.string.key_export_attendance))
+        exportButton?.setOnPreferenceClickListener {
+            exportAttendance()
+            true
+        }
     }
 
     override fun onResume() {
@@ -26,18 +37,32 @@ class SettingsFragment : PreferenceFragmentCompat(),
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
-            getString(R.string.key_api_end_point) -> showRelaunchDialog()
+            getString(R.string.key_api_end_point),
+            getString(R.string.key_google_calendar_id),
+            getString(R.string.key_google_spreadsheet_id) -> showMessageDialog("設定を反映するには再起動が必要です")
         }
     }
 
-    private fun showRelaunchDialog() {
-        Log.d(TAG, "showRelaunchAppDialog: CHANGED")
-        val dialog = AlertDialog.Builder(requireContext())
-            .setMessage("設定を反映するには再起動が必要です")
-            .setPositiveButton(R.string.ok) { dialog, _ ->
-                // アプリを再起動する
-                dialog.dismiss()
+    private fun exportAttendance() {
+        val service = ExportAttendanceToGoogleCalendar(requireContext())
+        val coroutineScope = CoroutineScope(Dispatchers.IO)
+        coroutineScope.launch {
+            val oneHourBefore = Calendar.getInstance().apply {
+                val currentHour = get(Calendar.HOUR_OF_DAY)
+                set(Calendar.HOUR_OF_DAY, currentHour - 6)
             }
+            service.export(oneHourBefore)
+
+            requireActivity().runOnUiThread {
+                showMessageDialog("カレンダーに出力しました。")
+            }
+        }
+    }
+
+    private fun showMessageDialog(message: String) {
+        val dialog = AlertDialog.Builder(requireContext())
+            .setMessage(message)
+            .setPositiveButton(R.string.close) { dialog, _ -> dialog.dismiss() }
             .create()
         dialog.show()
     }

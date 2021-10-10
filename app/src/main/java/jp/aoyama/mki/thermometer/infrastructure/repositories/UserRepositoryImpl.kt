@@ -12,7 +12,9 @@ import kotlinx.coroutines.launch
 
 /**
  * Raspberry Piで実行される、端末スキャンで使用する
- * 端末一覧データと、ユーザーデータに含まれる端末情報を一致させる。
+ *
+ * UserRepository内で端末のデータを持っているが、
+ * そのデータとRaspberryPi上の端末一覧のデータを一致させるための実装。
  */
 class UserRepositoryImpl(
     private val userRepository: UserRepository,

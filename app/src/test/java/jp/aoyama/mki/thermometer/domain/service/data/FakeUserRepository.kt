@@ -1,5 +1,6 @@
 package jp.aoyama.mki.thermometer.domain.service.data
 
+import jp.aoyama.mki.thermometer.domain.models.device.Device
 import jp.aoyama.mki.thermometer.domain.models.user.Grade
 import jp.aoyama.mki.thermometer.domain.models.user.UserEntity
 import jp.aoyama.mki.thermometer.domain.repository.UserRepository
@@ -33,6 +34,14 @@ class FakeUserRepository : UserRepository {
         baseRepository.save(
             userId,
             user.copy(grade = grade?.gradeName)
+        )
+    }
+
+    override suspend fun updateDevice(userId: String, device: String?) {
+        val user = baseRepository.find(userId) ?: return
+        baseRepository.save(
+            userId,
+            user.copy(device = if (device != null) Device(userId, device) else null)
         )
     }
 

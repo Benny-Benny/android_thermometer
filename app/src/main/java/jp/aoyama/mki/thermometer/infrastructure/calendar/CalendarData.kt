@@ -1,4 +1,4 @@
-package jp.aoyama.mki.thermometer.infrastructure.workmanager
+package jp.aoyama.mki.thermometer.infrastructure.calendar
 
 import com.google.api.services.calendar.model.Event
 import com.google.api.services.calendar.model.EventDateTime
@@ -7,6 +7,9 @@ import java.text.SimpleDateFormat
 import java.util.*
 import com.google.api.client.util.DateTime as GoogleCalendarDateTime
 
+/**
+ * Google Calendarに書き込むデータ
+ */
 data class CalendarData(
     val start: Calendar,
     val end: Calendar,
@@ -18,18 +21,22 @@ data class CalendarData(
             return CalendarData(
                 start = attendance.enterAt,
                 end = attendance.leftAt ?: Calendar.getInstance(),
-                isAttending = false,
+                isAttending = attendance.leftAt == null,
                 name = attendance.userName
             )
         }
     }
 
+    /**
+     * Google Calendarに書込み可能なEvent型に変換する
+     */
     fun toEvent(): Event {
-        //イベントのタイトル設定
         val event = Event()
-            .setSummary(name)
 
-        val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX")
+        //イベントのタイトル設定
+        event.summary = if (isAttending) "$name (在籍中)" else name
+
+        val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.JAPAN)
 
         //イベントの開始時刻設定
         val formattedStart = formatter.format(start.time)
@@ -44,11 +51,6 @@ data class CalendarData(
         event.end = EventDateTime()
             .setDateTime(endDateTime)
             .setTimeZone("Asia/Tokyo")
-
-        //イベントの説明設定（在籍中かどうか）
-        if (isAttending) {
-            event.description = "在籍中"
-        }
 
         return event
     }

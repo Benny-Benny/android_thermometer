@@ -13,8 +13,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -31,6 +33,7 @@ class MeasureBodyTemperatureFragment : Fragment(), TextRecognizer.CallbackListen
 
     private lateinit var mBinding: FragmentMeasureBodyTemperatureBinding
     private val cameraExecutor: ExecutorService by lazy { Executors.newSingleThreadExecutor() }
+    private var mCameraProvider: ProcessCameraProvider? = null
 
     private val mPageViewModel: MeasureBodyTemperatureViewModel by viewModels()
     private val mViewModel: TemperatureViewModel by viewModels()
@@ -53,6 +56,10 @@ class MeasureBodyTemperatureFragment : Fragment(), TextRecognizer.CallbackListen
         mBinding.apply {
             buttonFlipCamera.setOnClickListener { flipCamera() }
             buttonSave.setOnClickListener { saveTemperature() }
+            textTemperature.addTextChangedListener {
+                buttonSave.isEnabled = it != null && it.toString().isNotBlank()
+            }
+            progressCircular.visibility = View.VISIBLE
         }
 
         // Request camera permissions
@@ -71,7 +78,8 @@ class MeasureBodyTemperatureFragment : Fragment(), TextRecognizer.CallbackListen
         mBinding.progressCircular.visibility = View.VISIBLE
 
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
-        val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
+        val cameraProvider = cameraProviderFuture.get()
+        mCameraProvider = cameraProvider
 
         val preview = Preview.Builder()
             .build()
@@ -111,7 +119,7 @@ class MeasureBodyTemperatureFragment : Fragment(), TextRecognizer.CallbackListen
 
                 mBinding.progressCircular.visibility = View.GONE
             }.onFailure { e ->
-                Log.e(TAG, "Use case binding failed", e)
+                Log.i(TAG, "Use case binding failed", e)
             }
         }, ContextCompat.getMainExecutor(requireContext()))
     }
@@ -127,11 +135,13 @@ class MeasureBodyTemperatureFragment : Fragment(), TextRecognizer.CallbackListen
     }
 
     private fun saveTemperature() {
+        mBinding.progressCircular.visibility = View.VISIBLE
+
         lifecycleScope.launch {
             val valid = mViewModel.saveTemperature(
                 requireContext(),
                 mUserId,
-                mPageViewModel.getData()
+                mBinding.textTemperature.text?.toString()?.toFloatOrNull()
             )
             if (valid) {
                 Toast.makeText(context, "保存しました。", Toast.LENGTH_LONG).show()
@@ -143,15 +153,19 @@ class MeasureBodyTemperatureFragment : Fragment(), TextRecognizer.CallbackListen
                     Toast.LENGTH_LONG
                 ).show()
             }
+
+            requireActivity().runOnUiThread { mBinding.progressCircular.visibility = View.GONE }
         }
     }
 
     override fun onScan(texts: List<String>) {
+        // Fragmentが破棄された場合は、コールバックを実行しない
+        if (!this.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) return
+
         val showTxt = texts.joinToString(" ")
         mPageViewModel.addData(showTxt)
         val result = mPageViewModel.getData()
-        mBinding.textTemperature.text = result?.toString()
-        mBinding.buttonSave.isEnabled = result != null
+        if (result != null) mBinding.textTemperature.setText(result.toString())
     }
 
     companion object {

@@ -16,8 +16,13 @@ import kotlinx.coroutines.*
 import java.util.*
 
 /**
- * Bluetooth Classic、BLEのどちらでも探索可能。
- * ペアリングしていると検知されやすい。
+ * AndroidのBluetooth端末の検索機能を使用して、
+ * 周囲の端末をスキャンする。
+ *
+ * ユーザーのBluetooth端末を登録する際に、利用される。
+ *
+ * 登録したい端末の　設定 > Bluetooth　の画面を開くと
+ * この端末から検知可能になる。
  */
 class BluetoothDiscoveryDeviceScanner(
     private val context: Context,

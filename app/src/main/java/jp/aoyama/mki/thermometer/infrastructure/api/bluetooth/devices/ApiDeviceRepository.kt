@@ -1,4 +1,4 @@
-package jp.aoyama.mki.thermometer.infrastructure.api.bluetooth
+package jp.aoyama.mki.thermometer.infrastructure.api.bluetooth.devices
 
 import android.content.Context
 import jp.aoyama.mki.thermometer.domain.models.device.Device
@@ -9,6 +9,9 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
+/**
+ * Raspberry Pi上に登録された端末データを参照する
+ */
 class ApiDeviceRepository(context: Context) : DeviceRepository {
 
     private val service: ApiDeviceService by lazy {
