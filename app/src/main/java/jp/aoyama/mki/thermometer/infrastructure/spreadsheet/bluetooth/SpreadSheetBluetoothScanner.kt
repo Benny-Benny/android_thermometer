@@ -30,6 +30,7 @@ class SpreadSheetBluetoothScanner(context: Context) : BluetoothDeviceScanner {
         coroutineScope = CoroutineScope(Dispatchers.IO)
         coroutineScope?.launch {
             while (true) {
+                Log.d(TAG, "startDiscovery: SCAN")
                 val results = kotlin
                     .runCatching { scan() }
                     .fold(
