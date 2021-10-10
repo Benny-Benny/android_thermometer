@@ -40,13 +40,13 @@ class SpreadSheetUtil(private val mContext: Context) {
             return sharedPreferences.getString(keySpreadSheetId, defaultId) ?: defaultId
         }
 
-    suspend fun getColumnOf(range: String, test: (List<String>) -> Boolean): Int? {
+    fun getColumnOf(range: String, test: (List<String>) -> Boolean): Int? {
         val row = getValues(range).indexOfFirst { test(it) }
         if (row == -1) return null
         return row + 1
     }
 
-    suspend fun getValues(range: String): List<List<String>> {
+    fun getValues(range: String): List<List<String>> {
         val response = mSheetsService
             .spreadsheets().values()
             .get(spreadSheetId, range)

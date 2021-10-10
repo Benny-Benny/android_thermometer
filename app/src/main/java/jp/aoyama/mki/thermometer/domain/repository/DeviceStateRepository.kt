@@ -13,7 +13,10 @@ interface DeviceStateRepository {
 
     suspend fun findByAddress(address: String): List<DeviceStateEntity>
 
-    suspend fun save(state: DeviceStateEntity)
+    /**
+     * 最新の[DeviceStateEntity]を取得する
+     */
+    suspend fun findLatest(address: String): DeviceStateEntity?
 
-    suspend fun delete(id: String)
+    suspend fun save(state: DeviceStateEntity)
 }

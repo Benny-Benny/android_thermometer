@@ -41,7 +41,7 @@ class FakeUserRepository : UserRepository {
         val user = baseRepository.find(userId) ?: return
         baseRepository.save(
             userId,
-            user.copy(device = if (device != null) Device(userId, device) else null)
+            user.copy(device = device?.let { Device(userId, it) })
         )
     }
 
