@@ -2,6 +2,7 @@ package jp.aoyama.mki.thermometer.view.settings
 
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -37,7 +38,6 @@ class SettingsFragment : PreferenceFragmentCompat(),
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
-            getString(R.string.key_api_end_point),
             getString(R.string.key_google_calendar_id),
             getString(R.string.key_google_spreadsheet_id) -> showMessageDialog("設定を反映するには再起動が必要です")
         }
@@ -47,14 +47,20 @@ class SettingsFragment : PreferenceFragmentCompat(),
         val service = ExportAttendanceToGoogleCalendar(requireContext())
         val coroutineScope = CoroutineScope(Dispatchers.IO)
         coroutineScope.launch {
+            // 6時間前からのデータを記録
             val oneHourBefore = Calendar.getInstance().apply {
                 val currentHour = get(Calendar.HOUR_OF_DAY)
-                set(Calendar.HOUR_OF_DAY, currentHour - 6)
+                set(Calendar.HOUR_OF_DAY, currentHour - 24)
             }
+
+            requireActivity().runOnUiThread {
+                Toast.makeText(requireContext(), "カレンダーに出力しています", Toast.LENGTH_LONG).show()
+            }
+
             service.export(oneHourBefore)
 
             requireActivity().runOnUiThread {
-                showMessageDialog("カレンダーに出力しました。")
+                Toast.makeText(requireContext(), "カレンダーに出力しました", Toast.LENGTH_LONG).show()
             }
         }
     }

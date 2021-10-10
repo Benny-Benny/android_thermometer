@@ -9,4 +9,10 @@ import java.util.*
 data class DeviceData(
     val device: Device,
     val foundAt: Calendar = Calendar.getInstance(),
-)
+) {
+    companion object {
+        fun Device.toDeviceData(): DeviceData {
+            return DeviceData(this)
+        }
+    }
+}

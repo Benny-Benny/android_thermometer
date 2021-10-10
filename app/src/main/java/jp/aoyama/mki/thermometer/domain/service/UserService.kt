@@ -9,7 +9,7 @@ import jp.aoyama.mki.thermometer.domain.models.user.User
 import jp.aoyama.mki.thermometer.domain.models.user.UserEntity
 import jp.aoyama.mki.thermometer.domain.repository.TemperatureRepository
 import jp.aoyama.mki.thermometer.domain.repository.UserRepository
-import jp.aoyama.mki.thermometer.infrastructure.repositories.RepositoryContainer
+import jp.aoyama.mki.thermometer.infrastructure.RepositoryContainer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*

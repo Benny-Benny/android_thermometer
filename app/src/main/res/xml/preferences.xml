@@ -1,17 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory
-        app:key="@string/category_api"
-        app:title="APIの設定">
-        <EditTextPreference
-            app:defaultValue="@string/default_api_endpoint"
-            app:key="@string/key_api_end_point"
-            app:summary="RaspberryPiのIPアドレス"
-            app:title="APIエンドポイントを設定" />
-    </PreferenceCategory>
-
-    <PreferenceCategory
-        app:key="@string/category_api"
+        app:key="@string/category_google"
         app:title="Google">
         <EditTextPreference
             app:defaultValue="@string/default_spreadsheet_id"

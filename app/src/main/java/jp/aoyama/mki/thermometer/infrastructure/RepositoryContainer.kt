@@ -1,11 +1,10 @@
-package jp.aoyama.mki.thermometer.infrastructure.repositories
+package jp.aoyama.mki.thermometer.infrastructure
 
 import android.content.Context
 import jp.aoyama.mki.thermometer.domain.repository.DeviceStateRepository
 import jp.aoyama.mki.thermometer.domain.repository.TemperatureRepository
 import jp.aoyama.mki.thermometer.domain.repository.UserRepository
-import jp.aoyama.mki.thermometer.infrastructure.api.bluetooth.devices.ApiDeviceRepository
-import jp.aoyama.mki.thermometer.infrastructure.api.bluetooth.state.ApiDeviceStateRepository
+import jp.aoyama.mki.thermometer.infrastructure.spreadsheet.bluetooth.SpreadSheetDeviceStateRepository
 import jp.aoyama.mki.thermometer.infrastructure.spreadsheet.temperature.SpreadSheetBodyTemperatureRepository
 import jp.aoyama.mki.thermometer.infrastructure.spreadsheet.user.SpreadSheetUserRepository
 
@@ -18,13 +17,10 @@ import jp.aoyama.mki.thermometer.infrastructure.spreadsheet.user.SpreadSheetUser
  */
 class RepositoryContainer(private val context: Context) {
     val deviceStateRepository: DeviceStateRepository
-        get() = ApiDeviceStateRepository(context)
+        get() = SpreadSheetDeviceStateRepository(context)
 
     val userRepository: UserRepository
-        get() = UserRepositoryImpl(
-            userRepository = SpreadSheetUserRepository(context),
-            deviceRepository = ApiDeviceRepository(context)
-        )
+        get() = SpreadSheetUserRepository(context)
 
     val temperatureRepository: TemperatureRepository
         get() = SpreadSheetBodyTemperatureRepository(context, userRepository)

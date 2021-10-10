@@ -7,7 +7,7 @@ import jp.aoyama.mki.thermometer.domain.models.device.Device
 import jp.aoyama.mki.thermometer.domain.models.device.DeviceStateEntity
 import jp.aoyama.mki.thermometer.domain.repository.DeviceStateRepository
 import jp.aoyama.mki.thermometer.domain.repository.UserRepository
-import jp.aoyama.mki.thermometer.infrastructure.repositories.RepositoryContainer
+import jp.aoyama.mki.thermometer.infrastructure.RepositoryContainer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
