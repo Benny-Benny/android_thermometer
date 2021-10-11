@@ -23,7 +23,7 @@ class BodyTemperatureViewHolder(
             textMeasuredAt.text = context.getString(
                 R.string.format_ymdhm,
                 data.createdAt.get(Calendar.YEAR),
-                data.createdAt.get(Calendar.MONTH),
+                data.createdAt.get(Calendar.MONTH) + 1,
                 data.createdAt.get(Calendar.DAY_OF_MONTH),
                 data.createdAt.get(Calendar.HOUR_OF_DAY),
                 data.createdAt.get(Calendar.MINUTE)
