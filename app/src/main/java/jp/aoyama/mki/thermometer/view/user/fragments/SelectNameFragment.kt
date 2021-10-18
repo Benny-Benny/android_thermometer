@@ -57,6 +57,9 @@ class SelectNameFragment : Fragment(), UserViewHolder.CallbackListener {
         mViewModel.observeUsers(requireContext()).observe(viewLifecycleOwner) { users ->
             mBinding.progressCircular.visibility = View.GONE
             mUserListAdapter.submitList(users)
+
+            // 更新があった時には、画面トップにスクロール
+            mBinding.recyclerViewUsers.smoothScrollToPosition(0)
         }
 
         lifecycleScope.launch {
@@ -71,7 +74,7 @@ class SelectNameFragment : Fragment(), UserViewHolder.CallbackListener {
     override fun onResume() {
         super.onResume()
 
-        reloadData()
+        mBinding.recyclerViewUsers.scrollToPosition(0)
 
         // Bluetooth端末の検索に必要なパーミッションの取得
         val accessFileLocation = ContextCompat.checkSelfPermission(
@@ -89,12 +92,6 @@ class SelectNameFragment : Fragment(), UserViewHolder.CallbackListener {
 
     private fun scanBluetoothDevices() {
         mBluetoothDeviceScanner.startDiscovery()
-    }
-
-    private fun reloadData() {
-        lifecycleScope.launch {
-            mViewModel.reloadUserData(requireContext())
-        }
     }
 
     // ============================

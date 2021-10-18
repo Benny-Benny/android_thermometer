@@ -71,6 +71,6 @@ class SpreadSheetBluetoothScanner(context: Context) : BluetoothDeviceScanner {
 
     companion object {
         private const val TAG = "BluetoothApiScanner"
-        private const val INTERVAL_IN_MILLIS = 10 * 1000
+        private const val INTERVAL_IN_MILLIS = 30 * 1000
     }
 }
