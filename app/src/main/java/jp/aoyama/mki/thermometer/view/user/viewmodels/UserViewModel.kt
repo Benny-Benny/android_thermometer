@@ -34,7 +34,9 @@ class UserViewModel : ViewModel() {
 
     fun observeUsers(context: Context): LiveData<List<UserEntity>> {
         viewModelScope.launch {
-            reloadUserData(context)
+            val users = _mUserData.value
+            if (users == null || users.isEmpty())
+                _mUserData.value = getUsers(context)
         }
 
         return _mUserData.map { users ->
@@ -43,10 +45,6 @@ class UserViewModel : ViewModel() {
             val notFoundUsers = sortByName - foundUsers
             foundUsers + notFoundUsers
         }
-    }
-
-    suspend fun reloadUserData(context: Context) {
-        _mUserData.value = getUsers(context)
     }
 
     private suspend fun getUsers(context: Context): List<UserEntity> {
