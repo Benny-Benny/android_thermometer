@@ -35,6 +35,7 @@ data class CalendarData(
 
         //イベントのタイトル設定
         event.summary = if (isAttending) "$name (在籍中)" else name
+        if (isAttending) event.colorId = "1"
 
         val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.JAPAN)
 
