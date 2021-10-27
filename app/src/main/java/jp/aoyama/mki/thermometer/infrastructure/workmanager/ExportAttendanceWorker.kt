@@ -17,11 +17,9 @@ class ExportAttendanceWorker(
 ) : CoroutineWorker(context, workerParams) {
     private val service = ExportAttendanceToGoogleCalendar(context)
 
-    private val yesterday: Calendar
+    private val today: Calendar
         get() {
-            val now = Calendar.getInstance()
             return Calendar.getInstance().apply {
-                set(Calendar.DAY_OF_YEAR, now.get(Calendar.DAY_OF_YEAR) - 1)
                 set(Calendar.HOUR_OF_DAY, 0)
                 set(Calendar.MINUTE, 0)
                 set(Calendar.SECOND, 0)
@@ -42,7 +40,7 @@ class ExportAttendanceWorker(
     override suspend fun doWork(): Result {
         Log.d(TAG, "doWork: start work")
 
-        service.export(yesterday, oneHourAfter)
+        service.export(today, oneHourAfter)
 
         return Result.success()
     }
@@ -51,10 +49,10 @@ class ExportAttendanceWorker(
         private const val TAG = "ExportAttendanceWorker"
 
         private fun createWorkerRequest(): PeriodicWorkRequest {
-            // WorkManagerの最小インターバルが15分
+            // WorkManagerの最小インターバル15分で実行
             return PeriodicWorkRequestBuilder<ExportAttendanceWorker>(
-                repeatInterval = 20,
-                repeatIntervalTimeUnit = TimeUnit.MINUTES
+                repeatInterval = PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS,
+                repeatIntervalTimeUnit = TimeUnit.MILLISECONDS
             ).build()
         }
 
