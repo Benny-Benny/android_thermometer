@@ -165,7 +165,11 @@ class MeasureBodyTemperatureFragment : Fragment(), TextRecognizer.CallbackListen
         val showTxt = texts.joinToString(" ")
         mPageViewModel.addData(showTxt)
         val result = mPageViewModel.getData()
-        if (result != null) mBinding.textTemperature.setText(result.toString())
+
+        if (result != null && result.toString() != mBinding.textTemperature.text.toString()) {
+            Log.d(TAG, "onScan: Update")
+            mBinding.textTemperature.setText(result.toString())
+        }
     }
 
     companion object {

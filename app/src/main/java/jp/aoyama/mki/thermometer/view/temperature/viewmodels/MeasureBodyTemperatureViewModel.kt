@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 
 class MeasureBodyTemperatureViewModel : ViewModel() {
-    private var inputValues = mutableListOf<Float>()
+    private var inputValues = mutableListOf<Float?>()
 
     /**
      * 画像から取得された値から、数字を抽出
@@ -12,7 +12,13 @@ class MeasureBodyTemperatureViewModel : ViewModel() {
     fun addData(value: String) {
         Log.d(TAG, "addData: $value")
         val numStr = value.replace("[^0-9]".toRegex(), "")
-        if (numStr.isBlank() || numStr.length > 6) return
+
+        // 数値が認識されなかったらnullを入れる
+        if (numStr.isBlank() || numStr.length > 6) {
+            inputValues.add(null)
+            return
+        }
+
         Log.d("temp", numStr)
         var num = numStr.toInt()
         if (num in 310..319) {
@@ -35,7 +41,7 @@ class MeasureBodyTemperatureViewModel : ViewModel() {
      */
     fun getData(): Float? {
         // 最新の15個のデータから, 値:出現回数 となるようにマップを取得
-        val frequencyMap = inputValues.takeLast(15).groupingBy { it }.eachCount()
+        val frequencyMap = inputValues.takeLast(10).groupingBy { it }.eachCount()
 
         // 出現回数が最大で、かつ3回以上出現した値を取得
         val max = frequencyMap.maxByOrNull { it.value } ?: return null
